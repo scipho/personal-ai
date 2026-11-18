@@ -3331,7 +3331,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
         pendingImage = attachedFile.dataUrl;
         fullPrompt = promptText || t('imageAttached');
       } else {
-        fullPrompt = '[DOCUMENTO ADJUNTO: ' + attachedFile.name + ']:' + nl + attachedFile.content + nl + nl + (promptText || 'Analiza este documento.');
+        fullPrompt = '[附件：' + attachedFile.name + ']' + nl + attachedFile.content + nl + nl + (promptText || '請分析這份文件。');
         addDocument({ title: attachedFile.name, content: attachedFile.content, type: 'upload' });
       }
       removeAttachedFile();
@@ -3344,7 +3344,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     if (!Array.isArray(chats[currentChatId].messages)) chats[currentChatId].messages = [];
     if (chats[currentChatId].title === 'Nueva conversación' && promptText) chats[currentChatId].title = promptText.slice(0, 42);
     var userLabel = promptText || (pendingImage ? t('imageAttached') : 'Documento adjunto');
-    chats[currentChatId].messages.push({ role: 'user', content: userLabel, at: Date.now(), image: pendingImage || undefined });
+    chats[currentChatId].messages.push({ role: 'user', content: userLabel, sent: fullPrompt !== userLabel ? String(fullPrompt).slice(0, 20000) : undefined, at: Date.now(), image: pendingImage || undefined });
     saveChats();
     renderSidebar();
     addMessageToDOM('user', userLabel, null, Date.now(), chats[currentChatId].messages.length - 1, null, pendingImage);
@@ -3377,9 +3377,11 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       var headers = { 'Content-Type': 'application/json' };
       var snippets = [];
       if (localStorage.getItem('ta_use_docs') !== '0') {
+        // Send every applicable document (project ones first); the server
+        // inlines small sets and exposes larger ones through document_search.
         snippets = documents.filter(function(d) {
           return !currentProjectId || d.projectId === currentProjectId || !d.projectId;
-        }).sort(function(x, y) { return (x.projectId === currentProjectId ? 1 : 0) - (y.projectId === currentProjectId ? 1 : 0); }).slice(-6).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 2500) }; });
+        }).sort(function(x, y) { return (y.projectId === currentProjectId ? 1 : 0) - (x.projectId === currentProjectId ? 1 : 0); }).slice(0, 20).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 20000) }; });
       }
       var langInstr = t('replyLang');
       var toneInstr = TONES[localStorage.getItem('ta_tone') || 'auto'] || '';
@@ -3392,10 +3394,11 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           prompt: fullPrompt,
           model: resolvedModel,
           custom_prompt: [projectContext(), (window.TAP ? TAP.roleContext() : ''), langInstr, toneInstr, customPrompt].filter(Boolean).join('\n'),
-          knowledge_snippets: snippets,
+          documents: snippets,
           search_web: isWebSearch && !pendingImage,
-          chat_history: chats[currentChatId].messages.slice(-8).map(function(m) {
-            return { role: m.role, content: m.content };
+          // Exclude the message we just pushed: it is sent as `prompt`.
+          chat_history: chats[currentChatId].messages.slice(0, -1).slice(-16).map(function(m) {
+            return { role: m.role, content: m.sent || m.content };
           }),
           length_mode: currentLength,
           locale: (window.TA && TA.lang) ? TA.lang() : 'es',
@@ -3415,7 +3418,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       });
       if (!response.ok) {
         var errJson = await response.json().catch(function() { return {}; });
-        throw new Error(errJson.message || ('HTTP ' + response.status));
+        throw new Error(errJson.error || errJson.message || ('HTTP ' + response.status));
       }
       var reader = response.body.getReader();
       var decoder = new TextDecoder();
@@ -3423,6 +3426,57 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       var srcHeader = response.headers.get('x-sources') || '';
       if (srcHeader) {
         try { sources = JSON.parse(decodeURIComponent(srcHeader)) || []; } catch(eSrc) {}
+      }
+      var toolSteps = [];
+      var notices = [];
+      var streamError = null;
+      var TOOL_NAMES_UI = { web_search: '搜尋網頁', fetch_url: '讀取網頁', calculate: '計算', current_time: '查詢時間', document_search: '搜尋文件' };
+      function toolHtml() {
+        if (!toolSteps.length) return '';
+        return '<div class="tool-steps" style="font-size:0.78rem;color:var(--dim);margin-bottom:8px;display:flex;flex-direction:column;gap:2px">' +
+          toolSteps.map(function(st) {
+            var mark = st.status === 'running' ? '…' : (st.status === 'error' ? '✕' : '✓');
+            var label = (TOOL_NAMES_UI[st.name] || st.name) + (st.label ? '：' + st.label : '');
+            var err = st.status === 'error' && st.error ? '（' + st.error + '）' : '';
+            return '<div>' + mark + ' ' + escapeHtml(label) + escapeHtml(err) + '</div>';
+          }).join('') + '</div>';
+      }
+      function paint(done) {
+        if (!textContainer) return;
+        textContainer.innerHTML = toolHtml() + renderMarkdown(fullText) +
+          (notices.length ? '<div class="msg-time">' + escapeHtml(notices.join(' ')) + '</div>' : '') +
+          (done ? '' : '<span class="pulse-cursor"></span>');
+        scrollToEnd();
+      }
+      function handleEvent(dataStr) {
+        if (!dataStr || dataStr === '[DONE]') return;
+        var p;
+        try { p = JSON.parse(dataStr); } catch (eParse) { return; }
+        if (!p || typeof p !== 'object') return;
+        if (p.error) {
+          streamError = typeof p.error === 'string' ? p.error : (p.error.message || '供應商錯誤');
+          return;
+        }
+        if (p.sources) sources = p.sources;
+        if (p.profile) saveLocalProfile(p.profile);
+        if (p.remembered && p.remembered.length) rememberedFacts = p.remembered;
+        if (p.notice) { notices.push(String(p.notice)); paint(false); }
+        if (p.tool && p.tool.id) {
+          var found = null;
+          for (var k = 0; k < toolSteps.length; k++) if (toolSteps[k].id === p.tool.id) found = toolSteps[k];
+          if (found) { found.status = p.tool.status; found.error = p.tool.error; if (p.tool.label) found.label = p.tool.label; }
+          else toolSteps.push({ id: p.tool.id, name: p.tool.name, label: p.tool.label, status: p.tool.status, error: p.tool.error });
+          paint(false);
+        }
+        var delta = p.content;
+        if (!delta && p.choices && p.choices[0]) {
+          var choice = p.choices[0];
+          delta = (choice.delta && (choice.delta.content || choice.delta.text)) || (choice.message && choice.message.content) || '';
+        }
+        if (delta) {
+          fullText += delta;
+          paint(false);
+        }
       }
       while (true) {
         var chunkRes = await reader.read();
@@ -3433,30 +3487,15 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
         for (var i = 0; i < lines.length; i++) {
           var trimmed = lines[i].trim();
           if (!trimmed || !trimmed.startsWith('data:')) continue;
-          var dataStr = trimmed.replace(/^data:\s*/, '');
-          if (dataStr === '[DONE]') continue;
-          try {
-            var p = JSON.parse(dataStr);
-            if (p.sources) sources = p.sources;
-            if (p.profile) saveLocalProfile(p.profile);
-            if (p.remembered && p.remembered.length) rememberedFacts = p.remembered;
-            var delta = p.content;
-            if (!delta && p.choices && p.choices[0]) {
-              var choice = p.choices[0];
-              delta = (choice.delta && (choice.delta.content || choice.delta.text)) || (choice.message && choice.message.content) || '';
-            }
-            if (p.error) throw new Error(typeof p.error === 'string' ? p.error : (p.error.message || '供應商錯誤'));
-            if (delta) {
-              fullText += delta;
-              if (textContainer) {
-                textContainer.innerHTML = renderMarkdown(fullText) + '<span class="pulse-cursor"></span>';
-                scrollToEnd();
-              }
-            }
-          } catch(e) {}
+          handleEvent(trimmed.replace(/^data:\s*/, ''));
         }
       }
-      if (textContainer) textContainer.innerHTML = renderMarkdown(fullText);
+      buffer += decoder.decode();
+      if (buffer.trim().startsWith('data:')) handleEvent(buffer.trim().replace(/^data:\s*/, ''));
+      // Surface provider/agent errors instead of silently showing an empty reply.
+      if (streamError && !fullText) throw new Error(streamError);
+      if (streamError) notices.push(t('error') + ': ' + streamError);
+      paint(true);
       if (rememberedFacts.length && contentCol) {
         var memNote = document.createElement('div');
         memNote.className = 'msg-time';

@@ -21,7 +21,7 @@ import { applySecurityHeaders, previewFrameResponse, sameOriginRequest } from '.
 import { bodyErrorMessage, readFormBody, readJsonBody } from './body.js'
 import { handleChat } from './chat.js'
 import { handleImageRequest } from './images.js'
-import { TOOLS, runTool } from './tools/registry.js'
+import { publicTools, runTool } from './tools/registry.js'
 import { DEFAULT_GROQ_MODEL, fetchWithTimeout, modelsUrl, providerFromBody } from './providers.js'
 import { handleSync } from './sync.js'
 
@@ -47,6 +47,7 @@ export default {
           search: !!env.TAVILY_API_KEY,
           image: true,
           providers: true,
+          agent: true,
         })
       } else if (path === '/api/login') {
         response = await loginRoute(request, env)
@@ -107,7 +108,7 @@ async function apiRoute(request, env, path, method) {
   if (path === '/api/tool') {
     if (method === 'GET') {
       if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
-      return json({ ok: true, tools: TOOLS })
+      return json({ ok: true, tools: publicTools() })
     }
     if (method !== 'POST') return errorJson('Method not allowed', 405)
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
