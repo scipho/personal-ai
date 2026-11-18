@@ -2075,9 +2075,9 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
 
   var TONES = {
     auto: '',
-    direct: 'Responde de forma directa y sin rodeos.',
-    technical: 'Prioriza precisión técnica, nombres de APIs y código.',
-    concise: 'Responde en el mínimo de palabras útil.'
+    direct: '回答要直接，不繞圈子。',
+    technical: '優先技術精確度，給出 API 名稱與程式碼。',
+    concise: '用最少但足夠的字回答。'
   };
   function t(k) { return (window.TA && TA.t) ? TA.t(k) : k; }
   var THEME_COLORS = { dark: '#000000', gray: '#18181b', dim: '#0d1117', navy: '#0b1220', light: '#f4f4f5', paper: '#f4efe6', hacker: '#000000', cyberpunk: '#0d021a', sunset: '#1f101d', ocean: '#061325', forest: '#07130e', rose: '#fff1f2', lavender: '#f8f6fc' };
@@ -2307,7 +2307,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   }
 
   function uiLangBcp47() {
-    var id = (window.TA && TA.lang) ? TA.lang() : 'es';
+    var id = (window.TA && TA.lang) ? TA.lang() : 'zh-TW';
     var map = {
       es: 'es-ES', en: 'en-US', pt: 'pt-PT', fr: 'fr-FR', de: 'de-DE', it: 'it-IT', ca: 'ca-ES',
       zh: 'zh-CN', 'zh-TW': 'zh-TW', ja: 'ja-JP', ko: 'ko-KR', ar: 'ar-SA', hi: 'hi-IN', ru: 'ru-RU',
@@ -2485,7 +2485,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     (p.notes || []).slice().reverse().forEach(function(n) {
       var row = document.createElement('div');
       row.className = 'settings-kv';
-      var meta = [n.category, n.expiresAt ? ('hasta ' + new Date(n.expiresAt).toISOString().slice(0, 10)) : '']
+      var meta = [n.category, n.expiresAt ? ('至 ' + new Date(n.expiresAt).toISOString().slice(0, 10)) : '']
         .filter(Boolean).join(' · ');
       row.innerHTML = '<div><div class="settings-kv-sub" style="color:var(--text)">' + escapeHtml(n.fact || n.text || '') + '</div>' +
         (meta ? '<div class="settings-hint">' + escapeHtml(meta) + '</div>' : '') + '</div>' +
@@ -2838,7 +2838,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       delete best.rich;
     }
     if (!best && /^#\s+.+/m.test(markdown) && markdown.length > 500) {
-      best = { lang: 'markdown', content: markdown, title: clampArtTitle((markdown.match(/^#\s+(.+)/m) || [,'Documento'])[1]) };
+      best = { lang: 'markdown', content: markdown, title: clampArtTitle((markdown.match(/^#\s+(.+)/m) || [,'Document'])[1]) };
     }
     return best;
   }
@@ -3031,7 +3031,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     ca: { preview: 'Vista prèvia', code: 'Codi', download: 'Baixa', fullscreen: 'Pantalla completa', exitfs: 'Surt de pantalla completa', copied: 'Copiat', copy: 'Copia', version: 'Versió', open: 'Obre l\'artifact' }
   };
   function artT(k) {
-    var l = String(document.documentElement.lang || 'es').slice(0, 2);
+    var l = String(document.documentElement.lang || 'zh-TW').slice(0, 2);
     var d = ART_I18N[l] || ART_I18N.es;
     return d[k] || ART_I18N.es[k] || k;
   }
@@ -3339,16 +3339,16 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     input.value = '';
     autoResize(input);
     if (!chats[currentChatId] || typeof chats[currentChatId] !== 'object') {
-      chats[currentChatId] = { title: promptText.slice(0, 42) || 'Conversación', messages: [], projectId: currentProjectId };
+      chats[currentChatId] = { title: promptText.slice(0, 42) || t('newChat'), messages: [], projectId: currentProjectId };
     }
     if (!Array.isArray(chats[currentChatId].messages)) chats[currentChatId].messages = [];
-    if (chats[currentChatId].title === 'Nueva conversación' && promptText) chats[currentChatId].title = promptText.slice(0, 42);
-    var userLabel = promptText || (pendingImage ? t('imageAttached') : 'Documento adjunto');
+    if ((chats[currentChatId].title === 'Nueva conversación' || chats[currentChatId].title === t('newChat')) && promptText) chats[currentChatId].title = promptText.slice(0, 42);
+    var userLabel = promptText || (pendingImage ? t('imageAttached') : t('attached'));
     chats[currentChatId].messages.push({ role: 'user', content: userLabel, sent: fullPrompt !== userLabel ? String(fullPrompt).slice(0, 20000) : undefined, at: Date.now(), image: pendingImage || undefined });
     saveChats();
     renderSidebar();
     addMessageToDOM('user', userLabel, null, Date.now(), chats[currentChatId].messages.length - 1, null, pendingImage);
-    var isImgRequest = isImageMode || /^(genera una imagen|dibuja|crea una imagen|haz una foto|imagen de|generate image)/i.test(promptText);
+    var isImgRequest = isImageMode || /^(genera una imagen|dibuja|crea una imagen|haz una foto|imagen de|generate (an )?image|draw |畫一?[張幅個]|生成圖片|產生圖片|生成一張|產生一張)/i.test(promptText);
     var msgDom = addMessageToDOM('ai', '');
     var textContainer = msgDom.textContainer;
     var contentCol = msgDom.contentCol;
@@ -3362,12 +3362,12 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
         var imgRes = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: abortCtl ? abortCtl.signal : undefined, body: JSON.stringify({ prompt: promptText }) });
         var imgData = await imgRes.json();
         if (imgData.ok && imgData.imageUrl) {
-          var imgMd = '![' + (promptText.slice(0, 60) || 'Imagen') + '](' + (imgData.proxyUrl || imgData.imageUrl) + ')';
+          var imgMd = '![' + (promptText.slice(0, 60) || t('image')) + '](' + (imgData.proxyUrl || imgData.imageUrl) + ')';
           if (textContainer) textContainer.innerHTML = renderMarkdown(imgMd);
           chats[currentChatId].messages.push({ role: 'ai', content: imgMd, sources: [], at: Date.now() });
           saveChats();
         } else {
-          throw new Error(imgData.error || 'Error al generar imagen');
+          throw new Error(imgData.error || '圖片產生失敗');
         }
         return;
       }
@@ -3401,14 +3401,13 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
             return { role: m.role, content: m.sent || m.content };
           }),
           length_mode: currentLength,
-          locale: (window.TA && TA.lang) ? TA.lang() : 'es',
+          locale: (window.TA && TA.lang) ? TA.lang() : 'zh-TW',
           timezone: resolvedTz,
           client_time: new Date().toISOString(),
           adapt: adaptEnabled(),
           profile: adaptEnabled() ? loadLocalProfile() : undefined
         };
       if (provider) payload.provider = { baseUrl: provider.baseUrl, apiKey: provider.apiKey, model: provider.model || selectedModel };
-      if (window.TAP) { var tapPreset = TAP.rolePreset(); if (tapPreset) payload.role_preset = tapPreset; }
       if (pendingImage) payload.image = { dataUrl: pendingImage };
       var response = await fetch('/api/chat', {
         method: 'POST',
@@ -3715,7 +3714,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     ca: { more: 'Més opcions', attach: 'Adjunta un fitxer', web: 'Cerca al web', image: 'Crea una imatge', providers: 'Providers' }
   };
   function localizeDockMenu() {
-    var l = String(document.documentElement.lang || 'es').slice(0, 2);
+    var l = String(document.documentElement.lang || 'zh-TW').slice(0, 2);
     var d = DPM_I18N[l] || DPM_I18N.es;
     document.querySelectorAll('.dpm-item').forEach(function(it) {
       var lab = it.querySelector('.dpm-label');
@@ -4056,7 +4055,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     ca: { emptyTitle: 'Encara no hi ha projectes', newProject: 'Nou projecte', editProject: 'Edita el projecte', name: 'Nom', namePh: 'P. ex.: Llançament del web', desc: 'Descripció', descPh: 'De què tracta aquest projecte?', instr: 'Instruccions', instrPh: 'Com ha de respondre l’assistent en aquest projecte: context, to, format…', role: 'Rol per defecte', files: 'Fitxers', filesHint: 'Text, Markdown, CSV, JSON o codi · màx. 200 KB per fitxer. S’usen com a context als xats del projecte.', addFiles: 'Afegeix fitxers', noFiles: 'Encara no hi ha fitxers', remove: 'Treu', cancel: 'Cancel·la', save: 'Desa', create: 'Crea el projecte', del: 'Elimina', delTitle: 'Vols eliminar el projecte?', delBody: 'S’eliminaran «{n}» i els seus fitxers. Les converses es conserven, sense projecte.', edit: 'Edita', exit: 'Surt', label: 'Projecte', chatsN: '{n} xats', chat1: '1 xat', filesN: '{n} fitxers', file1: '1 fitxer', empty: 'Agrupa xats, instruccions i fitxers per tema.', nameReq: 'Posa un nom al projecte.', tooBig: '{f}: massa gran (màx. 200 KB)', notText: '{f}: format no compatible', created: 'Projecte creat', saved: 'Projecte desat', deleted: 'Projecte eliminat', switched: 'Projecte actiu: {n}', left: 'Cap projecte actiu', ctxHead: 'Context del projecte «{n}»', instrHead: 'Instruccions del projecte' }
   };
   function pt(k) {
-    var l = (window.TA && TA.lang) ? TA.lang() : 'es';
+    var l = (window.TA && TA.lang) ? TA.lang() : 'zh-TW';
     var d = PROJ_I18N[l] || PROJ_I18N[l === 'es' || l === 'ca' ? l : 'en'] || PROJ_I18N.en;
     return d[k] != null ? d[k] : PROJ_I18N.en[k];
   }
@@ -4313,7 +4312,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     filtered.slice().reverse().forEach(function(d) {
       var item = document.createElement('div');
       item.className = 'doc-item';
-      item.innerHTML = '<span class="doc-title">' + escapeHtml(d.title || 'Documento') + '</span>' +
+      item.innerHTML = '<span class="doc-title">' + escapeHtml(d.title || t('docs')) + '</span>' +
         '<button class="mini-x" data-del-doc="' + d.id + '">✕</button>';
       item.onclick = function(e) {
         if (e.target.getAttribute('data-del-doc')) {
@@ -4333,7 +4332,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   function addDocument(doc) {
     documents.push({
       id: 'doc_' + Date.now(),
-      title: doc.title || 'Documento',
+      title: doc.title || t('docs'),
       content: String(doc.content || '').slice(0, 20000),
       type: doc.type || 'note',
       lang: doc.lang || '',
@@ -4446,7 +4445,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     if (userApiKey) headers['x-groq-user-key'] = userApiKey;
     var fd = new FormData();
     fd.append('file', blob, 'voice.webm');
-    var lang = (window.TA && TA.lang) ? TA.lang() : 'es';
+    var lang = (window.TA && TA.lang) ? TA.lang() : 'zh-TW';
     var res = await fetch('/api/transcribe?lang=' + encodeURIComponent(lang), { method: 'POST', headers: headers, body: fd });
     var data = await res.json().catch(function() { return {}; });
     if (!res.ok) throw new Error(data.error || t('error'));
@@ -4897,7 +4896,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       await navigator.clipboard.writeText(d.shareUrl).catch(function() {});
       if (toast) toast.style.display = 'block';
     } catch(e) {
-      if (input) input.value = 'Error al generar enlace';
+      if (input) input.value = '產生連結失敗';
     }
   }
   function copyShareLink() {

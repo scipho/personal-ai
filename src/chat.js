@@ -110,6 +110,60 @@ const AGENT_RULES =
   '- 不要捏造工具結果。工具失敗或找不到時，直接說明並給出你能確定的部分。\n' +
   '- 使用網路資料時，在句末以 [標題](網址) 標示來源。'
 
+const MEMORY_RULES =
+  '使用者開啟了「記住我」。當使用者明確要你記住某件事，或透露了長期有用的個人偏好時，用 remember 工具存一句簡短事實；' +
+  '使用者要你忘掉某件事時用 forget。不要記錄密碼、金鑰、證件號碼等敏感資料。'
+
+const LENGTH_HINTS = {
+  corto: '回覆長度：簡短，盡量在 3 到 5 句內講完重點。',
+  short: '回覆長度：簡短，盡量在 3 到 5 句內講完重點。',
+  extendido: '回覆長度：完整詳盡，必要時使用小標題、步驟與範例。',
+  long: '回覆長度：完整詳盡，必要時使用小標題、步驟與範例。',
+}
+
+// Per-request memory tools. They edit the browser-held profile that the
+// client sent and stream the updated profile back for it to persist.
+const MEMORY_TOOLS = [
+  {
+    type: 'function',
+    function: {
+      name: 'remember',
+      description: '把一則關於使用者的長期事實或偏好存進記憶（例如「偏好 TypeScript」）。',
+      parameters: { type: 'object', properties: { fact: { type: 'string', description: '一句簡短事實' } }, required: ['fact'] },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'forget',
+      description: '刪除記憶中包含指定文字的事實。',
+      parameters: { type: 'object', properties: { text: { type: 'string', description: '要刪除的事實中的關鍵字' } }, required: ['text'] },
+    },
+  },
+]
+
+function runMemoryTool(name, args, ctx) {
+  const profile = ctx.profile
+  profile.notes = Array.isArray(profile.notes) ? profile.notes : []
+  if (name === 'remember') {
+    const fact = clampText(args.fact, 300).trim()
+    if (!fact) return { ok: false, error: 'fact 不可為空' }
+    if (!profile.notes.some((n) => n && (n.fact || n.text) === fact)) {
+      profile.notes.push({ id: `${Date.now()}${Math.floor(Math.random() * 1000)}`, text: fact, fact })
+      if (profile.notes.length > 50) profile.notes = profile.notes.slice(-50)
+    }
+    ctx.remembered.push(fact)
+    ctx.profileChanged = true
+    return { ok: true, saved: fact }
+  }
+  const needle = clampText(args.text, 200).trim().toLowerCase()
+  if (!needle) return { ok: false, error: 'text 不可為空' }
+  const before = profile.notes.length
+  profile.notes = profile.notes.filter((n) => !String((n && (n.fact || n.text)) || '').toLowerCase().includes(needle))
+  ctx.profileChanged = true
+  return { ok: true, removed: before - profile.notes.length }
+}
+
 function systemPrompt(body, { searchResults = [], docs = [], agent = false, capabilities = {} } = {}) {
   const parts = []
   parts.push(
@@ -120,6 +174,9 @@ function systemPrompt(body, { searchResults = [], docs = [], agent = false, capa
   const tz = clampText(body.timezone, 64)
   parts.push(`目前時間：${new Date().toISOString()}${tz ? `；使用者時區：${tz}` : ''}${locale ? `；介面語言：${locale}` : ''}。`)
   if (agent) parts.push(AGENT_RULES)
+  if (agent && capabilities.memory) parts.push(MEMORY_RULES)
+  const length = LENGTH_HINTS[String(body.length_mode || '').toLowerCase()]
+  if (length) parts.push(length)
 
   if (docs.length) {
     const total = docs.reduce((n, d) => n + d.content.length, 0)
@@ -322,6 +379,9 @@ async function executeToolCall(call, ctx) {
   if (!ctx.allowed.has(name)) {
     return { name, args, result: { ok: false, error: `工具 ${name || '(空)'} 不可用。可用工具：${[...ctx.allowed].join(', ')}` } }
   }
+  if (name === 'remember' || name === 'forget') {
+    return { name, args, result: runMemoryTool(name, args, ctx) }
+  }
   try {
     const result = await withTimeout(runTool(name, args, ctx.env, ctx.toolContext), TOOL_TIMEOUT_MS)
     return { name, args, result }
@@ -417,6 +477,7 @@ function capabilitiesFor(body, env, docs) {
     search: !!(body.search_web && env.TAVILY_API_KEY),
     fetch: !!(body.search_web || /https?:\/\/\S+/i.test(text)),
     docs: docs.length > 0,
+    memory: !!(body.adapt && body.profile && typeof body.profile === 'object' && !Array.isArray(body.profile)),
   }
 }
 
@@ -443,7 +504,7 @@ export async function handleChat(request, env) {
   if (body.tools === false || body.agent === false) return legacyChat(request, env, body, provider, docs)
 
   const capabilities = capabilitiesFor(body, env, docs)
-  const tools = openAiTools(capabilities)
+  const tools = openAiTools(capabilities).concat(capabilities.memory ? MEMORY_TOOLS : [])
   const allowed = new Set(tools.map((t) => t.function.name))
   const searchStatus = body.search_web ? (env.TAVILY_API_KEY ? 'agent' : 'no_key') : 'off'
 
@@ -460,6 +521,9 @@ export async function handleChat(request, env) {
   const ctx = {
     env,
     allowed,
+    profile: capabilities.memory ? JSON.parse(JSON.stringify(body.profile)) : null,
+    remembered: [],
+    profileChanged: false,
     toolContext: { documents: docs, timeZone: clampText(body.timezone, 64) || undefined, locale: clampText(body.locale, 32) || undefined },
   }
 
@@ -517,6 +581,10 @@ export async function handleChat(request, env) {
           messages.push({ role: 'tool', tool_call_id: call.id, content: serializeToolResult(out.result) })
         }
         if (sources.size) await send({ sources: [...sources.values()].slice(0, 12) })
+        if (ctx.profileChanged) {
+          await send({ profile: ctx.profile, remembered: ctx.remembered.slice() })
+          ctx.profileChanged = false
+        }
 
         if (request.signal && request.signal.aborted) break
         const budget = remaining()
