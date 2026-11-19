@@ -10,9 +10,9 @@
   var VAR_RE = /\[[A-ZÁÉÍÓÚÑÜÇÀÈÒÏ][A-ZÁÉÍÓÚÑÜÇÀÈÒÏ0-9 _.\/º-]{1,40}\]/g;
 
   function lang() {
-    var l = 'es';
-    try { l = (window.TA && TA.lang) ? TA.lang() : (document.documentElement.lang || 'es'); } catch (e) {}
-    l = String(l || 'es').toLowerCase().split('-')[0];
+    var l = 'en';
+    try { l = (window.TA && TA.lang) ? TA.lang() : (document.documentElement.lang || 'en'); } catch (e) {}
+    l = String(l || 'en').toLowerCase().split('-')[0];
     return (l === 'es' || l === 'en' || l === 'ca') ? l : 'en';
   }
   function rawLang() {
