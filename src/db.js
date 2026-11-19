@@ -13,6 +13,7 @@ export const D1_HARD_LIMIT = 48 // platform limit is 50; keep two for safety
 export class BudgetError extends Error {
   constructor(kind) {
     super(kind === 'd1' ? '本次請求的資料庫查詢次數已用完' : '本次請求的外部連線次數已用完')
+    this.name = 'BudgetError'
     this.kind = kind
   }
 }

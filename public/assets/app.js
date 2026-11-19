@@ -1,6 +1,6 @@
 (function() {
   var _root = document.getElementById('app');
-  if (_root) _root.innerHTML = "<div class=\"ta-app\">\n<div class=\"ta-app\">\n  <div class=\"sidebar-overlay\" id=\"sidebar-overlay\"></div>\n  <aside class=\"ta-sidebar\" id=\"sidebar\">\n    <div class=\"sb-head\">\n      <a href=\"/\" class=\"brand-logo\">\n        <img src=\"/avatar.png\" alt=\"\" class=\"brand-avatar\">\n        <span class=\"brand-title\">Personal AI</span>\n      </a>\n      <button id=\"sidebar-close-btn\" class=\"icon-btn\" title=\"關閉\" style=\"display:none\">✕</button>\n    </div>\n    <button id=\"new-chat-btn\" class=\"new-chat-btn\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6\"/><path d=\"M18.4 2.6a2 2 0 0 1 2.9 2.9L12 14.8 8 16l1.2-4z\"/></svg><span data-i18n=\"newChat\">Nueva conversación</span></span>\n      <kbd class=\"hint\">Ctrl K</kbd>\n    </button>\n    <button id=\"temp-chat-btn\" class=\"new-chat-btn ghost\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\" stroke-dasharray=\"3 3\"/><path d=\"M12 7v5l3 2\"/></svg><span data-i18n=\"tempChat\">Chat temporal</span></span>\n      <kbd class=\"hint\">Ctrl ⇧ N</kbd>\n    </button>\n    <div class=\"history-search-box\">\n      <input type=\"search\" id=\"history-search\" class=\"history-search-input\" placeholder=\"Buscar…\" autocomplete=\"off\" data-i18n=\"searchPh\" data-i18n-attr=\"placeholder\">\n    </div>\n    <div class=\"sb-tabs\">\n      <button type=\"button\" class=\"sb-tab active\" data-view=\"chats\" id=\"tab-chats\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/></svg><span data-i18n=\"chats\">Chats</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"projects\" id=\"tab-projects\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span data-i18n=\"projects\">Proyectos</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"docs\" id=\"tab-docs\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 13h6M9 17h4\"/></svg><span data-i18n=\"docs\">Documentos</span></button>\n      \n      <button type=\"button\" class=\"sb-tab\" data-view=\"prompts\" id=\"tab-prompts\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M4 6h16M4 12h10M4 18h7\"/><path d=\"m17 15 3 3-3 3\"/></svg><span>Prompts</span></button>\n    </div>\n    <div class=\"history-list\" id=\"history-list\"></div>\n    <div class=\"sb-foot\">\n                  <button type=\"button\" id=\"open-settings-btn\" class=\"sb-link\" data-open-settings=\"pane-general\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg><span data-i18n=\"settings\">Ajustes</span></button>\n      \n      <div class=\"sb-account\">\n      <button type=\"button\" class=\"user-pill\" id=\"user-profile-pill\" data-open-settings=\"pane-account\">\n        <div style=\"display:flex;align-items:center;gap:8px;min-width:0\">\n          <div class=\"avatar-letter\" id=\"user-letter\">T</div>\n          <div style=\"min-width:0\">\n            <div class=\"user-info-name\" id=\"user-display-name\">Invitado</div>\n            <div class=\"user-info-tier\" id=\"user-display-tier\">50K tokens / día</div>\n          </div>\n        </div>\n      </button>\n      <div id=\"lang-select\" class=\"lang-picker\" aria-label=\"Language\"></div>\n      </div>\n    </div>\n  </aside>\n\n  <main class=\"ta-main\">\n    <header class=\"ta-topbar\">\n      <div class=\"topbar-left\">\n        <button id=\"sidebar-toggle-btn\" class=\"icon-btn menu-toggle-btn\" type=\"button\" title=\"選單\" aria-label=\"選單\">\n          <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><line x1=\"3\" y1=\"12\" x2=\"21\" y2=\"12\"/><line x1=\"3\" y1=\"6\" x2=\"21\" y2=\"6\"/><line x1=\"3\" y1=\"18\" x2=\"21\" y2=\"18\"/></svg>\n        </button>\n        <div class=\"model-picker\" id=\"model-picker\">\n          <button type=\"button\" class=\"model-picker-btn\" id=\"model-picker-btn\" aria-haspopup=\"listbox\" aria-expanded=\"false\">\n            <span class=\"model-picker-label\" id=\"model-picker-label\">GPT OSS 120B</span>\n            <svg class=\"model-picker-caret\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M6 9l6 6 6-6\"/></svg>\n          </button>\n          <div class=\"model-menu\" id=\"model-menu\" role=\"listbox\"></div>\n        </div>\n      </div>\n      <div class=\"topbar-right\">\n        <span id=\"temp-badge\" class=\"temp-badge\" data-i18n=\"tempOn\">Temporal</span>\n        <button id=\"cmd-open-btn\" class=\"topbar-icon-btn\" type=\"button\" title=\"Ctrl+P\" data-i18n=\"commandPalette\" data-i18n-attr=\"title\" aria-label=\"命令\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>\n        </button>\n        <button id=\"topbar-auth-btn\" class=\"topbar-action-btn primary\" type=\"button\" data-open-settings=\"pane-general\">\n          <span class=\"avatar-letter\" id=\"topbar-letter\" hidden>T</span>\n          <span id=\"topbar-auth-text\">設定</span>\n        </button>\n      </div>\n    </header>\n    <div class=\"setup-banner\" id=\"setup-banner\" role=\"status\" hidden></div>\n    <div class=\"ta-chat-scroll\" id=\"chat-scroll\">\n      <div class=\"ta-chat-wrap\" id=\"chat-container\"></div>\n    </div>\n    <footer class=\"ta-input-dock\">\n      <div class=\"capsule-box\">\n        <div id=\"attached-badge\" class=\"file-badge-preview\">\n          <img id=\"attached-thumb\" alt=\"\" hidden>\n          <span id=\"attached-kind\">Documento</span>\n          <span id=\"attached-name\">documento.txt</span>\n          <button id=\"remove-file-btn\" type=\"button\" style=\"background:none;border:none;color:var(--dim);cursor:pointer\">✕</button>\n        </div>\n        <textarea id=\"prompt-input\" class=\"prompt-textarea\" rows=\"1\" placeholder=\"Pregunta lo que quieras…\" data-i18n=\"askPh\" data-i18n-attr=\"placeholder\"></textarea>\n        <div class=\"dock-controls\">\n          <div class=\"dock-plus\" id=\"dock-plus\">\n            <button type=\"button\" class=\"dock-btn dock-plus-btn\" id=\"dock-plus-btn\" aria-haspopup=\"menu\" aria-expanded=\"false\" aria-controls=\"dock-plus-menu\" aria-label=\"更多選項\" title=\"更多選項\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></button>\n            <div class=\"dock-plus-menu\" id=\"dock-plus-menu\" role=\"menu\" hidden>\n              <button type=\"button\" role=\"menuitem\" class=\"dpm-item\" data-dpm=\"attach\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg><span class=\"dpm-label\">附加檔案</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"web\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/></svg><span class=\"dpm-label\">網頁搜尋</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"image\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><circle cx=\"9\" cy=\"10\" r=\"2\"/><path d=\"m21 16-5-5-9 9\"/></svg><span class=\"dpm-label\">產生圖片</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n                          </div>\n          </div>\n          <div class=\"control-pills\">\n            <button id=\"web-search-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"searchWeb\">Buscar</button>\n            <button id=\"image-gen-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"image\">Imagen</button>\n            <div class=\"length-segmented-pill\" style=\"display:none;\" title=\"長度\"><button class=\"length-opt-btn active\" data-len=\"normal\" id=\"len-btn-normal\" type=\"button\" data-i18n=\"normal\">Normal</button></div>\n          </div>\n          <div class=\"dock-action-buttons\">\n            <input type=\"file\" id=\"file-uploader\" style=\"display:none\" accept=\"image/jpeg,image/png,image/webp,image/gif,.txt,.md,.json,.js,.ts,.py,.csv,.log,.html,.css\">\n            <button id=\"attach-file-btn\" class=\"dock-btn\" type=\"button\" title=\"附加檔案\" aria-label=\"附加檔案\" data-i18n=\"attach\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg>\n            </button>\n            <button id=\"mic-btn\" class=\"dock-btn\" type=\"button\" title=\"語音輸入\" aria-label=\"語音輸入\" data-i18n=\"dictate\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"12\" rx=\"3\"/><path d=\"M5 11a7 7 0 0 0 14 0\"/><path d=\"M12 18v4\"/><path d=\"M8 22h8\"/></svg>\n            </button>\n            <button id=\"speak-last-btn\" class=\"dock-btn\" type=\"button\" title=\"朗讀回覆\" aria-label=\"朗讀回覆\" data-i18n=\"speakLast\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M11 5L6 9H3v6h3l5 4V5z\"/><path d=\"M15.5 8.5a5 5 0 0 1 0 7\"/><path d=\"M18.5 6a8.5 8.5 0 0 1 0 12\"/></svg>\n            </button>\n            <button id=\"send-btn\" class=\"send-submit-btn\" type=\"button\" title=\"送出\">\n              <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\"><path d=\"M12 19V5M5 12l7-7 7 7\"/></svg>\n            </button>\n          </div>\n        </div>\n      </div>\n      <p class=\"disclaimer\"><span data-i18n=\"disclaimer\">Personal AI puede equivocarse.</span></p>\n    </footer>\n  </main>\n\n  <aside class=\"art-panel\" id=\"art-panel\" aria-label=\"Artifact\">\n    <div class=\"art-head\">\n      <div class=\"art-head-top\">\n        <div class=\"art-title-wrap\">\n          <textarea class=\"art-title-input\" id=\"art-title\" maxlength=\"72\" rows=\"2\" placeholder=\"簡短標題（最多 72 字）\" aria-label=\"標題\">Artifact</textarea>\n          <div class=\"art-title-count\" id=\"art-title-count\">0/72</div>\n        </div>\n        <button type=\"button\" class=\"icon-btn\" id=\"art-close-btn\" title=\"關閉\" aria-label=\"關閉\">✕</button>\n      </div>\n      <div class=\"art-toolbar\">\n        <select id=\"art-format\" class=\"art-format\" title=\"格式\" aria-label=\"Artifact 格式\"></select>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-copy-btn\" data-art-i18n=\"copy\">Copiar</button>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-save-btn\">儲存</button>\n      </div>\n      <div class=\"art-viewbar\">\n        <div class=\"art-view\" role=\"tablist\" aria-label=\"檢視\">\n          <button type=\"button\" class=\"art-view-btn active\" role=\"tab\" aria-selected=\"true\" data-view=\"preview\" id=\"art-view-preview\" data-art-i18n=\"preview\">Vista previa</button>\n          <button type=\"button\" class=\"art-view-btn\" role=\"tab\" aria-selected=\"false\" data-view=\"code\" id=\"art-view-code\" data-art-i18n=\"code\">Código</button>\n        </div>\n        <select id=\"art-version\" class=\"art-format art-version\" aria-label=\"版本\" hidden></select>\n        <span class=\"art-viewbar-spacer\"></span>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-download-btn\" data-art-i18n-title=\"download\" title=\"下載\" aria-label=\"下載\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v11\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M5 20h14\"/></svg></button>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-fs-btn\" data-art-i18n-title=\"fullscreen\" title=\"全螢幕\" aria-label=\"全螢幕\" aria-pressed=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9V4h5\"/><path d=\"M20 9V4h-5\"/><path d=\"M4 15v5h5\"/><path d=\"M20 15v5h-5\"/></svg></button>\n      </div>\n      \n    </div>\n    <div class=\"art-extras\">\n      <button type=\"button\" class=\"art-extras-toggle\" id=\"art-extras-toggle\">來源、資源與小工具</button>\n      <div class=\"art-extras-body\" id=\"art-extras-body\" hidden>\n        <label for=\"art-sources\">自訂來源（每行一筆：標題 | https://…）</label>\n        <textarea id=\"art-sources\" placeholder=\"SEC 10-K | https://www.sec.gov/…\"></textarea>\n        <label for=\"art-resources\">資源（每行一筆）</label>\n        <textarea id=\"art-resources\" placeholder=\"Modelo Excel | https://…\"></textarea>\n        <label for=\"art-widgets\">Widgets (quote:MSFT · note:texto · https://…)</label>\n        <textarea id=\"art-widgets\" placeholder=\"quote:MSFT&#10;note:Riesgo: múltiplo elevado&#10;https://www.tradingview.com/symbols/MSFT/\"></textarea>\n      </div>\n    </div>\n    <div class=\"art-split\" id=\"art-split\">\n      <textarea class=\"art-editor\" id=\"art-editor\" spellcheck=\"false\" placeholder=\"在這裡編輯內容。\" aria-label=\"Artifact 編輯器\"></textarea>\n      <iframe class=\"art-preview\" id=\"art-preview\" hidden sandbox=\"allow-scripts allow-forms allow-modals allow-popups\" referrerpolicy=\"no-referrer\" title=\"Vista del artifact\"></iframe>\n    </div>\n  </aside>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-settings\">\n  <div class=\"modal-card settings-wide\">\n    <div class=\"modal-header\"><div class=\"modal-title\" data-i18n=\"settings\">Ajustes</div><button class=\"modal-close-btn\" data-modal=\"modal-settings\" type=\"button\" aria-label=\"關閉\" data-i18n=\"close\" data-i18n-attr=\"aria-label\">✕</button></div>\n    <div class=\"settings-layout\">\n      <nav class=\"settings-nav\" aria-label=\"設定\">\n        <div class=\"settings-nav-label\">應用程式</div>\n        <button type=\"button\" class=\"settings-nav-btn active\" data-pane=\"pane-general\" data-i18n=\"tabGeneral\">一般</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-providers\">供應商與模型</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-params\">模型參數</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-search\">搜尋與網頁</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-appearance\" data-i18n=\"tabAppearance\">外觀</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-behavior\" data-i18n=\"tabBehavior\">行為</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-customize\" data-i18n=\"tabCustomize\">個人化</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-memory\">記憶</button>\n        <div class=\"settings-nav-label\">資料</div>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-account\">密碼與登入</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-data\" data-i18n=\"tabData\">資料控制</button>\n      </nav>\n      <div class=\"settings-main\">\n        <div id=\"pane-general\" class=\"settings-pane active\">\n          <div class=\"settings-section-title\" data-i18n=\"tabGeneral\">General</div>\n          <p class=\"settings-section-desc\" data-i18n=\"generalDesc\">Idioma, modelo por defecto y longitud de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"language\">Idioma</label>\n            <div id=\"set-lang\" class=\"lang-picker open-down\"></div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultModel\">Modelo por defecto</label>\n            <select id=\"set-default-model\" class=\"form-input\"></select>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultLength\">Longitud por defecto</label>\n            <div class=\"choice-row\" id=\"set-default-length\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"corto\" data-i18n=\"short\">Corto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"normal\" data-i18n=\"normal\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"extendido\" data-i18n=\"long\">Largo</button>\n            </div>\n          </div>\n          <p class=\"settings-hint\" id=\"app-version-hint\">Personal AI</p>\n        </div>\n\n        <div id=\"pane-account\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">密碼與登入</div>\n          <p class=\"settings-section-desc\">單一擁有者登入。在這裡變更密碼後，新密碼以 PBKDF2 雜湊存在 D1，取代 APP_PASSWORD。</p>\n          <div class=\"settings-card\">\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-cur-pass\">目前密碼</label>\n              <input type=\"password\" id=\"set-cur-pass\" class=\"form-input\" autocomplete=\"current-password\">\n            </div>\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-new-pass\">新密碼（至少 8 個字元）</label>\n              <input type=\"password\" id=\"set-new-pass\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"8\">\n            </div>\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-new-pass2\">再輸入一次新密碼</label>\n              <input type=\"password\" id=\"set-new-pass2\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"8\">\n            </div>\n            <div class=\"settings-actions\">\n              <button type=\"button\" id=\"change-pass-btn\" class=\"topbar-action-btn primary\">變更密碼</button>\n            </div>\n            <p id=\"pass-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\"></p>\n          </div>\n          <p class=\"settings-hint\">忘記新密碼時，可在 D1 主控台執行 <code>DELETE FROM settings WHERE k = 'auth.password'</code> 改回 APP_PASSWORD。已登入的其他裝置在工作階段到期前仍保持登入。</p>\n          <div class=\"settings-block-title\">工作階段</div>\n          <div class=\"settings-card\" style=\"padding:16px\">\n            <p class=\"settings-kv-sub\">登出這個瀏覽器。本機聊天紀錄會保留。</p>\n            <button type=\"button\" id=\"settings-logout-btn\" class=\"logout-big-btn\">登出</button>\n          </div>\n        </div>\n\n        <div id=\"pane-appearance\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabAppearance\">Apariencia</div>\n          <p class=\"settings-section-desc\" data-i18n=\"appearanceDesc\">Tema, tamaño de letra y densidad de la interfaz.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"appearanceTheme\">Tema</label>\n            <div class=\"theme-grid\">\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dark\"><span class=\"theme-swatch\" data-swatch=\"dark\"></span><span data-i18n=\"themeDark\">Oscuro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"gray\"><span class=\"theme-swatch\" data-swatch=\"gray\"></span><span data-i18n=\"themeGray\">Gris</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dim\"><span class=\"theme-swatch\" data-swatch=\"dim\"></span><span data-i18n=\"themeDim\">Carbón</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"navy\"><span class=\"theme-swatch\" data-swatch=\"navy\"></span><span data-i18n=\"themeNavy\">Marino</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"light\"><span class=\"theme-swatch\" data-swatch=\"light\"></span><span data-i18n=\"themeLight\">Claro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"paper\"><span class=\"theme-swatch\" data-swatch=\"paper\"></span><span data-i18n=\"themePaper\">Papel</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"hacker\"><span class=\"theme-swatch\" data-swatch=\"hacker\"></span><span>Hacker</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"cyberpunk\"><span class=\"theme-swatch\" data-swatch=\"cyberpunk\"></span><span>Cyberpunk</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"sunset\"><span class=\"theme-swatch\" data-swatch=\"sunset\"></span><span>Sunset</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"ocean\"><span class=\"theme-swatch\" data-swatch=\"ocean\"></span><span>Ocean</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"forest\"><span class=\"theme-swatch\" data-swatch=\"forest\"></span><span>Forest</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"rose\"><span class=\"theme-swatch\" data-swatch=\"rose\"></span><span>Rose</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"lavender\"><span class=\"theme-swatch\" data-swatch=\"lavender\"></span><span>Lavender</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"system\"><span class=\"theme-swatch\" data-swatch=\"system\"></span><span data-i18n=\"themeSystem\">Sistema</span></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"accentLabel\">Acento</label>\n            <div class=\"accent-row\">\n              <button type=\"button\" class=\"accent-dot accent-auto\" data-pref=\"ta_accent\" data-value=\"auto\" title=\"Neutro\" aria-label=\"Neutro\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#38bdf8\" style=\"background:#38bdf8\" title=\"Cielo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a1a1aa\" style=\"background:#a1a1aa\" title=\"Gris\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#34d399\" style=\"background:#34d399\" title=\"Menta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#2dd4bf\" style=\"background:#2dd4bf\" title=\"Teal\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#818cf8\" style=\"background:#818cf8\" title=\"Índigo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a78bfa\" style=\"background:#a78bfa\" title=\"Violeta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#f59e0b\" style=\"background:#f59e0b\" title=\"Ámbar\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#fb7185\" style=\"background:#fb7185\" title=\"Rosa\"></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"fontSize\">Tamaño de letra</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"sm\" data-i18n=\"fontSm\">Compacto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"md\" data-i18n=\"fontMd\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"lg\" data-i18n=\"fontLg\">Grande</button>\n            </div>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"compactSidebar\">Barra lateral compacta</span><input type=\"checkbox\" id=\"set-compact-sb\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"reduceMotion\">Reducir movimiento</span><input type=\"checkbox\" id=\"set-reduce-motion\"></label>\n          </div>\n        </div>\n\n        <div id=\"pane-behavior\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabBehavior\">Comportamiento</div>\n          <p class=\"settings-section-desc\" data-i18n=\"behaviorDesc\">Cómo envía, busca y confirma el workspace.</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"enterToSend\">Enter envía el mensaje</span><input type=\"checkbox\" id=\"set-enter-send\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoSearch\">Buscar en la web por defecto</span><input type=\"checkbox\" id=\"set-auto-search\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"showTimestamps\">Mostrar hora en los mensajes</span><input type=\"checkbox\" id=\"set-show-time\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"confirmDeleteChat\">Confirmar al borrar un chat</span><input type=\"checkbox\" id=\"set-confirm-del\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoRead\">Leer en voz alta las respuestas</span><input type=\"checkbox\" id=\"set-auto-read\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"autoReadHint\">Al terminar cada respuesta, el navegador la lee. También puedes pulsar el altavoz del compositor o «Escuchar» en cada mensaje.</p>\n        </div>\n\n        <div id=\"pane-customize\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabCustomize\">Personalizar</div>\n          <p class=\"settings-section-desc\" data-i18n=\"customizeDesc\">Instrucciones propias y tono de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"toneLabel\">Tono</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"auto\" data-i18n=\"toneAuto\">Auto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"direct\" data-i18n=\"toneDirect\">Directo</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"technical\" data-i18n=\"toneTechnical\">Técnico</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"concise\" data-i18n=\"toneConcise\">Conciso</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"systemPrompt\">Instrucción de sistema</label>\n            <textarea id=\"custom-system-prompt\" class=\"form-textarea\" placeholder=\"Cómo debe responder Personal AI…\"></textarea>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"useDocsContext\">Usar documentos como memoria</span><input type=\"checkbox\" id=\"set-use-docs\" checked></label>\n          </div>\n          <p class=\"settings-hint\">語氣與自訂指示存在 D1，所有裝置共用。</p>\n        </div>\n\n        <div id=\"pane-memory\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">長期記憶</div>\n          <p class=\"settings-section-desc\">模型可用 remember / forget / recall 工具管理記憶；你也可以在這裡新增、編輯或刪除。全域記憶會帶入每個對話，專案記憶只在該專案使用。</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span>啟用長期記憶</span><input type=\"checkbox\" id=\"set-memory-enabled\" checked></label>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" for=\"memory-new-input\">新增一則記憶</label>\n            <div style=\"display:flex;gap:6px\">\n              <input type=\"text\" id=\"memory-new-input\" class=\"form-input\" style=\"flex:1\" maxlength=\"500\" placeholder=\"例如：偏好用 TypeScript 回答程式問題\">\n              <select id=\"memory-new-scope\" class=\"form-input\" style=\"max-width:160px\"><option value=\"global\">全域</option></select>\n              <button type=\"button\" id=\"memory-add-btn\" class=\"topbar-action-btn primary\">新增</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" for=\"memory-filter\">顯示</label>\n            <select id=\"memory-filter\" class=\"form-input\"><option value=\"\">全部</option><option value=\"global\">全域</option></select>\n          </div>\n          <div id=\"memory-list\" class=\"settings-card memory-list\"></div>\n          <p id=\"memory-status\" class=\"settings-hint\" role=\"status\"></p>\n        </div>\n\n        <div id=\"pane-params\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">模型參數</div>\n          <p class=\"settings-section-desc\">全域預設值，專案可以個別覆寫。留空代表使用供應商預設。供應商不支援某個參數時，系統會自動移除該參數重試一次。</p>\n          <div class=\"settings-card params-grid\">\n            <label class=\"form-label\" for=\"param-temperature\">temperature（0–2）</label>\n            <input type=\"number\" id=\"param-temperature\" class=\"form-input\" min=\"0\" max=\"2\" step=\"0.05\" placeholder=\"供應商預設\">\n            <label class=\"form-label\" for=\"param-top-p\">top_p（0–1）</label>\n            <input type=\"number\" id=\"param-top-p\" class=\"form-input\" min=\"0\" max=\"1\" step=\"0.05\" placeholder=\"供應商預設\">\n            <label class=\"form-label\" for=\"param-max-tokens\">max_tokens</label>\n            <input type=\"number\" id=\"param-max-tokens\" class=\"form-input\" min=\"256\" max=\"65536\" step=\"256\" placeholder=\"8192\">\n            <label class=\"form-label\" for=\"param-reasoning\">reasoning_effort</label>\n            <select id=\"param-reasoning\" class=\"form-input\"><option value=\"\">不指定</option><option value=\"none\">none</option><option value=\"minimal\">minimal</option><option value=\"low\">low</option><option value=\"medium\">medium</option><option value=\"high\">high</option></select>\n            <label class=\"form-label\" for=\"param-max-steps\">最多代理步數（1–20）</label>\n            <input type=\"number\" id=\"param-max-steps\" class=\"form-input\" min=\"1\" max=\"20\" step=\"1\" placeholder=\"8\">\n          </div>\n          <div class=\"settings-actions\"><button type=\"button\" id=\"params-save-btn\" class=\"topbar-action-btn primary\">儲存參數</button></div>\n          <p id=\"params-status\" class=\"settings-hint\" role=\"status\"></p>\n          <p class=\"settings-hint\">每次請求最多 40 次外部連線（每次模型呼叫算 1 次，工具讀網頁時每次轉址都算）與約 40 次資料庫查詢；用完時模型會被要求直接作答。</p>\n        </div>\n\n        <div id=\"pane-search\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">搜尋與網頁</div>\n          <p class=\"settings-section-desc\">金鑰以 AES-GCM 加密存在 D1，畫面上只顯示遮罩後的提示。</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Tavily API Key</div>\n              <div class=\"settings-kv-control\" style=\"display:flex;gap:6px\">\n                <input id=\"secret-tavily\" class=\"form-input\" type=\"password\" autocomplete=\"off\" placeholder=\"tvly-…\" style=\"flex:1\">\n                <button type=\"button\" class=\"topbar-action-btn\" data-secret-save=\"search:tavily\" data-secret-input=\"secret-tavily\">儲存</button>\n                <button type=\"button\" class=\"topbar-action-btn btn-danger\" data-secret-del=\"search:tavily\">刪除</button>\n              </div>\n            </div>\n            <p class=\"settings-hint\" id=\"secret-tavily-status\"></p>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Jina API Key</div>\n              <div class=\"settings-kv-control\" style=\"display:flex;gap:6px\">\n                <input id=\"secret-jina\" class=\"form-input\" type=\"password\" autocomplete=\"off\" placeholder=\"jina_…\" style=\"flex:1\">\n                <button type=\"button\" class=\"topbar-action-btn\" data-secret-save=\"search:jina\" data-secret-input=\"secret-jina\">儲存</button>\n                <button type=\"button\" class=\"topbar-action-btn btn-danger\" data-secret-del=\"search:jina\">刪除</button>\n              </div>\n            </div>\n            <p class=\"settings-hint\" id=\"secret-jina-status\"></p>\n          </div>\n          <p class=\"settings-hint\" id=\"search-backend-hint\">設定 Tavily 金鑰後，模型才能使用 web_search。fetch_url（讀取網頁）不需要金鑰。</p>\n        </div>\n\n        <div id=\"pane-providers\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">供應商與模型</div>\n          <p class=\"settings-section-desc\">連線到任何 OpenAI 相容的 <code>/chat/completions</code> 服務。API Key 加密後存在 D1，所有裝置共用，畫面上只顯示遮罩提示。</p>\n          <div id=\"provider-list\" class=\"provider-list\"></div>\n          <div class=\"settings-card\" id=\"provider-form\">\n            <div class=\"settings-block-title\" id=\"provider-form-title\" style=\"margin-top:0\">新增供應商</div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">名稱</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-name\" class=\"form-input\" type=\"text\" maxlength=\"60\" placeholder=\"例如 Groq、OpenRouter\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Base URL</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-base\" class=\"form-input\" type=\"url\" placeholder=\"https://api.groq.com/openai/v1\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">API Key</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-key\" class=\"form-input\" type=\"password\" placeholder=\"sk-…\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">預設模型</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-model\" class=\"form-input\" type=\"text\" list=\"provider-model-list\" placeholder=\"先按「抓取模型」或直接輸入\" autocomplete=\"off\"><datalist id=\"provider-model-list\"></datalist></div>\n            </div>\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"provider-models-btn\" class=\"topbar-action-btn\">測試連線並抓取模型</button>\n              <button type=\"button\" id=\"provider-save-btn\" class=\"topbar-action-btn primary\">儲存</button>\n              <button type=\"button\" id=\"provider-new-btn\" class=\"topbar-action-btn\">新增另一個</button>\n              <button type=\"button\" id=\"provider-delete-btn\" class=\"topbar-action-btn btn-danger\" hidden>刪除</button>\n            </div>\n            <p id=\"provider-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\"></p>\n          </div>\n          <p class=\"settings-hint\">只允許公開 HTTPS 位址；localhost、私有 IP、<code>.local</code>、<code>.internal</code> 會被拒絕。若出現「請重新輸入」，代表 AUTH_SECRET 已更換、舊金鑰無法解密。</p>\n        </div>\n\n        <div id=\"pane-data\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabData\">資料控制</div>\n          <p class=\"settings-section-desc\">一般對話存在這個瀏覽器，並透過 D1 在裝置間同步；設定、金鑰、記憶與專案直接存在 D1。</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"sessionOnly\">No guardar chats al cerrar</span><input type=\"checkbox\" id=\"set-ephemeral\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"sessionOnlyHint\">Si está activo, el historial no se escribe en localStorage.</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"btn-clear-chats\" class=\"topbar-action-btn\" data-i18n=\"clearChats\">Vaciar historial de chats</button>\n              <button type=\"button\" id=\"btn-clear-docs\" class=\"topbar-action-btn\" data-i18n=\"empty\">Vaciar documentos</button>\n              <button type=\"button\" id=\"sync-now-btn\" class=\"topbar-action-btn\">立即同步</button>\n            </div>\n            <p id=\"sync-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\">同步尚未啟動</p>\n          </div>\n          <div class=\"settings-block-title\">危險區域</div>\n          <div class=\"settings-card danger-card\">\n            <p class=\"settings-kv-sub\">清除所有資料：刪除 D1 中的對話同步、設定、加密金鑰、供應商、記憶與專案，以及這個瀏覽器的本機資料。變更過的登入密碼會保留。此動作無法復原。</p>\n            <div class=\"settings-actions\"><button type=\"button\" id=\"btn-clear-all\" class=\"topbar-action-btn btn-danger\">清除所有資料…</button></div>\n            <p id=\"clear-all-status\" class=\"settings-hint\" role=\"status\"></p>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <span id=\"settings-status\" class=\"settings-status\"></span>\n      <button class=\"settings-foot-btn\" data-modal=\"modal-settings\" type=\"button\" data-i18n=\"cancel\">Cancelar</button>\n      <button id=\"save-settings-btn\" class=\"settings-foot-btn primary\" type=\"button\" data-i18n=\"save\">Guardar</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-knowledge\">\n  <div class=\"modal-card\">\n    <div class=\"modal-header\"><div class=\"modal-title\">新增文件</div><button class=\"modal-close-btn\" data-modal=\"modal-knowledge\" type=\"button\">✕</button></div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">標題</label>\n        <input type=\"text\" id=\"train-title\" class=\"form-input\" placeholder=\"規格、筆記、規則…\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">內容</label>\n        <textarea id=\"train-content\" class=\"form-textarea\" placeholder=\"貼上文字…\"></textarea>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;align-items:center\">\n        <input type=\"file\" id=\"import-rag-file\" style=\"display:none\" multiple accept=\".txt,.md,.json\">\n        <button type=\"button\" id=\"import-docs-btn\" class=\"topbar-action-btn\">匯入檔案</button>\n        <button id=\"save-knowledge-btn\" class=\"topbar-action-btn primary\" type=\"button\">儲存</button>\n      </div>\n      <div>\n        <div style=\"display:flex;justify-content:space-between;margin-bottom:8px\">\n          <span class=\"form-label\">已啟用（<span id=\"knowledge-count\">0</span>/20）</span>\n          <button id=\"clear-rag-btn\" type=\"button\" style=\"background:none;border:none;color:var(--red);font-size:0.72rem;cursor:pointer\">清空</button>\n        </div>\n        <div id=\"knowledge-list-box\"></div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class=\"cmd-overlay\" id=\"cmd-overlay\" role=\"dialog\" aria-label=\"命令面板\">\n  <div class=\"cmd-box\">\n    <input id=\"cmd-input\" type=\"search\" autocomplete=\"off\" placeholder=\"Ir a un comando…\" data-i18n=\"palettePh\" data-i18n-attr=\"placeholder\">\n    <div id=\"cmd-list\"></div>\n  </div>\n</div>\n\n</div>";
+  if (_root) _root.innerHTML = "<div class=\"ta-app\">\n<div class=\"ta-app\">\n  <div class=\"sidebar-overlay\" id=\"sidebar-overlay\"></div>\n  <aside class=\"ta-sidebar\" id=\"sidebar\">\n    <div class=\"sb-head\">\n      <a href=\"/\" class=\"brand-logo\">\n        <img src=\"/avatar.png\" alt=\"\" class=\"brand-avatar\">\n        <span class=\"brand-title\">Personal AI</span>\n      </a>\n      <button id=\"sidebar-close-btn\" class=\"icon-btn\" title=\"關閉\" style=\"display:none\">✕</button>\n    </div>\n    <button id=\"new-chat-btn\" class=\"new-chat-btn\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6\"/><path d=\"M18.4 2.6a2 2 0 0 1 2.9 2.9L12 14.8 8 16l1.2-4z\"/></svg><span data-i18n=\"newChat\">Nueva conversación</span></span>\n      <kbd class=\"hint\">Ctrl K</kbd>\n    </button>\n    <button id=\"temp-chat-btn\" class=\"new-chat-btn ghost\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\" stroke-dasharray=\"3 3\"/><path d=\"M12 7v5l3 2\"/></svg><span data-i18n=\"tempChat\">Chat temporal</span></span>\n      <kbd class=\"hint\">Ctrl ⇧ N</kbd>\n    </button>\n    <div class=\"history-search-box\">\n      <input type=\"search\" id=\"history-search\" class=\"history-search-input\" placeholder=\"Buscar…\" autocomplete=\"off\" data-i18n=\"searchPh\" data-i18n-attr=\"placeholder\">\n    </div>\n    <div class=\"sb-tabs\">\n      <button type=\"button\" class=\"sb-tab active\" data-view=\"chats\" id=\"tab-chats\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/></svg><span data-i18n=\"chats\">Chats</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"projects\" id=\"tab-projects\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span data-i18n=\"projects\">Proyectos</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"docs\" id=\"tab-docs\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 13h6M9 17h4\"/></svg><span data-i18n=\"docs\">Documentos</span></button>\n      \n      <button type=\"button\" class=\"sb-tab\" data-view=\"prompts\" id=\"tab-prompts\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M4 6h16M4 12h10M4 18h7\"/><path d=\"m17 15 3 3-3 3\"/></svg><span>Prompts</span></button>\n    </div>\n    <div class=\"history-list\" id=\"history-list\"></div>\n    <div class=\"sb-foot\">\n                  <button type=\"button\" id=\"open-settings-btn\" class=\"sb-link\" data-open-settings=\"pane-general\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg><span data-i18n=\"settings\">Ajustes</span></button>\n      \n      <div class=\"sb-account\">\n      <button type=\"button\" class=\"user-pill\" id=\"user-profile-pill\" data-open-settings=\"pane-account\">\n        <div style=\"display:flex;align-items:center;gap:8px;min-width:0\">\n          <div class=\"avatar-letter\" id=\"user-letter\">T</div>\n          <div style=\"min-width:0\">\n            <div class=\"user-info-name\" id=\"user-display-name\">Invitado</div>\n            <div class=\"user-info-tier\" id=\"user-display-tier\">50K tokens / día</div>\n          </div>\n        </div>\n      </button>\n      <div id=\"lang-select\" class=\"lang-picker\" aria-label=\"Language\"></div>\n      </div>\n    </div>\n  </aside>\n\n  <main class=\"ta-main\">\n    <header class=\"ta-topbar\">\n      <div class=\"topbar-left\">\n        <button id=\"sidebar-toggle-btn\" class=\"icon-btn menu-toggle-btn\" type=\"button\" title=\"選單\" aria-label=\"選單\">\n          <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><line x1=\"3\" y1=\"12\" x2=\"21\" y2=\"12\"/><line x1=\"3\" y1=\"6\" x2=\"21\" y2=\"6\"/><line x1=\"3\" y1=\"18\" x2=\"21\" y2=\"18\"/></svg>\n        </button>\n        <div class=\"model-picker\" id=\"model-picker\">\n          <button type=\"button\" class=\"model-picker-btn\" id=\"model-picker-btn\" aria-haspopup=\"listbox\" aria-expanded=\"false\">\n            <span class=\"model-picker-label\" id=\"model-picker-label\">GPT OSS 120B</span>\n            <svg class=\"model-picker-caret\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M6 9l6 6 6-6\"/></svg>\n          </button>\n          <div class=\"model-menu\" id=\"model-menu\" role=\"listbox\"></div>\n        </div>\n      </div>\n      <div class=\"topbar-right\">\n        <span id=\"temp-badge\" class=\"temp-badge\" data-i18n=\"tempOn\">Temporal</span>\n        <button id=\"cmd-open-btn\" class=\"topbar-icon-btn\" type=\"button\" title=\"Ctrl+P\" data-i18n=\"commandPalette\" data-i18n-attr=\"title\" aria-label=\"命令\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>\n        </button>\n        <button id=\"topbar-auth-btn\" class=\"topbar-action-btn primary\" type=\"button\" data-open-settings=\"pane-general\">\n          <span class=\"avatar-letter\" id=\"topbar-letter\" hidden>T</span>\n          <span id=\"topbar-auth-text\">設定</span>\n        </button>\n      </div>\n    </header>\n    <div class=\"setup-banner\" id=\"setup-banner\" role=\"status\" hidden></div>\n    <div class=\"proj-header\" id=\"proj-header\" hidden>\n      <div class=\"proj-header-title\"><span class=\"proj-header-label\">專案</span><strong id=\"proj-header-name\"></strong></div>\n      <div class=\"proj-tabs\" role=\"tablist\" aria-label=\"專案面板\">\n        <button type=\"button\" class=\"proj-tab\" role=\"tab\" data-proj-tab=\"chat\">對話</button>\n        <button type=\"button\" class=\"proj-tab\" role=\"tab\" data-proj-tab=\"files\">檔案</button>\n        <button type=\"button\" class=\"proj-tab\" role=\"tab\" data-proj-tab=\"instructions\">指示</button>\n        <button type=\"button\" class=\"proj-tab\" role=\"tab\" data-proj-tab=\"settings\">設定</button>\n      </div>\n      <span class=\"proj-status\" id=\"proj-status\" role=\"status\"></span>\n      <button type=\"button\" class=\"hist-bar-btn\" id=\"proj-exit-btn\" title=\"回到一般對話\">離開專案</button>\n    </div>\n    <div class=\"ta-chat-scroll\" id=\"chat-scroll\">\n      <div class=\"ta-chat-wrap\" id=\"chat-container\"></div>\n    </div>\n    <footer class=\"ta-input-dock\">\n      <div class=\"capsule-box\">\n        <div id=\"attached-badge\" class=\"file-badge-preview\">\n          <img id=\"attached-thumb\" alt=\"\" hidden>\n          <span id=\"attached-kind\">Documento</span>\n          <span id=\"attached-name\">documento.txt</span>\n          <button id=\"remove-file-btn\" type=\"button\" style=\"background:none;border:none;color:var(--dim);cursor:pointer\">✕</button>\n        </div>\n        <textarea id=\"prompt-input\" class=\"prompt-textarea\" rows=\"1\" placeholder=\"Pregunta lo que quieras…\" data-i18n=\"askPh\" data-i18n-attr=\"placeholder\"></textarea>\n        <div class=\"dock-controls\">\n          <div class=\"dock-plus\" id=\"dock-plus\">\n            <button type=\"button\" class=\"dock-btn dock-plus-btn\" id=\"dock-plus-btn\" aria-haspopup=\"menu\" aria-expanded=\"false\" aria-controls=\"dock-plus-menu\" aria-label=\"更多選項\" title=\"更多選項\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></button>\n            <div class=\"dock-plus-menu\" id=\"dock-plus-menu\" role=\"menu\" hidden>\n              <button type=\"button\" role=\"menuitem\" class=\"dpm-item\" data-dpm=\"attach\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg><span class=\"dpm-label\">附加檔案</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"web\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/></svg><span class=\"dpm-label\">網頁搜尋</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"image\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><circle cx=\"9\" cy=\"10\" r=\"2\"/><path d=\"m21 16-5-5-9 9\"/></svg><span class=\"dpm-label\">產生圖片</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n                          </div>\n          </div>\n          <div class=\"control-pills\">\n            <button id=\"web-search-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"searchWeb\">Buscar</button>\n            <button id=\"image-gen-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"image\">Imagen</button>\n            <div class=\"length-segmented-pill\" style=\"display:none;\" title=\"長度\"><button class=\"length-opt-btn active\" data-len=\"normal\" id=\"len-btn-normal\" type=\"button\" data-i18n=\"normal\">Normal</button></div>\n          </div>\n          <div class=\"dock-action-buttons\">\n            <input type=\"file\" id=\"file-uploader\" style=\"display:none\" accept=\"image/jpeg,image/png,image/webp,image/gif,.txt,.md,.json,.js,.ts,.py,.csv,.log,.html,.css\">\n            <button id=\"attach-file-btn\" class=\"dock-btn\" type=\"button\" title=\"附加檔案\" aria-label=\"附加檔案\" data-i18n=\"attach\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg>\n            </button>\n            <button id=\"mic-btn\" class=\"dock-btn\" type=\"button\" title=\"語音輸入\" aria-label=\"語音輸入\" data-i18n=\"dictate\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"12\" rx=\"3\"/><path d=\"M5 11a7 7 0 0 0 14 0\"/><path d=\"M12 18v4\"/><path d=\"M8 22h8\"/></svg>\n            </button>\n            <button id=\"speak-last-btn\" class=\"dock-btn\" type=\"button\" title=\"朗讀回覆\" aria-label=\"朗讀回覆\" data-i18n=\"speakLast\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M11 5L6 9H3v6h3l5 4V5z\"/><path d=\"M15.5 8.5a5 5 0 0 1 0 7\"/><path d=\"M18.5 6a8.5 8.5 0 0 1 0 12\"/></svg>\n            </button>\n            <button id=\"send-btn\" class=\"send-submit-btn\" type=\"button\" title=\"送出\">\n              <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\"><path d=\"M12 19V5M5 12l7-7 7 7\"/></svg>\n            </button>\n          </div>\n        </div>\n      </div>\n      <p class=\"disclaimer\"><span data-i18n=\"disclaimer\">Personal AI puede equivocarse.</span></p>\n    </footer>\n  </main>\n\n  <aside class=\"proj-drawer\" id=\"proj-drawer\" aria-label=\"專案面板\" hidden>\n    <div class=\"proj-drawer-head\">\n      <strong>專案</strong>\n      <button type=\"button\" class=\"icon-btn\" id=\"proj-drawer-close\" title=\"關閉\" aria-label=\"關閉\">✕</button>\n    </div>\n    <div class=\"proj-drawer-body\" id=\"proj-drawer-body\"></div>\n  </aside>\n\n  <aside class=\"art-panel\" id=\"art-panel\" aria-label=\"Artifact\">\n    <div class=\"art-head\">\n      <div class=\"art-head-top\">\n        <div class=\"art-title-wrap\">\n          <textarea class=\"art-title-input\" id=\"art-title\" maxlength=\"72\" rows=\"2\" placeholder=\"簡短標題（最多 72 字）\" aria-label=\"標題\">Artifact</textarea>\n          <div class=\"art-title-count\" id=\"art-title-count\">0/72</div>\n        </div>\n        <button type=\"button\" class=\"icon-btn\" id=\"art-close-btn\" title=\"關閉\" aria-label=\"關閉\">✕</button>\n      </div>\n      <div class=\"art-toolbar\">\n        <select id=\"art-format\" class=\"art-format\" title=\"格式\" aria-label=\"Artifact 格式\"></select>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-copy-btn\" data-art-i18n=\"copy\">Copiar</button>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-save-btn\">儲存</button>\n      </div>\n      <div class=\"art-viewbar\">\n        <div class=\"art-view\" role=\"tablist\" aria-label=\"檢視\">\n          <button type=\"button\" class=\"art-view-btn active\" role=\"tab\" aria-selected=\"true\" data-view=\"preview\" id=\"art-view-preview\" data-art-i18n=\"preview\">Vista previa</button>\n          <button type=\"button\" class=\"art-view-btn\" role=\"tab\" aria-selected=\"false\" data-view=\"code\" id=\"art-view-code\" data-art-i18n=\"code\">Código</button>\n        </div>\n        <select id=\"art-version\" class=\"art-format art-version\" aria-label=\"版本\" hidden></select>\n        <span class=\"art-viewbar-spacer\"></span>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-download-btn\" data-art-i18n-title=\"download\" title=\"下載\" aria-label=\"下載\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v11\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M5 20h14\"/></svg></button>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-fs-btn\" data-art-i18n-title=\"fullscreen\" title=\"全螢幕\" aria-label=\"全螢幕\" aria-pressed=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9V4h5\"/><path d=\"M20 9V4h-5\"/><path d=\"M4 15v5h5\"/><path d=\"M20 15v5h-5\"/></svg></button>\n      </div>\n      \n    </div>\n    <div class=\"art-extras\">\n      <button type=\"button\" class=\"art-extras-toggle\" id=\"art-extras-toggle\">來源、資源與小工具</button>\n      <div class=\"art-extras-body\" id=\"art-extras-body\" hidden>\n        <label for=\"art-sources\">自訂來源（每行一筆：標題 | https://…）</label>\n        <textarea id=\"art-sources\" placeholder=\"SEC 10-K | https://www.sec.gov/…\"></textarea>\n        <label for=\"art-resources\">資源（每行一筆）</label>\n        <textarea id=\"art-resources\" placeholder=\"Modelo Excel | https://…\"></textarea>\n        <label for=\"art-widgets\">Widgets (quote:MSFT · note:texto · https://…)</label>\n        <textarea id=\"art-widgets\" placeholder=\"quote:MSFT&#10;note:Riesgo: múltiplo elevado&#10;https://www.tradingview.com/symbols/MSFT/\"></textarea>\n      </div>\n    </div>\n    <div class=\"art-split\" id=\"art-split\">\n      <textarea class=\"art-editor\" id=\"art-editor\" spellcheck=\"false\" placeholder=\"在這裡編輯內容。\" aria-label=\"Artifact 編輯器\"></textarea>\n      <iframe class=\"art-preview\" id=\"art-preview\" hidden sandbox=\"allow-scripts allow-forms allow-modals allow-popups\" referrerpolicy=\"no-referrer\" title=\"Vista del artifact\"></iframe>\n    </div>\n  </aside>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-settings\">\n  <div class=\"modal-card settings-wide\">\n    <div class=\"modal-header\"><div class=\"modal-title\" data-i18n=\"settings\">Ajustes</div><button class=\"modal-close-btn\" data-modal=\"modal-settings\" type=\"button\" aria-label=\"關閉\" data-i18n=\"close\" data-i18n-attr=\"aria-label\">✕</button></div>\n    <div class=\"settings-layout\">\n      <nav class=\"settings-nav\" aria-label=\"設定\">\n        <div class=\"settings-nav-label\">應用程式</div>\n        <button type=\"button\" class=\"settings-nav-btn active\" data-pane=\"pane-general\" data-i18n=\"tabGeneral\">一般</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-providers\">供應商與模型</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-params\">模型參數</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-search\">搜尋與網頁</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-appearance\" data-i18n=\"tabAppearance\">外觀</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-behavior\" data-i18n=\"tabBehavior\">行為</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-customize\" data-i18n=\"tabCustomize\">個人化</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-memory\">記憶</button>\n        <div class=\"settings-nav-label\">資料</div>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-account\">密碼與登入</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-data\" data-i18n=\"tabData\">資料控制</button>\n      </nav>\n      <div class=\"settings-main\">\n        <div id=\"pane-general\" class=\"settings-pane active\">\n          <div class=\"settings-section-title\" data-i18n=\"tabGeneral\">General</div>\n          <p class=\"settings-section-desc\" data-i18n=\"generalDesc\">Idioma, modelo por defecto y longitud de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"language\">Idioma</label>\n            <div id=\"set-lang\" class=\"lang-picker open-down\"></div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultModel\">Modelo por defecto</label>\n            <select id=\"set-default-model\" class=\"form-input\"></select>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultLength\">Longitud por defecto</label>\n            <div class=\"choice-row\" id=\"set-default-length\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"corto\" data-i18n=\"short\">Corto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"normal\" data-i18n=\"normal\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"extendido\" data-i18n=\"long\">Largo</button>\n            </div>\n          </div>\n          <p class=\"settings-hint\" id=\"app-version-hint\">Personal AI</p>\n        </div>\n\n        <div id=\"pane-account\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">密碼與登入</div>\n          <p class=\"settings-section-desc\">單一擁有者登入。在這裡變更密碼後，新密碼以 PBKDF2 雜湊存在 D1，取代 APP_PASSWORD。</p>\n          <div class=\"settings-card\">\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-cur-pass\">目前密碼</label>\n              <input type=\"password\" id=\"set-cur-pass\" class=\"form-input\" autocomplete=\"current-password\">\n            </div>\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-new-pass\">新密碼（至少 8 個字元）</label>\n              <input type=\"password\" id=\"set-new-pass\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"8\">\n            </div>\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-new-pass2\">再輸入一次新密碼</label>\n              <input type=\"password\" id=\"set-new-pass2\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"8\">\n            </div>\n            <div class=\"settings-actions\">\n              <button type=\"button\" id=\"change-pass-btn\" class=\"topbar-action-btn primary\">變更密碼</button>\n            </div>\n            <p id=\"pass-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\"></p>\n          </div>\n          <p class=\"settings-hint\">忘記新密碼時，可在 D1 主控台執行 <code>DELETE FROM settings WHERE k = 'auth.password'</code> 改回 APP_PASSWORD。已登入的其他裝置在工作階段到期前仍保持登入。</p>\n          <div class=\"settings-block-title\">工作階段</div>\n          <div class=\"settings-card\" style=\"padding:16px\">\n            <p class=\"settings-kv-sub\">登出這個瀏覽器。本機聊天紀錄會保留。</p>\n            <button type=\"button\" id=\"settings-logout-btn\" class=\"logout-big-btn\">登出</button>\n          </div>\n        </div>\n\n        <div id=\"pane-appearance\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabAppearance\">Apariencia</div>\n          <p class=\"settings-section-desc\" data-i18n=\"appearanceDesc\">Tema, tamaño de letra y densidad de la interfaz.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"appearanceTheme\">Tema</label>\n            <div class=\"theme-grid\">\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dark\"><span class=\"theme-swatch\" data-swatch=\"dark\"></span><span data-i18n=\"themeDark\">Oscuro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"gray\"><span class=\"theme-swatch\" data-swatch=\"gray\"></span><span data-i18n=\"themeGray\">Gris</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dim\"><span class=\"theme-swatch\" data-swatch=\"dim\"></span><span data-i18n=\"themeDim\">Carbón</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"navy\"><span class=\"theme-swatch\" data-swatch=\"navy\"></span><span data-i18n=\"themeNavy\">Marino</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"light\"><span class=\"theme-swatch\" data-swatch=\"light\"></span><span data-i18n=\"themeLight\">Claro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"paper\"><span class=\"theme-swatch\" data-swatch=\"paper\"></span><span data-i18n=\"themePaper\">Papel</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"hacker\"><span class=\"theme-swatch\" data-swatch=\"hacker\"></span><span>Hacker</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"cyberpunk\"><span class=\"theme-swatch\" data-swatch=\"cyberpunk\"></span><span>Cyberpunk</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"sunset\"><span class=\"theme-swatch\" data-swatch=\"sunset\"></span><span>Sunset</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"ocean\"><span class=\"theme-swatch\" data-swatch=\"ocean\"></span><span>Ocean</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"forest\"><span class=\"theme-swatch\" data-swatch=\"forest\"></span><span>Forest</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"rose\"><span class=\"theme-swatch\" data-swatch=\"rose\"></span><span>Rose</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"lavender\"><span class=\"theme-swatch\" data-swatch=\"lavender\"></span><span>Lavender</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"system\"><span class=\"theme-swatch\" data-swatch=\"system\"></span><span data-i18n=\"themeSystem\">Sistema</span></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"accentLabel\">Acento</label>\n            <div class=\"accent-row\">\n              <button type=\"button\" class=\"accent-dot accent-auto\" data-pref=\"ta_accent\" data-value=\"auto\" title=\"Neutro\" aria-label=\"Neutro\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#38bdf8\" style=\"background:#38bdf8\" title=\"Cielo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a1a1aa\" style=\"background:#a1a1aa\" title=\"Gris\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#34d399\" style=\"background:#34d399\" title=\"Menta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#2dd4bf\" style=\"background:#2dd4bf\" title=\"Teal\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#818cf8\" style=\"background:#818cf8\" title=\"Índigo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a78bfa\" style=\"background:#a78bfa\" title=\"Violeta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#f59e0b\" style=\"background:#f59e0b\" title=\"Ámbar\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#fb7185\" style=\"background:#fb7185\" title=\"Rosa\"></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"fontSize\">Tamaño de letra</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"sm\" data-i18n=\"fontSm\">Compacto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"md\" data-i18n=\"fontMd\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"lg\" data-i18n=\"fontLg\">Grande</button>\n            </div>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"compactSidebar\">Barra lateral compacta</span><input type=\"checkbox\" id=\"set-compact-sb\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"reduceMotion\">Reducir movimiento</span><input type=\"checkbox\" id=\"set-reduce-motion\"></label>\n          </div>\n        </div>\n\n        <div id=\"pane-behavior\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabBehavior\">Comportamiento</div>\n          <p class=\"settings-section-desc\" data-i18n=\"behaviorDesc\">Cómo envía, busca y confirma el workspace.</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"enterToSend\">Enter envía el mensaje</span><input type=\"checkbox\" id=\"set-enter-send\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoSearch\">Buscar en la web por defecto</span><input type=\"checkbox\" id=\"set-auto-search\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"showTimestamps\">Mostrar hora en los mensajes</span><input type=\"checkbox\" id=\"set-show-time\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"confirmDeleteChat\">Confirmar al borrar un chat</span><input type=\"checkbox\" id=\"set-confirm-del\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoRead\">Leer en voz alta las respuestas</span><input type=\"checkbox\" id=\"set-auto-read\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"autoReadHint\">Al terminar cada respuesta, el navegador la lee. También puedes pulsar el altavoz del compositor o «Escuchar» en cada mensaje.</p>\n        </div>\n\n        <div id=\"pane-customize\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabCustomize\">Personalizar</div>\n          <p class=\"settings-section-desc\" data-i18n=\"customizeDesc\">Instrucciones propias y tono de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"toneLabel\">Tono</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"auto\" data-i18n=\"toneAuto\">Auto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"direct\" data-i18n=\"toneDirect\">Directo</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"technical\" data-i18n=\"toneTechnical\">Técnico</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"concise\" data-i18n=\"toneConcise\">Conciso</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"systemPrompt\">Instrucción de sistema</label>\n            <textarea id=\"custom-system-prompt\" class=\"form-textarea\" placeholder=\"Cómo debe responder Personal AI…\"></textarea>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"useDocsContext\">Usar documentos como memoria</span><input type=\"checkbox\" id=\"set-use-docs\" checked></label>\n          </div>\n          <p class=\"settings-hint\">語氣與自訂指示存在 D1，所有裝置共用。</p>\n        </div>\n\n        <div id=\"pane-memory\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">長期記憶</div>\n          <p class=\"settings-section-desc\">模型可用 remember / forget / recall 工具管理記憶；你也可以在這裡新增、編輯或刪除。全域記憶會帶入每個對話，專案記憶只在該專案使用。</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span>啟用長期記憶</span><input type=\"checkbox\" id=\"set-memory-enabled\" checked></label>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" for=\"memory-new-input\">新增一則記憶</label>\n            <div style=\"display:flex;gap:6px\">\n              <input type=\"text\" id=\"memory-new-input\" class=\"form-input\" style=\"flex:1\" maxlength=\"500\" placeholder=\"例如：偏好用 TypeScript 回答程式問題\">\n              <select id=\"memory-new-scope\" class=\"form-input\" style=\"max-width:160px\"><option value=\"global\">全域</option></select>\n              <button type=\"button\" id=\"memory-add-btn\" class=\"topbar-action-btn primary\">新增</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" for=\"memory-filter\">顯示</label>\n            <select id=\"memory-filter\" class=\"form-input\"><option value=\"\">全部</option><option value=\"global\">全域</option></select>\n          </div>\n          <div id=\"memory-list\" class=\"settings-card memory-list\"></div>\n          <p id=\"memory-status\" class=\"settings-hint\" role=\"status\"></p>\n        </div>\n\n        <div id=\"pane-params\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">模型參數</div>\n          <p class=\"settings-section-desc\">全域預設值，專案可以個別覆寫。留空代表使用供應商預設。供應商不支援某個參數時，系統會自動移除該參數重試一次。</p>\n          <div class=\"settings-card params-grid\">\n            <label class=\"form-label\" for=\"param-temperature\">temperature（0–2）</label>\n            <input type=\"number\" id=\"param-temperature\" class=\"form-input\" min=\"0\" max=\"2\" step=\"0.05\" placeholder=\"供應商預設\">\n            <label class=\"form-label\" for=\"param-top-p\">top_p（0–1）</label>\n            <input type=\"number\" id=\"param-top-p\" class=\"form-input\" min=\"0\" max=\"1\" step=\"0.05\" placeholder=\"供應商預設\">\n            <label class=\"form-label\" for=\"param-max-tokens\">max_tokens</label>\n            <input type=\"number\" id=\"param-max-tokens\" class=\"form-input\" min=\"256\" max=\"65536\" step=\"256\" placeholder=\"8192\">\n            <label class=\"form-label\" for=\"param-reasoning\">reasoning_effort</label>\n            <select id=\"param-reasoning\" class=\"form-input\"><option value=\"\">不指定</option><option value=\"none\">none</option><option value=\"minimal\">minimal</option><option value=\"low\">low</option><option value=\"medium\">medium</option><option value=\"high\">high</option></select>\n            <label class=\"form-label\" for=\"param-max-steps\">最多代理步數（1–20）</label>\n            <input type=\"number\" id=\"param-max-steps\" class=\"form-input\" min=\"1\" max=\"20\" step=\"1\" placeholder=\"8\">\n          </div>\n          <div class=\"settings-actions\"><button type=\"button\" id=\"params-save-btn\" class=\"topbar-action-btn primary\">儲存參數</button></div>\n          <p id=\"params-status\" class=\"settings-hint\" role=\"status\"></p>\n          <p class=\"settings-hint\">每次請求最多 40 次外部連線（每次模型呼叫算 1 次，工具讀網頁時每次轉址都算）與約 40 次資料庫查詢；用完時模型會被要求直接作答。</p>\n        </div>\n\n        <div id=\"pane-search\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">搜尋與網頁</div>\n          <p class=\"settings-section-desc\">金鑰以 AES-GCM 加密存在 D1，畫面上只顯示遮罩後的提示。</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Tavily API Key</div>\n              <div class=\"settings-kv-control\" style=\"display:flex;gap:6px\">\n                <input id=\"secret-tavily\" class=\"form-input\" type=\"password\" autocomplete=\"off\" placeholder=\"tvly-…\" style=\"flex:1\">\n                <button type=\"button\" class=\"topbar-action-btn\" data-secret-save=\"search:tavily\" data-secret-input=\"secret-tavily\">儲存</button>\n                <button type=\"button\" class=\"topbar-action-btn btn-danger\" data-secret-del=\"search:tavily\">刪除</button>\n              </div>\n            </div>\n            <p class=\"settings-hint\" id=\"secret-tavily-status\"></p>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Jina API Key</div>\n              <div class=\"settings-kv-control\" style=\"display:flex;gap:6px\">\n                <input id=\"secret-jina\" class=\"form-input\" type=\"password\" autocomplete=\"off\" placeholder=\"jina_…\" style=\"flex:1\">\n                <button type=\"button\" class=\"topbar-action-btn\" data-secret-save=\"search:jina\" data-secret-input=\"secret-jina\">儲存</button>\n                <button type=\"button\" class=\"topbar-action-btn btn-danger\" data-secret-del=\"search:jina\">刪除</button>\n              </div>\n            </div>\n            <p class=\"settings-hint\" id=\"secret-jina-status\"></p>\n          </div>\n          <p class=\"settings-hint\" id=\"search-backend-hint\">設定 Tavily 金鑰後，模型才能使用 web_search。fetch_url（讀取網頁）不需要金鑰。</p>\n        </div>\n\n        <div id=\"pane-providers\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">供應商與模型</div>\n          <p class=\"settings-section-desc\">連線到任何 OpenAI 相容的 <code>/chat/completions</code> 服務。API Key 加密後存在 D1，所有裝置共用，畫面上只顯示遮罩提示。</p>\n          <div id=\"provider-list\" class=\"provider-list\"></div>\n          <div class=\"settings-card\" id=\"provider-form\">\n            <div class=\"settings-block-title\" id=\"provider-form-title\" style=\"margin-top:0\">新增供應商</div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">名稱</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-name\" class=\"form-input\" type=\"text\" maxlength=\"60\" placeholder=\"例如 Groq、OpenRouter\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Base URL</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-base\" class=\"form-input\" type=\"url\" placeholder=\"https://api.groq.com/openai/v1\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">API Key</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-key\" class=\"form-input\" type=\"password\" placeholder=\"sk-…\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">預設模型</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-model\" class=\"form-input\" type=\"text\" list=\"provider-model-list\" placeholder=\"先按「抓取模型」或直接輸入\" autocomplete=\"off\"><datalist id=\"provider-model-list\"></datalist></div>\n            </div>\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"provider-models-btn\" class=\"topbar-action-btn\">測試連線並抓取模型</button>\n              <button type=\"button\" id=\"provider-save-btn\" class=\"topbar-action-btn primary\">儲存</button>\n              <button type=\"button\" id=\"provider-new-btn\" class=\"topbar-action-btn\">新增另一個</button>\n              <button type=\"button\" id=\"provider-delete-btn\" class=\"topbar-action-btn btn-danger\" hidden>刪除</button>\n            </div>\n            <p id=\"provider-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\"></p>\n          </div>\n          <p class=\"settings-hint\">只允許公開 HTTPS 位址；localhost、私有 IP、<code>.local</code>、<code>.internal</code> 會被拒絕。若出現「請重新輸入」，代表 AUTH_SECRET 已更換、舊金鑰無法解密。</p>\n        </div>\n\n        <div id=\"pane-data\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabData\">資料控制</div>\n          <p class=\"settings-section-desc\">一般對話存在這個瀏覽器，並透過 D1 在裝置間同步；設定、金鑰、記憶與專案直接存在 D1。</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"sessionOnly\">No guardar chats al cerrar</span><input type=\"checkbox\" id=\"set-ephemeral\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"sessionOnlyHint\">Si está activo, el historial no se escribe en localStorage.</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"btn-clear-chats\" class=\"topbar-action-btn\" data-i18n=\"clearChats\">Vaciar historial de chats</button>\n              <button type=\"button\" id=\"btn-clear-docs\" class=\"topbar-action-btn\" data-i18n=\"empty\">Vaciar documentos</button>\n              <button type=\"button\" id=\"sync-now-btn\" class=\"topbar-action-btn\">立即同步</button>\n            </div>\n            <p id=\"sync-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\">同步尚未啟動</p>\n          </div>\n          <div class=\"settings-block-title\">危險區域</div>\n          <div class=\"settings-card danger-card\">\n            <p class=\"settings-kv-sub\">清除所有資料：刪除 D1 中的對話同步、設定、加密金鑰、供應商、記憶與專案，以及這個瀏覽器的本機資料。變更過的登入密碼會保留。此動作無法復原。</p>\n            <div class=\"settings-actions\"><button type=\"button\" id=\"btn-clear-all\" class=\"topbar-action-btn btn-danger\">清除所有資料…</button></div>\n            <p id=\"clear-all-status\" class=\"settings-hint\" role=\"status\"></p>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <span id=\"settings-status\" class=\"settings-status\"></span>\n      <button class=\"settings-foot-btn\" data-modal=\"modal-settings\" type=\"button\" data-i18n=\"cancel\">Cancelar</button>\n      <button id=\"save-settings-btn\" class=\"settings-foot-btn primary\" type=\"button\" data-i18n=\"save\">Guardar</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-knowledge\">\n  <div class=\"modal-card\">\n    <div class=\"modal-header\"><div class=\"modal-title\">新增文件</div><button class=\"modal-close-btn\" data-modal=\"modal-knowledge\" type=\"button\">✕</button></div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">標題</label>\n        <input type=\"text\" id=\"train-title\" class=\"form-input\" placeholder=\"規格、筆記、規則…\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">內容</label>\n        <textarea id=\"train-content\" class=\"form-textarea\" placeholder=\"貼上文字…\"></textarea>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;align-items:center\">\n        <input type=\"file\" id=\"import-rag-file\" style=\"display:none\" multiple accept=\".txt,.md,.json\">\n        <button type=\"button\" id=\"import-docs-btn\" class=\"topbar-action-btn\">匯入檔案</button>\n        <button id=\"save-knowledge-btn\" class=\"topbar-action-btn primary\" type=\"button\">儲存</button>\n      </div>\n      <div>\n        <div style=\"display:flex;justify-content:space-between;margin-bottom:8px\">\n          <span class=\"form-label\">已啟用（<span id=\"knowledge-count\">0</span>/20）</span>\n          <button id=\"clear-rag-btn\" type=\"button\" style=\"background:none;border:none;color:var(--red);font-size:0.72rem;cursor:pointer\">清空</button>\n        </div>\n        <div id=\"knowledge-list-box\"></div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class=\"cmd-overlay\" id=\"cmd-overlay\" role=\"dialog\" aria-label=\"命令面板\">\n  <div class=\"cmd-box\">\n    <input id=\"cmd-input\" type=\"search\" autocomplete=\"off\" placeholder=\"Ir a un comando…\" data-i18n=\"palettePh\" data-i18n-attr=\"placeholder\">\n    <div id=\"cmd-list\"></div>\n  </div>\n</div>\n\n</div>";
 
 
   var currentChatId = Date.now().toString();
@@ -36,17 +36,6 @@
     });
   }
 
-  var projects = [];
-  try {
-    var rawP = localStorage.getItem('ta_projects');
-    if (rawP) projects = JSON.parse(rawP);
-    if (!Array.isArray(projects)) projects = [];
-  } catch(e) { projects = []; }
-  var currentProjectId = null;
-  try {
-    var savedProj = localStorage.getItem('ta_project_active');
-    if (savedProj && projects.some(function(p) { return p && p.id === savedProj; })) currentProjectId = savedProj;
-  } catch(eAp) {}
   var sidebarView = 'chats';
   var abortCtl = null;
   // ---- Server data layer (D1): providers, models, settings, memory -------------
@@ -310,7 +299,7 @@
   // to stay inside the Worker's per-request D1 and body limits.
   var SYNC_META_KEY = 'ta_sync_meta_v2';
   var SYNC_SETTINGS = [['prompt','favs','ta_prompt_favs'],['prompt','recent','ta_prompt_recent'],['setting','len_mode','ta_len_mode'],['setting','auto_search','ta_auto_search'],['setting','use_docs','ta_use_docs']];
-  var syncMeta = { enabled: false, cursor: 0, known: { chat: [], doc: [], project: [] }, sent: {}, values: {}, timer: 0, applying: false, busy: false };
+  var syncMeta = { enabled: false, cursor: 0, known: { chat: [], doc: [] }, sent: {}, values: {}, timer: 0, applying: false, busy: false };
   try {
     localStorage.removeItem('ta_sync_meta_v1');
     var savedSync = JSON.parse(localStorage.getItem(SYNC_META_KEY) || '{}');
@@ -319,7 +308,7 @@
       syncMeta.sent = savedSync.sent && typeof savedSync.sent === 'object' ? savedSync.sent : {};
       syncMeta.values = savedSync.values && typeof savedSync.values === 'object' ? savedSync.values : {};
       if (savedSync.known && typeof savedSync.known === 'object') {
-        ['chat','doc','project'].forEach(function(k) { syncMeta.known[k] = Array.isArray(savedSync.known[k]) ? savedSync.known[k] : []; });
+        ['chat','doc'].forEach(function(k) { syncMeta.known[k] = Array.isArray(savedSync.known[k]) ? savedSync.known[k] : []; });
       }
     }
   } catch(eSync) {}
@@ -337,7 +326,7 @@
   }
   function collectSyncChanges(force) {
     var changes = [];
-    var present = { chat: {}, doc: {}, project: {} };
+    var present = { chat: {}, doc: {} };
     var now = Date.now();
     function add(key, value, at) {
       if (!force && syncMeta.sent[key] && Number(syncMeta.sent[key]) >= at) return;
@@ -354,11 +343,6 @@
       present.doc[d.id] = true;
       add('doc:' + d.id, syncJson(d), Number(d.updatedAt || d.created || now) || now);
     });
-    projects.forEach(function(pr) {
-      if (!pr || !pr.id || !/^[A-Za-z0-9_-]{1,100}$/.test(pr.id)) return;
-      present.project[pr.id] = true;
-      add('project:' + pr.id, syncJson(pr), Number(pr.updatedAt || now) || now);
-    });
     SYNC_SETTINGS.forEach(function(row) {
       var key = row[0] + ':' + row[1];
       var value = '';
@@ -366,7 +350,7 @@
       if (!force && syncMeta.values[key] === value) return;
       changes.push({ key: key, value: value, updatedAt: now, deleted: false });
     });
-    ['chat','doc','project'].forEach(function(type) {
+    ['chat','doc'].forEach(function(type) {
       (syncMeta.known[type] || []).forEach(function(id) {
         if (present[type][id]) return;
         changes.push({ key: type + ':' + id, value: '', updatedAt: now, deleted: true });
@@ -382,15 +366,6 @@
     if (item.deleted) {
       if (type === 'chat' && chats[id]) { delete chats[id]; touched.chats = true; }
       if (type === 'doc') { var nd = documents.filter(function(d) { return d.id !== id; }); if (nd.length !== documents.length) { documents = nd; touched.docs = true; } }
-      if (type === 'project') { var np = projects.filter(function(pr) { return pr.id !== id; }); if (np.length !== projects.length) { projects = np; touched.projects = true; } }
-    } else if (type === 'project') {
-      try {
-        var proj = JSON.parse(item.value);
-        if (!proj || typeof proj !== 'object') return;
-        var pfound = false;
-        for (var j = 0; j < projects.length; j++) if (projects[j].id === id) { pfound = true; if (Number(item.updatedAt) >= Number(projects[j].updatedAt || 0)) { projects[j] = proj; touched.projects = true; } break; }
-        if (!pfound) { projects.push(proj); touched.projects = true; }
-      } catch(e) {}
     } else if (type === 'chat') {
       try {
         var chat = JSON.parse(item.value);
@@ -417,7 +392,7 @@
     if (!syncMeta.enabled || syncMeta.busy) return false;
     syncMeta.busy = true;
     var total = 0;
-    var touched = { chats: false, docs: false, projects: false };
+    var touched = { chats: false, docs: false };
     try {
       for (var page = 0; page < 20; page++) {
         var data = await apiJson('/api/sync?since=' + encodeURIComponent(String(syncMeta.cursor || 0)) + '&limit=200');
@@ -432,7 +407,6 @@
       syncMeta.applying = true;
       if (touched.chats) { saveChats(); renderSidebar(); if (chats[currentChatId]) loadChatView(); }
       if (touched.docs) { saveDocuments(); renderSidebar(); }
-      if (touched.projects) { saveProjects(); renderSidebar(); }
       syncMeta.applying = false;
       saveSyncMeta();
       setSyncStatus(total ? ('已同步 ' + total + ' 項') : '已同步', false);
@@ -468,7 +442,7 @@
         chunk.push(changes[i]); size += len;
       }
       await flush();
-      var present = { chat: Object.keys(chats).filter(function(id) { return chats[id] && !chats[id].ephemeral; }), doc: documents.filter(function(d) { return d && d.id; }).map(function(d) { return d.id; }), project: projects.filter(function(p) { return p && p.id; }).map(function(p) { return p.id; }) };
+      var present = { chat: Object.keys(chats).filter(function(id) { return chats[id] && !chats[id].ephemeral; }), doc: documents.filter(function(d) { return d && d.id; }).map(function(d) { return d.id; }) };
       syncMeta.known = present;
       saveSyncMeta();
       setSyncStatus('已同步 ' + changes.length + ' 項', false);
@@ -1020,9 +994,10 @@
     if (badge) badge.classList.toggle('on', isTempChat() || localStorage.getItem('ta_ephemeral') === '1');
   }
   function startTempChat() {
+    if (proj.current) leaveProject();
     if (shareReadOnly) { shareReadOnly = false; history.replaceState({}, '', '/'); }
     currentChatId = Date.now().toString();
-    chats[currentChatId] = { title: t('tempChat'), messages: [], ephemeral: true, projectId: currentProjectId };
+    chats[currentChatId] = { title: t('tempChat'), messages: [], ephemeral: true };
     loadChatView();
     renderSidebar();
     updateTempBadge();
@@ -1038,14 +1013,8 @@
     try { localStorage.setItem('ta_knowledge', JSON.stringify(knowledge)); } catch(e) {}
     scheduleSync();
   }
-  function saveProjects() {
-    var now = Date.now();
-    if (!syncMeta.applying) projects.forEach(function(pr) { if (pr) pr.updatedAt = now; });
-    try { localStorage.setItem('ta_projects', JSON.stringify(projects)); } catch(e) {}
-    scheduleSync();
-  }
-
   function startNewChat() {
+    if (proj.current) leaveProject();
     if (shareReadOnly) { shareReadOnly = false; history.replaceState({}, '', '/'); }
     currentChatId = Date.now().toString();
     loadChatView();
@@ -1146,16 +1115,11 @@
     var chat = chats[currentChatId];
     if (!chat || !Array.isArray(chat.messages) || chat.messages.length === 0) {
       container.innerHTML = '<div class="ta-hero">' +
-        projectHeroHtml() +
         '<img src="/avatar.png" alt="Personal AI" class="hero-logo-img">' +
         '<h1 class="hero-heading">' + t('heroTitle') + '</h1>' +
         '<p class="hero-subheading">' + t('heroSub') + '</p>' +
         '<div class="hero-chips">' + renderHeroChips() + '</div></div>';
       if (window.TAP) { try { TAP.mountHero(); } catch (eTap) {} }
-      var phEdit = document.getElementById('proj-hero-edit');
-      if (phEdit) phEdit.onclick = function() { var cp = projectById(currentProjectId); if (cp) openProjectModal(cp); };
-      var phExit = document.getElementById('proj-hero-exit');
-      if (phExit) phExit.onclick = function() { switchProject(null); };
       return;
     }
     container.innerHTML = '';
@@ -1185,7 +1149,8 @@
     if (isNaN(d.getTime())) d = new Date();
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-  function addMessageToDOM(role, content, sources, at, msgIndex, feedback, image) {
+  function addMessageToDOM(role, content, sources, at, msgIndex, feedback, image, opts) {
+    opts = opts || {};
     sources = sources || [];
     var container = document.getElementById('chat-container');
     if (!container) return { row: null, textContainer: null, contentCol: null };
@@ -1272,11 +1237,13 @@
       voiceBtn.innerHTML = '<span>' + t('listen') + '</span>';
       voiceBtn.onclick = function() { speakText(content || '', voiceBtn); };
       actions.appendChild(voiceBtn);
-      var regenBtn = document.createElement('button');
-      regenBtn.className = 'msg-action-btn';
-      regenBtn.innerHTML = '<span>' + t('regenerate') + '</span>';
-      regenBtn.onclick = function() { regenerateLast(); };
-      actions.appendChild(regenBtn);
+      if (!opts.noRegen) {
+        var regenBtn = document.createElement('button');
+        regenBtn.className = 'msg-action-btn';
+        regenBtn.innerHTML = '<span>' + t('regenerate') + '</span>';
+        regenBtn.onclick = function() { regenerateLast(); };
+        actions.appendChild(regenBtn);
+      }
       if (typeof msgIndex === 'number' && !shareReadOnly) {
         var up = document.createElement('button');
         up.className = 'msg-action-btn' + (feedback === 'up' ? ' on' : '');
@@ -1299,8 +1266,13 @@
       row.appendChild(avatarCol);
       row.appendChild(contentCol);
     }
-    container.appendChild(row);
-    scrollToEnd();
+    if (opts.prepend) {
+      var firstRow = container.querySelector('.msg-row');
+      if (firstRow) container.insertBefore(row, firstRow); else container.appendChild(row);
+    } else {
+      container.appendChild(row);
+      scrollToEnd();
+    }
     return { row: row, textContainer: textContainer, contentCol: contentCol };
   }
 
@@ -1709,6 +1681,14 @@
     var promptText = input.value.trim();
     if (!promptText && !attachedFile) return;
     if (window.TAP && promptText && !TAP.beforeSend(promptText)) return;
+    if (proj.current) {
+      if (attachedFile && attachedFile.kind === 'image') { alert('專案對話目前只支援文字；圖片請在一般對話使用。'); return; }
+      var projText = promptText;
+      if (attachedFile) { projText = '[附件：' + attachedFile.name + ']\n' + attachedFile.content + '\n\n' + (promptText || '請分析這份文件。'); removeAttachedFile(); }
+      input.value = '';
+      autoResize(input);
+      return sendProjectMessage(projText);
+    }
     isGenerating = true;
     abortCtl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
     setGenerating(true);
@@ -1728,7 +1708,7 @@
     input.value = '';
     autoResize(input);
     if (!chats[currentChatId] || typeof chats[currentChatId] !== 'object') {
-      chats[currentChatId] = { title: promptText.slice(0, 42) || t('newChat'), messages: [], projectId: currentProjectId };
+      chats[currentChatId] = { title: promptText.slice(0, 42) || t('newChat'), messages: [] };
     }
     if (!Array.isArray(chats[currentChatId].messages)) chats[currentChatId].messages = [];
     if ((chats[currentChatId].title === 'Nueva conversación' || chats[currentChatId].title === t('newChat')) && promptText) chats[currentChatId].title = promptText.slice(0, 42);
@@ -1767,9 +1747,7 @@
       var headers = { 'Content-Type': 'application/json' };
       var snippets = [];
       if (localStorage.getItem('ta_use_docs') !== '0') {
-        snippets = documents.filter(function(d) {
-          return !currentProjectId || d.projectId === currentProjectId || !d.projectId;
-        }).sort(function(x, y) { return (y.projectId === currentProjectId ? 1 : 0) - (x.projectId === currentProjectId ? 1 : 0); }).slice(0, 20).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 20000) }; });
+        snippets = documents.filter(function(d) { return d && !d.projectId; }).slice(-20).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 20000) }; });
       }
       var tzVal = localStorage.getItem('ta_timezone');
       var resolvedTz = (tzVal && tzVal !== 'auto') ? tzVal : (function() {
@@ -1784,7 +1762,7 @@
           messages: chats[currentChatId].messages.slice(-24).map(function(m) {
             return { role: m.role === 'user' ? 'user' : 'assistant', content: m.sent || m.content };
           }).filter(function(m) { return m.content; }),
-          role_context: [projectContext(), (window.TAP ? TAP.roleContext() : '')].filter(Boolean).join('\n'),
+          role_context: window.TAP ? TAP.roleContext() : '',
           documents: snippets,
           search_web: isWebSearch && !pendingImage,
           length_mode: currentLength,
@@ -2197,6 +2175,7 @@
       var el = document.getElementById('tab-' + v);
       if (el) { if (v === view) el.classList.add('active'); else el.classList.remove('active'); }
     });
+    if (view === 'projects') loadProjectList();
     renderSidebar();
   }
 
@@ -2221,7 +2200,6 @@
     keys = keys.filter(function(k) {
       var c = chats[k];
       if (!c) return false;
-      if (currentProjectId && c.projectId !== currentProjectId) return false;
       if (!!c.archived !== showArchived) return false;
       if (filterText && !(c.title || '').toLowerCase().includes(filterText)) return false;
       return true;
@@ -2233,14 +2211,6 @@
       archBar.innerHTML = '<button type="button" class="hist-bar-btn" id="toggle-archived">' +
         (showArchived ? '← ' + t('chats') : t('archived') + (archCount ? ' (' + archCount + ')' : '')) + '</button>';
       list.appendChild(archBar);
-    }
-    if (currentProjectId) {
-      var proj = projects.find(function(p) { return p.id === currentProjectId; });
-      var bar = document.createElement('div');
-      bar.className = 'proj-bar';
-      bar.innerHTML = PROJ_ICON + '<span class="proj-bar-name">' + escapeHtml((proj && proj.name) || '—') + '</span>' +
-        '<button type="button" class="hist-bar-btn" id="clear-project-filter">' + escapeHtml(pt('exit')) + '</button>';
-      list.appendChild(bar);
     }
     if (!keys.length) {
       var emptyH = document.createElement('div');
@@ -2287,6 +2257,7 @@
           else renderSidebar();
           return;
         }
+        if (proj.current) leaveProject();
         currentChatId = k;
         loadChatView();
         renderSidebar();
@@ -2298,246 +2269,580 @@
   }
 
   var PROJ_ICON = '<svg class="proj-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H9l2 2.5h7.5A2.5 2.5 0 0 1 21 10v6.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5z"/></svg>';
-  var PROJ_EDIT_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
-  var PROJ_DEL_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
-  var PROJ_I18N = {
-    es: { emptyTitle: 'Aún no hay proyectos', newProject: 'Nuevo proyecto', editProject: 'Editar proyecto', name: 'Nombre', namePh: 'Ej.: Lanzamiento de la web', desc: 'Descripción', descPh: '¿De qué trata este proyecto?', instr: 'Instrucciones', instrPh: 'Cómo debe responder el asistente en este proyecto: contexto, tono, formato…', role: 'Rol por defecto', files: 'Archivos', filesHint: 'Texto, Markdown, CSV, JSON o código · máx. 200 KB por archivo. Se usan como contexto en los chats del proyecto.', addFiles: 'Añadir archivos', noFiles: 'Sin archivos todavía', remove: 'Quitar', cancel: 'Cancelar', save: 'Guardar', create: 'Crear proyecto', del: 'Eliminar', delTitle: '¿Eliminar el proyecto?', delBody: 'Se eliminarán «{n}» y sus archivos. Las conversaciones se conservan, sin proyecto.', edit: 'Editar', exit: 'Salir', label: 'Proyecto', chatsN: '{n} chats', chat1: '1 chat', filesN: '{n} archivos', file1: '1 archivo', empty: 'Agrupa chats, instrucciones y archivos por tema.', nameReq: 'Ponle un nombre al proyecto.', tooBig: '{f}: demasiado grande (máx. 200 KB)', notText: '{f}: formato no compatible', created: 'Proyecto creado', saved: 'Proyecto guardado', deleted: 'Proyecto eliminado', switched: 'Proyecto activo: {n}', left: 'Sin proyecto activo', ctxHead: 'Contexto del proyecto «{n}»', instrHead: 'Instrucciones del proyecto' },
-    en: { emptyTitle: 'No projects yet', newProject: 'New project', editProject: 'Edit project', name: 'Name', namePh: 'e.g. Website launch', desc: 'Description', descPh: 'What is this project about?', instr: 'Instructions', instrPh: 'How the assistant should answer in this project: context, tone, format…', role: 'Default role', files: 'Files', filesHint: 'Text, Markdown, CSV, JSON or code · max 200 KB per file. Used as context in this project’s chats.', addFiles: 'Add files', noFiles: 'No files yet', remove: 'Remove', cancel: 'Cancel', save: 'Save', create: 'Create project', del: 'Delete', delTitle: 'Delete project?', delBody: '“{n}” and its files will be deleted. Conversations are kept, without a project.', edit: 'Edit', exit: 'Exit', label: 'Project', chatsN: '{n} chats', chat1: '1 chat', filesN: '{n} files', file1: '1 file', empty: 'Group chats, instructions and files by topic.', nameReq: 'Give the project a name.', tooBig: '{f}: too large (max 200 KB)', notText: '{f}: unsupported format', created: 'Project created', saved: 'Project saved', deleted: 'Project deleted', switched: 'Active project: {n}', left: 'No active project', ctxHead: 'Context for project “{n}”', instrHead: 'Project instructions' },
-    ca: { emptyTitle: 'Encara no hi ha projectes', newProject: 'Nou projecte', editProject: 'Edita el projecte', name: 'Nom', namePh: 'P. ex.: Llançament del web', desc: 'Descripció', descPh: 'De què tracta aquest projecte?', instr: 'Instruccions', instrPh: 'Com ha de respondre l’assistent en aquest projecte: context, to, format…', role: 'Rol per defecte', files: 'Fitxers', filesHint: 'Text, Markdown, CSV, JSON o codi · màx. 200 KB per fitxer. S’usen com a context als xats del projecte.', addFiles: 'Afegeix fitxers', noFiles: 'Encara no hi ha fitxers', remove: 'Treu', cancel: 'Cancel·la', save: 'Desa', create: 'Crea el projecte', del: 'Elimina', delTitle: 'Vols eliminar el projecte?', delBody: 'S’eliminaran «{n}» i els seus fitxers. Les converses es conserven, sense projecte.', edit: 'Edita', exit: 'Surt', label: 'Projecte', chatsN: '{n} xats', chat1: '1 xat', filesN: '{n} fitxers', file1: '1 fitxer', empty: 'Agrupa xats, instruccions i fitxers per tema.', nameReq: 'Posa un nom al projecte.', tooBig: '{f}: massa gran (màx. 200 KB)', notText: '{f}: format no compatible', created: 'Projecte creat', saved: 'Projecte desat', deleted: 'Projecte eliminat', switched: 'Projecte actiu: {n}', left: 'Cap projecte actiu', ctxHead: 'Context del projecte «{n}»', instrHead: 'Instruccions del projecte' }
-  };
-  function pt(k) {
-    var l = (window.TA && TA.lang) ? TA.lang() : 'zh-TW';
-    var d = PROJ_I18N[l] || PROJ_I18N[l === 'es' || l === 'ca' ? l : 'en'] || PROJ_I18N.en;
-    return d[k] != null ? d[k] : PROJ_I18N.en[k];
-  }
-  function projectById(id) { if (!id) return null; for (var i = 0; i < projects.length; i++) if (projects[i] && projects[i].id === id) return projects[i]; return null; }
-  function projectDocs(id) { return documents.filter(function(d) { return d.projectId === id; }); }
-  function projCount(n, one, many) { return n === 1 ? pt(one) : pt(many).replace('{n}', n); }
-  function projAnnounce(msg) { try { if (window.TAP && TAP._ && TAP._.announce) TAP._.announce(msg); } catch(eA) {} }
-  function projectContext() {
-    var p = projectById(currentProjectId);
-    if (!p) return '';
-    var parts = [pt('ctxHead').replace('{n}', p.name)];
-    if (p.description) parts.push(String(p.description).slice(0, 300));
-    if (p.instructions) parts.push(pt('instrHead') + ':\n' + String(p.instructions).slice(0, 4000));
-    return parts.join('\n');
-  }
-  function projectHeroHtml() {
-    var p = projectById(currentProjectId);
-    if (!p) return '';
-    return '<div class="proj-hero">' + PROJ_ICON + '<span class="proj-hero-label">' + escapeHtml(pt('label')) + '</span>' +
-      '<strong class="proj-hero-name">' + escapeHtml(p.name) + '</strong>' +
-      '<button type="button" class="hist-bar-btn" id="proj-hero-edit">' + escapeHtml(pt('edit')) + '</button>' +
-      '<button type="button" class="hist-bar-btn" id="proj-hero-exit">' + escapeHtml(pt('exit')) + '</button></div>';
-  }
-  function switchProject(id) {
-    var p = projectById(id);
-    currentProjectId = p ? p.id : null;
-    try { if (currentProjectId) localStorage.setItem('ta_project_active', currentProjectId); else localStorage.removeItem('ta_project_active'); } catch(eS) {}
-    if (p && p.role && window.TAP && TAP._ && TAP._.setRole) { try { TAP._.setRole(p.role); } catch(eR) {} }
-    var cur = chats[currentChatId];
-    if (p && cur && Array.isArray(cur.messages) && cur.messages.length && cur.projectId !== p.id) {
-      currentChatId = Date.now().toString();
-    }
-    sidebarView = 'chats';
-    setSidebarView('chats');
-    var c2 = chats[currentChatId];
-    if (!c2 || !c2.messages || !c2.messages.length) loadChatView();
-    projAnnounce(p ? pt('switched').replace('{n}', p.name) : pt('left'));
-  }
 
+  // ---- Projects (D1): one folder + one permanent conversation per project ------
+  var proj = { list: [], current: null, messages: [], oldestId: 0, newestId: 0, more: false, epoch: 0, rev: 0, treeRev: -1, tree: [], collapsed: {}, openFile: null, pollTimer: 0, drawerTab: '', loadingOlder: false, treeTimer: 0 };
+  window.PAI_projectName = function(id) {
+    for (var i = 0; i < proj.list.length; i++) if (proj.list[i].id === id) return proj.list[i].name;
+    return '';
+  };
+  var PROJ_TOOL_GROUPS = [['web', '網頁（web_search、fetch_url）'], ['files', '檔案工具'], ['memory', '記憶（remember / forget / recall）'], ['history', '搜尋對話紀錄（search_history）'], ['utility', '計算與時間']];
+  function projToast(text, bad) {
+    var el = document.getElementById('proj-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = bad ? 'var(--red)' : 'var(--muted)';
+    clearTimeout(projToast.timer);
+    if (text) projToast.timer = setTimeout(function() { el.textContent = ''; }, 4000);
+  }
+  function loadProjectList() {
+    return apiJson('/api/projects').then(function(d) {
+      proj.list = d.projects || [];
+      if (sidebarView === 'projects') renderSidebar();
+      fillMemoryScopeOptions();
+    }).catch(function(e) { console.warn('projects', e); });
+  }
+  function fillMemoryScopeOptions() {
+    ['memory-new-scope', 'memory-filter'].forEach(function(id) {
+      var sel = document.getElementById(id);
+      if (!sel) return;
+      var keep = sel.value;
+      Array.prototype.slice.call(sel.querySelectorAll('option[data-proj]')).forEach(function(o) { o.remove(); });
+      proj.list.forEach(function(p) {
+        var o = document.createElement('option');
+        o.value = p.id; o.textContent = '專案：' + p.name; o.setAttribute('data-proj', '1');
+        sel.appendChild(o);
+      });
+      sel.value = keep;
+      if (sel.value !== keep) sel.value = id === 'memory-filter' ? '' : 'global';
+    });
+  }
+  window.PAI_onSettingsOpen = function() { fillMemoryScopeOptions(); };
   function renderProjectsList(list, filterText) {
     var head = document.createElement('button');
     head.type = 'button';
     head.className = 'new-chat-btn proj-new-btn';
     head.id = 'new-project-btn';
-    head.innerHTML = '<span class="nc-main"><svg class="nc-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>' + escapeHtml(pt('newProject')) + '</span></span>';
-    head.onclick = function() { openProjectModal(null); };
+    head.innerHTML = '<span class="nc-main"><svg class="nc-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>新增專案</span></span>';
+    head.onclick = createProjectPrompt;
     list.appendChild(head);
-    var filtered = projects.filter(function(p) {
-      if (!p) return false;
-      if (!filterText) return true;
-      return ((p.name || '') + ' ' + (p.description || '')).toLowerCase().includes(filterText);
-    });
-    if (!filtered.length) {
-      var emptyP = document.createElement('div');
-      emptyP.className = 'empty-side proj-empty';
-      emptyP.innerHTML = '<strong>' + escapeHtml(pt('emptyTitle')) + '</strong><span>' + escapeHtml(pt('empty')) + '</span>';
-      list.appendChild(emptyP);
+    var rows = proj.list.filter(function(p) { return !filterText || (p.name || '').toLowerCase().indexOf(filterText) !== -1; });
+    if (!rows.length) {
+      var empty = document.createElement('div');
+      empty.className = 'empty-side proj-empty';
+      empty.textContent = '還沒有專案。每個專案是一個資料夾加一段永久對話。';
+      list.appendChild(empty);
       return;
     }
-    var wrap = document.createElement('div');
-    wrap.className = 'proj-cards';
-    wrap.setAttribute('role', 'list');
-    filtered.forEach(function(p) {
-      var nChats = Object.keys(chats).filter(function(k) { return chats[k] && chats[k].projectId === p.id; }).length;
-      var nFiles = projectDocs(p.id).length;
-      var active = currentProjectId === p.id;
-      var card = document.createElement('div');
-      card.className = 'proj-card' + (active ? ' active' : '');
-      card.setAttribute('role', 'listitem');
-      card.setAttribute('data-proj', p.id);
-      var main = document.createElement('button');
-      main.type = 'button';
-      main.className = 'proj-card-main';
-      if (active) main.setAttribute('aria-current', 'true');
-      main.innerHTML = '<span class="proj-card-ico">' + PROJ_ICON + '</span><span class="proj-card-body">' +
-        '<span class="proj-card-name">' + escapeHtml(p.name) + '</span>' +
-        (p.description ? '<span class="proj-card-desc">' + escapeHtml(p.description) + '</span>' : '') +
-        '<span class="proj-card-meta">' + escapeHtml(projCount(nChats, 'chat1', 'chatsN') + ' · ' + projCount(nFiles, 'file1', 'filesN')) + '</span></span>';
-      main.onclick = function() { switchProject(p.id); if (window.innerWidth <= 860) toggleSidebar(false); };
-      var acts = document.createElement('div');
-      acts.className = 'proj-card-acts';
-      var eb = document.createElement('button');
-      eb.type = 'button'; eb.className = 'proj-act'; eb.setAttribute('data-proj-edit', p.id);
-      eb.setAttribute('aria-label', pt('edit') + ': ' + p.name); eb.title = pt('edit');
-      eb.innerHTML = PROJ_EDIT_ICON;
-      eb.onclick = function(e) { e.stopPropagation(); openProjectModal(p); };
-      var db = document.createElement('button');
-      db.type = 'button'; db.className = 'proj-act'; db.setAttribute('data-proj-del', p.id);
-      db.setAttribute('aria-label', pt('del') + ': ' + p.name); db.title = pt('del');
-      db.innerHTML = PROJ_DEL_ICON;
-      db.onclick = function(e) { e.stopPropagation(); confirmDeleteProject(p); };
-      acts.appendChild(eb); acts.appendChild(db);
-      card.appendChild(main); card.appendChild(acts);
-      wrap.appendChild(card);
+    rows.forEach(function(p) {
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'history-item proj-item' + (proj.current && proj.current.id === p.id ? ' active' : '');
+      item.innerHTML = PROJ_ICON + '<span class="history-title"></span><span class="proj-item-meta"></span>';
+      item.querySelector('.history-title').textContent = p.name;
+      item.querySelector('.proj-item-meta').textContent = (p.files || 0) + ' 個檔案';
+      item.onclick = function() { openProject(p.id); if (window.innerWidth <= 860) toggleSidebar(false); };
+      list.appendChild(item);
     });
-    list.appendChild(wrap);
   }
-
-  function deleteProject(id) {
-    projects = projects.filter(function(x) { return x && x.id !== id; });
-    Object.keys(chats).forEach(function(k) { if (chats[k] && chats[k].projectId === id) chats[k].projectId = null; });
-    documents = documents.filter(function(d) { return d.projectId !== id; });
-    if (currentProjectId === id) { currentProjectId = null; try { localStorage.removeItem('ta_project_active'); } catch(eD) {} }
-    saveProjects(); saveChats(); saveDocuments();
-    renderSidebar();
-    var c = chats[currentChatId];
-    if (!c || !c.messages || !c.messages.length) loadChatView();
-    var nb = document.getElementById('new-project-btn'); if (nb && sidebarView === 'projects') nb.focus();
-    projAnnounce(pt('deleted'));
+  function createProjectPrompt() {
+    var name = prompt('專案名稱');
+    if (!name || !name.trim()) return;
+    apiJson('/api/projects', { method: 'POST', body: { name: name.trim().slice(0, 80) } }).then(function(d) {
+      return loadProjectList().then(function() { openProject(d.project.id); });
+    }).catch(function(e) { alert(e.message); });
   }
-
-  function confirmDeleteProject(p) {
-    if (!(window.TAP && TAP._ && TAP._.dialog)) { if (window.confirm(pt('delTitle'))) deleteProject(p.id); return; }
-    var U = TAP._;
-    var d;
-    var cancel = U.btn(pt('cancel'), '', function() { d.close(); });
-    var del = U.btn(pt('del'), 'primary danger', function() { d.close('ok'); deleteProject(p.id); });
-    del.id = 'proj-del-confirm';
-    d = U.dialog({
-      title: pt('delTitle'),
-      body: U.el('p', { class: 'proj-del-body', text: pt('delBody').replace('{n}', p.name) }),
-      buttons: [cancel, del],
-      initialFocus: cancel,
-      returnFocus: document.getElementById('tab-projects') || undefined
+  function setProjectMode(on) {
+    document.body.classList.toggle('in-project', !!on);
+    var bar = document.getElementById('proj-header');
+    if (bar) bar.hidden = !on;
+    if (!on) closeDrawer();
+  }
+  function openProject(id) {
+    stopProjectPoll();
+    return apiJson('/api/projects/' + encodeURIComponent(id)).then(function(d) {
+      proj.current = d.project;
+      proj.messages = []; proj.oldestId = 0; proj.newestId = 0; proj.more = false;
+      proj.epoch = d.project.epoch; proj.rev = d.project.rev; proj.treeRev = -1; proj.tree = []; proj.openFile = null;
+      try { localStorage.setItem('ta_project_open', id); } catch (e) {}
+      setProjectMode(true);
+      renderProjectHeader();
+      var container = document.getElementById('chat-container');
+      if (container) container.innerHTML = '<div class="proj-loading">載入中…</div>';
+      renderSidebar();
+      return loadProjectMessages().then(function() {
+        startProjectPoll();
+        if (proj.drawerTab) renderDrawer();
+      });
+    }).catch(function(e) {
+      try { localStorage.removeItem('ta_project_open'); } catch (er) {}
+      alert(e.message || '無法開啟專案');
     });
-    d.card.classList.add('proj-dialog-sm');
   }
-
-  var PROJ_TEXT_EXT = /\.(txt|md|markdown|csv|tsv|json|html?|css|js|mjs|ts|tsx|jsx|py|rb|go|rs|java|c|cpp|h|sh|xml|ya?ml|toml|ini|sql|log)$/i;
-  function openProjectModal(p) {
-    if (!(window.TAP && TAP._ && TAP._.dialog)) {
-      var nm = prompt(t('projName'));
-      if (!nm || !nm.trim()) return;
-      var np = { id: 'p_' + Date.now(), name: nm.trim().slice(0, 60), description: '', instructions: '', role: '', created: Date.now() };
-      projects.unshift(np); saveProjects(); switchProject(np.id);
+  function leaveProject() {
+    stopProjectPoll();
+    proj.current = null;
+    try { localStorage.removeItem('ta_project_open'); } catch (e) {}
+    setProjectMode(false);
+  }
+  function renderProjectHeader() {
+    var name = document.getElementById('proj-header-name');
+    if (name && proj.current) name.textContent = proj.current.name;
+  }
+  function projectMessageNode(m) {
+    var refs = addMessageToDOM(m.role === 'user' ? 'user' : 'ai', m.content, (m.meta && m.meta.sources) || [], m.created_at, undefined, null, null, { noRegen: true, prepend: m.__prepend });
+    if (refs && refs.row) refs.row.setAttribute('data-msg-id', String(m.id));
+    if (m.role !== 'user' && refs && refs.contentCol && m.meta && m.meta.steps && m.meta.steps.length) {
+      var box = document.createElement('div');
+      box.innerHTML = stepsHtml(m.meta.steps);
+      if (box.firstChild) refs.contentCol.insertBefore(box.firstChild, refs.contentCol.firstChild);
+    }
+    return refs;
+  }
+  var TOOL_LABELS = { web_search: '搜尋網頁', fetch_url: '讀取網頁', calculate: '計算', current_time: '查詢時間', document_search: '搜尋文件', remember: '記住', forget: '忘記', recall: '回想記憶', list_files: '列出檔案', read_file: '讀取檔案', write_file: '寫入檔案', edit_file: '編輯檔案', append_file: '附加內容', move_file: '移動', delete_file: '刪除', make_dir: '建立資料夾', search_files: '搜尋檔案', search_history: '搜尋對話紀錄', load_skill: '載入技能' };
+  function stepsHtml(steps) {
+    if (!steps || !steps.length) return '';
+    return '<div class="tool-steps">' + steps.map(function(st) {
+      var mark = st.status === 'running' ? '…' : (st.status === 'error' ? '✕' : '✓');
+      var name = TOOL_LABELS[st.name] || (String(st.name || '').indexOf('mcp__') === 0 ? 'MCP ' + String(st.name).slice(5).replace('__', ' · ') : st.name);
+      var label = name + (st.label ? '：' + st.label : '');
+      var err = st.status === 'error' && st.error ? '（' + st.error + '）' : '';
+      var detail = (st.args || st.result) ? '<div class="tool-step-detail">' +
+        (st.args ? '<div class="tool-step-k">參數</div><pre>' + escapeHtml(st.args) + '</pre>' : '') +
+        (st.result ? '<div class="tool-step-k">結果（截斷）</div><pre>' + escapeHtml(st.result) + '</pre>' : '') + '</div>' : '';
+      return '<details class="tool-step ' + escapeHtml(st.status || '') + '"><summary>' + mark + ' ' + escapeHtml(label) + escapeHtml(err) + '</summary>' + detail + '</details>';
+    }).join('') + '</div>';
+  }
+  function loadProjectMessages() {
+    if (!proj.current) return Promise.resolve();
+    var pid = proj.current.id;
+    return apiJson('/api/projects/' + encodeURIComponent(pid) + '/messages?limit=30').then(function(d) {
+      if (!proj.current || proj.current.id !== pid) return;
+      proj.messages = d.messages || [];
+      proj.more = !!d.more;
+      proj.epoch = d.epoch; proj.rev = d.rev;
+      proj.oldestId = proj.messages.length ? proj.messages[0].id : 0;
+      proj.newestId = proj.messages.length ? proj.messages[proj.messages.length - 1].id : 0;
+      renderProjectMessages();
+    });
+  }
+  function renderProjectMessages() {
+    var container = document.getElementById('chat-container');
+    if (!container || !proj.current) return;
+    container.innerHTML = '';
+    if (!proj.messages.length) {
+      container.innerHTML = '<div class="ta-hero proj-hero-empty"><h1 class="hero-heading"></h1><p class="hero-subheading">這是專案的永久對話。模型可以讀寫專案資料夾裡的檔案，也會記得專案指示與記憶。</p></div>';
+      container.querySelector('.hero-heading').textContent = proj.current.name;
       return;
     }
-    var U = TAP._;
-    var editing = !!p;
-    var name = U.el('input', { class: 'form-input', type: 'text', maxlength: '60', placeholder: pt('namePh'), autocomplete: 'off', id: 'proj-f-name', required: true });
-    var desc = U.el('textarea', { class: 'form-textarea proj-desc', rows: '2', maxlength: '300', placeholder: pt('descPh'), id: 'proj-f-desc' });
-    var instr = U.el('textarea', { class: 'form-textarea', rows: '5', maxlength: '4000', placeholder: pt('instrPh'), id: 'proj-f-instr' });
-    var role = U.el('select', { class: 'form-input proj-role', id: 'proj-f-role' });
-    var roleList = [];
-    try { roleList = (U.roles() || []).filter(function(r) { return r.id !== 'custom'; }); } catch(eRl) {}
-    roleList.forEach(function(r) { role.appendChild(U.el('option', { value: r.id === 'none' ? '' : r.id, text: r.name })); });
-    if (editing) { name.value = p.name || ''; desc.value = p.description || ''; instr.value = p.instructions || ''; role.value = p.role || ''; }
-    var err = U.el('p', { class: 'proj-err', role: 'alert', id: 'proj-f-err' });
-    var keep = editing ? projectDocs(p.id).map(function(d) { return { id: d.id, title: d.title, size: String(d.content || '').length }; }) : [];
-    var removed = {};
-    var added = [];
-    var fileList = U.el('ul', { class: 'proj-files', id: 'proj-f-files' });
-    function paintFiles() {
-      fileList.innerHTML = '';
-      var items = keep.filter(function(f) { return !removed[f.id]; }).concat(added);
-      if (!items.length) { fileList.appendChild(U.el('li', { class: 'proj-file-empty', text: pt('noFiles') })); return; }
-      items.forEach(function(f) {
-        var kb = Math.max(1, Math.round((f.size || 0) / 1024)) + ' KB';
-        var x = U.el('button', { type: 'button', class: 'proj-file-x', 'aria-label': pt('remove') + ': ' + f.title, title: pt('remove'), text: '✕', onclick: function() {
-          if (f.id) removed[f.id] = true; else added = added.filter(function(a) { return a !== f; });
-          paintFiles();
-        } });
-        fileList.appendChild(U.el('li', { class: 'proj-file' }, [U.el('span', { class: 'proj-file-name', text: f.title }), U.el('span', { class: 'proj-file-size', text: kb }), x]));
-      });
+    if (proj.more) {
+      var more = document.createElement('button');
+      more.type = 'button'; more.className = 'hist-bar-btn proj-more'; more.id = 'proj-load-older';
+      more.textContent = '載入較早的訊息';
+      more.onclick = loadOlderMessages;
+      container.appendChild(more);
     }
-    paintFiles();
-    var picker = U.el('input', { type: 'file', multiple: true, class: 'proj-file-input', id: 'proj-f-input', tabindex: '-1', 'aria-hidden': 'true',
-      accept: '.txt,.md,.markdown,.csv,.tsv,.json,.html,.htm,.css,.js,.mjs,.ts,.tsx,.jsx,.py,.rb,.go,.rs,.java,.c,.cpp,.h,.sh,.xml,.yaml,.yml,.toml,.ini,.sql,.log,text/*' });
-    picker.addEventListener('change', function() {
-      var fs = Array.prototype.slice.call(picker.files || []);
-      var msgs = [];
-      var jobs = fs.map(function(f) {
-        if (f.size > 200 * 1024) { msgs.push(pt('tooBig').replace('{f}', f.name)); return Promise.resolve(); }
-        if (!(PROJ_TEXT_EXT.test(f.name) || /^text\//.test(f.type || ''))) { msgs.push(pt('notText').replace('{f}', f.name)); return Promise.resolve(); }
-        return f.text().then(function(txt) {
-          if (txt.indexOf('\u0000') !== -1) { msgs.push(pt('notText').replace('{f}', f.name)); return; }
-          added.push({ title: f.name.slice(0, 120), content: txt.slice(0, 20000), size: Math.min(txt.length, 20000), lang: (f.name.split('.').pop() || '').toLowerCase() });
-        }).catch(function() { msgs.push(pt('notText').replace('{f}', f.name)); });
-      });
-      Promise.all(jobs).then(function() { picker.value = ''; err.textContent = msgs.join(' · '); paintFiles(); });
+    proj.messages.forEach(projectMessageNode);
+    scrollToEnd();
+  }
+  function loadOlderMessages() {
+    if (!proj.current || !proj.more || proj.loadingOlder) return;
+    proj.loadingOlder = true;
+    var scroller = document.getElementById('chat-scroll');
+    var prevHeight = scroller ? scroller.scrollHeight : 0;
+    var pid = proj.current.id;
+    apiJson('/api/projects/' + encodeURIComponent(pid) + '/messages?limit=30&before=' + proj.oldestId).then(function(d) {
+      if (!proj.current || proj.current.id !== pid) return;
+      var older = d.messages || [];
+      proj.more = !!d.more;
+      if (!older.length) return;
+      proj.oldestId = older[0].id;
+      var container = document.getElementById('chat-container');
+      var btn = document.getElementById('proj-load-older');
+      if (btn) btn.remove();
+      older.slice().reverse().forEach(function(m) { m.__prepend = true; projectMessageNode(m); });
+      proj.messages = older.concat(proj.messages);
+      if (proj.more && container) {
+        var more = document.createElement('button');
+        more.type = 'button'; more.className = 'hist-bar-btn proj-more'; more.id = 'proj-load-older';
+        more.textContent = '載入較早的訊息';
+        more.onclick = loadOlderMessages;
+        container.insertBefore(more, container.firstChild);
+      }
+      if (scroller) scroller.scrollTop = scroller.scrollHeight - prevHeight;
+    }).catch(function(e) { projToast(e.message, true); }).then(function() { proj.loadingOlder = false; });
+  }
+  function startProjectPoll() {
+    stopProjectPoll();
+    proj.pollTimer = setInterval(pollProject, 10000);
+  }
+  function stopProjectPoll() {
+    if (proj.pollTimer) clearInterval(proj.pollTimer);
+    proj.pollTimer = 0;
+  }
+  function pollProject() {
+    if (!proj.current || isGenerating || document.hidden) return;
+    var pid = proj.current.id;
+    apiJson('/api/projects/' + encodeURIComponent(pid) + '/poll?after=' + proj.newestId).then(function(d) {
+      if (!proj.current || proj.current.id !== pid || isGenerating) return;
+      if (d.epoch !== proj.epoch) { proj.epoch = d.epoch; loadProjectMessages(); return; }
+      var fresh = (d.messages || []).filter(function(m) { return m.id > proj.newestId; });
+      if (fresh.length) {
+        if (!proj.messages.length) { proj.messages = fresh; proj.newestId = fresh[fresh.length - 1].id; proj.oldestId = fresh[0].id; renderProjectMessages(); }
+        else {
+          fresh.forEach(function(m) { proj.messages.push(m); projectMessageNode(m); });
+          proj.newestId = fresh[fresh.length - 1].id;
+        }
+      }
+      if (d.rev !== proj.rev) { proj.rev = d.rev; if (proj.drawerTab === 'files') refreshTree(); }
+    }).catch(function() {});
+  }
+  function scheduleTreeRefresh() {
+    clearTimeout(proj.treeTimer);
+    proj.treeTimer = setTimeout(function() { if (proj.drawerTab === 'files') refreshTree(); else proj.treeRev = -1; }, 400);
+  }
+
+  // Streams a project chat turn. The server saves both messages in D1.
+  async function sendProjectMessage(text) {
+    var p = proj.current;
+    if (!p) return;
+    isGenerating = true;
+    abortCtl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    setGenerating(true);
+    var hero = document.querySelector('#chat-container .proj-hero-empty');
+    if (hero) hero.remove();
+    var userRefs = addMessageToDOM('user', text, null, Date.now(), undefined, null, null, { noRegen: true });
+    var msgDom = addMessageToDOM('ai', '', null, Date.now(), undefined, null, null, { noRegen: true });
+    var textContainer = msgDom.textContainer;
+    if (textContainer) textContainer.innerHTML = '<span class="pulse-cursor"></span>';
+    var fullText = '', sources = [], steps = [], notices = [], streamError = null, savedIds = null;
+    function paint(done) {
+      if (!textContainer) return;
+      textContainer.innerHTML = stepsHtml(steps) + renderMarkdown(fullText) +
+        (notices.length ? '<div class="msg-time">' + escapeHtml(notices.join(' ')) + '</div>' : '') +
+        (done ? '' : '<span class="pulse-cursor"></span>');
+      scrollToEnd();
+    }
+    try {
+      var tzVal = localStorage.getItem('ta_timezone');
+      var tz = (tzVal && tzVal !== 'auto') ? tzVal : (function() { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei'; } catch (e) { return 'Asia/Taipei'; } })();
+      var payload = { project_id: p.id, message: text, search_web: isWebSearch, length_mode: currentLength, locale: (window.TA && TA.lang) ? TA.lang() : 'zh-TW', timezone: tz };
+      if (window.PAI_toolsOff) payload.tools_off = window.PAI_toolsOff();
+      if (window.PAI_forcedSkill) payload.skill = window.PAI_forcedSkill(text);
+      var response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: abortCtl ? abortCtl.signal : undefined, body: JSON.stringify(payload) });
+      if (!response.ok) {
+        var errJson = await response.json().catch(function() { return {}; });
+        throw new Error(errJson.error || ('HTTP ' + response.status));
+      }
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var buffer = '';
+      var handle = function(dataStr) {
+        if (!dataStr || dataStr === '[DONE]') return;
+        var ev; try { ev = JSON.parse(dataStr); } catch (e) { return; }
+        if (!ev || typeof ev !== 'object') return;
+        if (ev.error) { streamError = String(ev.error); return; }
+        if (ev.sources) sources = ev.sources;
+        if (ev.notice) { notices.push(String(ev.notice)); paint(false); }
+        if (ev.memory && ev.memory.op === 'remember') notices.push('已記住：' + ev.memory.text);
+        if (ev.fs_op) scheduleTreeRefresh();
+        if (ev.saved) savedIds = Object.assign(savedIds || {}, ev.saved);
+        if (ev.tool && ev.tool.id) {
+          var found = null;
+          for (var k = 0; k < steps.length; k++) if (steps[k].id === ev.tool.id) found = steps[k];
+          if (found) Object.assign(found, ev.tool); else steps.push(Object.assign({}, ev.tool));
+          paint(false);
+        }
+        if (ev.content) { fullText += ev.content; paint(false); }
+      };
+      while (true) {
+        var chunk = await reader.read();
+        if (chunk.done) break;
+        buffer += decoder.decode(chunk.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (var i = 0; i < lines.length; i++) {
+          var tl = lines[i].trim();
+          if (tl.indexOf('data:') === 0) handle(tl.replace(/^data:\s*/, ''));
+        }
+      }
+      if (buffer.trim().indexOf('data:') === 0) handle(buffer.trim().replace(/^data:\s*/, ''));
+      if (streamError && !fullText) throw new Error(streamError);
+      if (streamError) notices.push(t('error') + ': ' + streamError);
+      paint(true);
+      if (sources.length && msgDom.contentCol) {
+        var srcBox = document.createElement('div');
+        srcBox.className = 'sources-box';
+        srcBox.innerHTML = '<div class="sources-title">' + t('sources') + '</div><div class="sources-list">' +
+          sources.filter(function(s) { return s && /^https?:\/\//i.test(String(s.url || '')); }).map(function(s) { return '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener noreferrer" class="source-tag">' + escapeHtml(s.title || s.url) + '</a>'; }).join('') + '</div>';
+        msgDom.contentCol.appendChild(srcBox);
+      }
+    } catch (err) {
+      var aborted = err && (err.name === 'AbortError' || /abort/i.test(err.message || ''));
+      if (textContainer) textContainer.innerHTML = aborted ? '<span style="color:var(--dim)">' + escapeHtml(t('stopped')) + '（伺服器仍會完成並儲存這次回覆）</span>' : '<span style="color:var(--red);font-weight:600">' + escapeHtml(t('error') + ': ' + err.message) + '</span>';
+    } finally {
+      isGenerating = false;
+      abortCtl = null;
+      setGenerating(false);
+      if (savedIds && proj.current && proj.current.id === p.id) {
+        if (savedIds.user_id && userRefs.row) userRefs.row.setAttribute('data-msg-id', String(savedIds.user_id));
+        if (savedIds.assistant_id && msgDom.row) msgDom.row.setAttribute('data-msg-id', String(savedIds.assistant_id));
+        var newest = Math.max(savedIds.user_id || 0, savedIds.assistant_id || 0);
+        if (savedIds.user_id) proj.messages.push({ id: savedIds.user_id, role: 'user', content: text, meta: {} });
+        if (savedIds.assistant_id) proj.messages.push({ id: savedIds.assistant_id, role: 'assistant', content: fullText, meta: { steps: steps, sources: sources } });
+        if (newest > proj.newestId) proj.newestId = newest;
+        if (proj.drawerTab === 'chat') renderDrawer();
+      }
+      scrollToEnd();
+    }
+  }
+
+  // ---- Project drawer: 對話 / 檔案 / 指示 / 設定 ----
+  function openDrawer(tab) {
+    proj.drawerTab = tab || 'files';
+    var d = document.getElementById('proj-drawer');
+    if (d) d.hidden = false;
+    document.body.classList.add('proj-drawer-open');
+    renderDrawer();
+  }
+  function closeDrawer() {
+    proj.drawerTab = '';
+    var d = document.getElementById('proj-drawer');
+    if (d) d.hidden = true;
+    document.body.classList.remove('proj-drawer-open');
+    syncDrawerTabs();
+  }
+  function syncDrawerTabs() {
+    document.querySelectorAll('[data-proj-tab]').forEach(function(b) {
+      var on = b.getAttribute('data-proj-tab') === (proj.drawerTab || 'chat');
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    var addBtn = U.el('button', { type: 'button', class: 'settings-foot-btn proj-add-files', id: 'proj-f-add', text: '+ ' + pt('addFiles'), onclick: function() { picker.click(); } });
-    var filesGroup = U.el('div', { class: 'form-group proj-files-group' }, [
-      U.el('span', { class: 'form-label', id: 'proj-f-files-l', text: pt('files') }),
-      U.el('p', { class: 'proj-hint', text: pt('filesHint') }),
-      fileList, addBtn, picker
-    ]);
-    fileList.setAttribute('aria-labelledby', 'proj-f-files-l');
-    var rowTop = U.el('div', { class: 'proj-row' }, [U.field(pt('name'), name), roleList.length ? U.field(pt('role'), role) : null]);
-    var body = U.el('div', { class: 'proj-form' }, [rowTop, U.field(pt('desc'), desc), U.field(pt('instr'), instr), filesGroup, err]);
-    var d;
-    function save() {
-      var n = name.value.trim();
-      if (!n) { err.textContent = pt('nameReq'); name.setAttribute('aria-invalid', 'true'); name.focus(); return; }
-      var obj = editing ? p : { id: 'p_' + Date.now() + Math.random().toString(36).slice(2, 6), created: Date.now() };
-      obj.name = n.slice(0, 60);
-      obj.description = desc.value.trim().slice(0, 300);
-      obj.instructions = instr.value.trim().slice(0, 4000);
-      obj.role = role.value || '';
-      obj.updated = Date.now();
-      if (!editing) projects.unshift(obj);
-      documents = documents.filter(function(x) { return !removed[x.id]; });
-      added.forEach(function(f, i) {
-        documents.push({ id: 'doc_' + Date.now() + '_' + i, title: f.title, content: f.content, type: 'file', lang: f.lang, created: Date.now(), projectId: obj.id });
+  }
+  function renderDrawer() {
+    syncDrawerTabs();
+    var body = document.getElementById('proj-drawer-body');
+    if (!body || !proj.current) return;
+    body.innerHTML = '';
+    if (proj.drawerTab === 'chat') return renderChatTab(body);
+    if (proj.drawerTab === 'files') return renderFilesTab(body);
+    if (proj.drawerTab === 'instructions') return renderInstructionsTab(body);
+    if (proj.drawerTab === 'settings') return renderProjectSettingsTab(body);
+  }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function(k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'onclick') n.onclick = attrs[k];
+      else if (k === 'className') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function(c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function renderChatTab(body) {
+    var p = proj.current;
+    body.appendChild(el('p', { className: 'settings-hint', text: '這個專案只有一段永久對話。訊息存在 D1，在所有裝置同步；較早的內容會自動濃縮成摘要。' }));
+    body.appendChild(el('div', { className: 'settings-block-title', text: '對話摘要' }));
+    body.appendChild(el('pre', { className: 'proj-summary', text: p.summary || '（還沒有摘要；對話變長時會自動產生）' }));
+    body.appendChild(el('div', { className: 'settings-actions proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '壓縮（立即產生摘要）', onclick: compactProject }),
+      el('button', { type: 'button', className: 'topbar-action-btn btn-danger', text: '清空對話', onclick: clearProjectChat }),
+    ]));
+    body.appendChild(el('p', { className: 'settings-hint', text: '清空對話只刪除訊息與摘要；檔案、指示與記憶不受影響。' }));
+  }
+  function compactProject() {
+    if (!proj.current) return;
+    projToast('壓縮中…');
+    apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/compact', { method: 'POST', body: {} }).then(function(d) {
+      projToast(d.compacted ? '已更新摘要' : '訊息太少，不需要壓縮');
+      return apiJson('/api/projects/' + encodeURIComponent(proj.current.id));
+    }).then(function(d) { if (d && d.project) { proj.current = d.project; if (proj.drawerTab === 'chat') renderDrawer(); } })
+      .catch(function(e) { projToast(e.message, true); });
+  }
+  function clearProjectChat() {
+    if (!proj.current || !confirm('清空「' + proj.current.name + '」的所有對話訊息？檔案與記憶會保留。')) return;
+    apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/messages', { method: 'DELETE' }).then(function() {
+      proj.current.summary = '';
+      proj.epoch++;
+      return loadProjectMessages();
+    }).then(function() { projToast('已清空對話'); if (proj.drawerTab === 'chat') renderDrawer(); })
+      .catch(function(e) { projToast(e.message, true); });
+  }
+
+  // Files tab: tree + editor.
+  function refreshTree() {
+    if (!proj.current) return Promise.resolve();
+    var pid = proj.current.id;
+    return apiJson('/api/projects/' + encodeURIComponent(pid) + '/files').then(function(d) {
+      if (!proj.current || proj.current.id !== pid) return;
+      proj.tree = d.entries || [];
+      proj.treeRev = d.rev;
+      proj.rev = d.rev;
+      if (proj.drawerTab === 'files' && !proj.openFile) renderDrawer();
+    });
+  }
+  function fsOp(body) {
+    return apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/fs', { method: 'POST', body: body }).then(refreshTree);
+  }
+  function askPath(question, def) {
+    var v = prompt(question, def || '');
+    if (v === null) return null;
+    v = v.trim().replace(/^\/+/, '');
+    return v || null;
+  }
+  function renderFilesTab(body) {
+    if (proj.openFile) return renderEditor(body);
+    if (proj.treeRev !== proj.rev || proj.treeRev < 0) { body.appendChild(el('p', { className: 'settings-hint', text: '載入中…' })); refreshTree(); return; }
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '＋ 檔案', onclick: function() {
+        var path = askPath('新檔案路徑（例如 notes/todo.md）');
+        if (!path) return;
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file', { method: 'PUT', body: { path: path, content: '' } })
+          .then(function() { return refreshTree(); }).then(function() { openFileInEditor(path); }).catch(function(e) { projToast(e.message, true); });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '＋ 資料夾', onclick: function() {
+        var path = askPath('資料夾路徑');
+        if (path) fsOp({ op: 'mkdir', path: path }).catch(function(e) { projToast(e.message, true); });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '重新整理', onclick: function() { proj.treeRev = -1; refreshTree(); } }),
+    ]));
+    if (!proj.tree.length) { body.appendChild(el('p', { className: 'settings-hint', text: '資料夾是空的。新增檔案，或請模型幫你建立。只支援文字檔，單檔上限 1 MB。' })); return; }
+    var list = el('div', { className: 'file-tree', role: 'tree' });
+    proj.tree.forEach(function(e) {
+      var hidden = false;
+      var parts = e.path.split('/');
+      for (var i = 1; i < parts.length; i++) if (proj.collapsed[parts.slice(0, i).join('/')]) hidden = true;
+      if (hidden) return;
+      var depth = parts.length - 1;
+      var name = parts[parts.length - 1];
+      var row = el('div', { className: 'file-row' + (e.dir ? ' dir' : ''), role: 'treeitem' });
+      row.style.paddingLeft = (6 + depth * 14) + 'px';
+      var main = el('button', { type: 'button', className: 'file-name', title: e.path });
+      main.textContent = (e.dir ? (proj.collapsed[e.path] ? '▸ ' : '▾ ') + '📁 ' : '📄 ') + name;
+      main.onclick = function() {
+        if (e.dir) { proj.collapsed[e.path] = !proj.collapsed[e.path]; renderDrawer(); }
+        else openFileInEditor(e.path);
+      };
+      row.appendChild(main);
+      if (!e.dir) row.appendChild(el('span', { className: 'file-size', text: e.size >= 1024 ? Math.round(e.size / 1024) + ' KB' : e.size + ' B' }));
+      row.appendChild(el('button', { type: 'button', className: 'mini-x', title: '移動或重新命名', 'aria-label': '移動或重新命名 ' + e.path, text: '↗', onclick: function() {
+        var to = askPath('移動或重新命名到：', e.path);
+        if (to && to !== e.path) fsOp({ op: 'move', from: e.path, to: to }).catch(function(err) { projToast(err.message, true); });
+      } }));
+      row.appendChild(el('button', { type: 'button', className: 'mini-x', title: '刪除', 'aria-label': '刪除 ' + e.path, text: '✕', onclick: function() {
+        if (!confirm('刪除 ' + e.path + (e.dir ? ' 與其中所有檔案' : '') + '？')) return;
+        fsOp({ op: 'delete', path: e.path, recursive: !!e.dir }).catch(function(err) { projToast(err.message, true); });
+      } }));
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+  }
+  function openFileInEditor(path) {
+    if (!proj.current) return;
+    apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file?path=' + encodeURIComponent(path)).then(function(d) {
+      proj.openFile = { path: d.path, content: d.content, seq: d.seq };
+      if (proj.drawerTab !== 'files') openDrawer('files'); else renderDrawer();
+    }).catch(function(e) { projToast(e.message, true); });
+  }
+  function renderEditor(body) {
+    var f = proj.openFile;
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '← 檔案', onclick: function() { proj.openFile = null; renderDrawer(); } }),
+      el('strong', { className: 'editor-path', text: f.path }),
+    ]));
+    var ta = el('textarea', { className: 'form-textarea file-editor', spellcheck: 'false', 'aria-label': f.path });
+    ta.value = f.content;
+    body.appendChild(ta);
+    var info = el('p', { className: 'settings-hint', id: 'editor-info' });
+    var updateInfo = function() { var n = new TextEncoder().encode(ta.value).length; info.textContent = n + ' bytes / 1,000,000'; info.style.color = n > 1000000 ? 'var(--red)' : ''; };
+    ta.addEventListener('input', updateInfo); updateInfo();
+    body.appendChild(info);
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn primary', text: '儲存', onclick: function() {
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file', { method: 'PUT', body: { path: f.path, content: ta.value, seq: f.seq } })
+          .then(function(d) { f.content = ta.value; f.seq = d.seq; projToast('已儲存'); proj.treeRev = -1; })
+          .catch(function(e) {
+            if (e.code === 'stale') { if (confirm('檔案已被其他裝置或模型修改。要覆蓋嗎？（取消則保留你的編輯）')) { apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file', { method: 'PUT', body: { path: f.path, content: ta.value } }).then(function(d) { f.seq = d.seq; projToast('已覆蓋儲存'); }).catch(function(e2) { projToast(e2.message, true); }); } }
+            else projToast(e.message, true);
+          });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '重新載入', onclick: function() { openFileInEditor(f.path); } }),
+    ]));
+  }
+  function renderInstructionsTab(body) {
+    body.appendChild(el('p', { className: 'settings-hint', text: '專案指示會加在每次對話的系統提示最後，優先於其他指示。' }));
+    var ta = el('textarea', { className: 'form-textarea proj-instructions', 'aria-label': '專案指示', maxlength: '20000' });
+    ta.value = proj.current.instructions || '';
+    body.appendChild(ta);
+    body.appendChild(el('div', { className: 'proj-actions' }, [el('button', { type: 'button', className: 'topbar-action-btn primary', text: '儲存指示', onclick: function() {
+      apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'PUT', body: { instructions: ta.value } })
+        .then(function(d) { proj.current = d.project; projToast('已儲存指示'); }).catch(function(e) { projToast(e.message, true); });
+    } })]));
+  }
+  function renderProjectSettingsTab(body) {
+    var s = proj.current.settings || {};
+    var name = el('input', { className: 'form-input', type: 'text', maxlength: '80', 'aria-label': '專案名稱' });
+    name.value = proj.current.name;
+    body.appendChild(el('label', { className: 'form-label', text: '名稱' }));
+    body.appendChild(name);
+    body.appendChild(el('div', { className: 'settings-block-title', text: '模型（留空使用全域設定）' }));
+    var provSel = el('select', { className: 'form-input', 'aria-label': '供應商' });
+    provSel.appendChild(el('option', { value: '', text: '使用全域供應商' }));
+    server.providers.forEach(function(p) { var o = el('option', { value: p.id, text: p.name }); if (p.id === s.provider_id) o.selected = true; provSel.appendChild(o); });
+    var model = el('input', { className: 'form-input', type: 'text', placeholder: '模型 ID（留空使用預設）', list: 'provider-model-list', 'aria-label': '模型' });
+    model.value = s.model || '';
+    body.appendChild(provSel); body.appendChild(model);
+    body.appendChild(el('div', { className: 'settings-block-title', text: '參數覆寫（留空使用全域值）' }));
+    var pp = s.params || {};
+    var grid = el('div', { className: 'params-grid' });
+    var fields = [['temperature', 'temperature', 'number'], ['top-p', 'top_p', 'number'], ['max-tokens', 'max_tokens', 'number'], ['max-steps', 'max_steps', 'number']];
+    fields.forEach(function(f) {
+      grid.appendChild(el('label', { className: 'form-label', for: 'pp-' + f[0], text: f[1] }));
+      var inp = el('input', { className: 'form-input', type: 'number', id: 'pp-' + f[0], step: 'any' });
+      inp.value = pp[f[1]] === undefined || pp[f[1]] === null ? '' : pp[f[1]];
+      grid.appendChild(inp);
+    });
+    grid.appendChild(el('label', { className: 'form-label', for: 'pp-reasoning', text: 'reasoning_effort' }));
+    var rs = el('select', { className: 'form-input', id: 'pp-reasoning' });
+    ['', 'none', 'minimal', 'low', 'medium', 'high'].forEach(function(v) { var o = el('option', { value: v, text: v || '使用全域' }); if ((pp.reasoning_effort || '') === v) o.selected = true; rs.appendChild(o); });
+    grid.appendChild(rs);
+    body.appendChild(grid);
+    body.appendChild(el('div', { className: 'settings-block-title', text: '啟用的工具' }));
+    var off = s.tools_disabled || [];
+    var checks = PROJ_TOOL_GROUPS.map(function(g) {
+      var cb = el('input', { type: 'checkbox', 'data-group': g[0] });
+      cb.checked = off.indexOf(g[0]) === -1;
+      body.appendChild(el('label', { className: 'toggle-row' }, [el('span', { text: g[1] }), cb]));
+      return cb;
+    });
+    if (window.PAI_projectSettingsExtra) try { window.PAI_projectSettingsExtra(body, s); } catch (e) {}
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn primary', text: '儲存設定', onclick: function() {
+        var params = readParamsForm('pp-');
+        Object.keys(params).forEach(function(k) { if (params[k] === null || params[k] === '') delete params[k]; });
+        var settings = { provider_id: provSel.value, model: model.value.trim(), params: params, tools_disabled: checks.filter(function(c) { return !c.checked; }).map(function(c) { return c.getAttribute('data-group'); }) };
+        if (window.PAI_projectSettingsCollect) try { Object.assign(settings, window.PAI_projectSettingsCollect(body)); } catch (e) {}
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'PUT', body: { name: name.value.trim(), settings: settings } })
+          .then(function(d) { proj.current = d.project; renderProjectHeader(); loadProjectList(); projToast('已儲存設定'); })
+          .catch(function(e) { projToast(e.message, true); });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn btn-danger', text: '刪除專案…', onclick: function() {
+        var n = prompt('刪除專案會一併刪除它的對話、檔案與專案記憶，無法復原。\n請輸入專案名稱確認：');
+        if (n === null) return;
+        if (n.trim() !== proj.current.name) { projToast('名稱不符，未刪除', true); return; }
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'DELETE' }).then(function() {
+          leaveProject(); loadProjectList(); startNewChat();
+        }).catch(function(e) { projToast(e.message, true); });
+      } }),
+    ]));
+  }
+  function initProjects() {
+    document.querySelectorAll('[data-proj-tab]').forEach(function(b) {
+      b.addEventListener('click', function() {
+        var tab = b.getAttribute('data-proj-tab');
+        if (tab === 'chat' && window.innerWidth <= 860) { closeDrawer(); return; }
+        if (proj.drawerTab === tab && window.innerWidth > 860) { closeDrawer(); return; }
+        openDrawer(tab);
       });
-      while (documents.length > 40) {
-        var idx = documents.findIndex(function(x) { return !x.projectId; });
-        documents.splice(idx === -1 ? 0 : idx, 1);
-      }
-      saveProjects(); saveDocuments();
-      d.close('ok');
-      if (!editing) { switchProject(obj.id); if (window.innerWidth <= 860) toggleSidebar(false); }
-      else {
-        if (currentProjectId === obj.id && obj.role && window.TAP && TAP._ && TAP._.setRole) { try { TAP._.setRole(obj.role); } catch(eR2) {} }
-        renderSidebar();
-        var cc = chats[currentChatId];
-        if (!cc || !cc.messages || !cc.messages.length) loadChatView();
-      }
-      projAnnounce(editing ? pt('saved') : pt('created'));
-    }
-    var saveBtn = U.btn(editing ? pt('save') : pt('create'), 'primary', save);
-    saveBtn.id = 'proj-f-save';
-    var buttons = [U.btn(pt('cancel'), 'proj-cancel', function() { d.close(); }), saveBtn];
-    if (editing) {
-      var delBtn = U.btn(pt('del'), 'proj-del-link', function() { d.close('del'); confirmDeleteProject(p); });
-      buttons.unshift(delBtn);
-    }
-    name.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); save(); } });
-    d = U.dialog({ title: editing ? pt('editProject') : pt('newProject'), body: body, buttons: buttons, initialFocus: name, wide: false });
-    d.card.classList.add('proj-dialog');
-    d.card.id = 'proj-dialog';
+    });
+    var closeBtn = document.getElementById('proj-drawer-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    var exitBtn = document.getElementById('proj-exit-btn');
+    if (exitBtn) exitBtn.addEventListener('click', function() { leaveProject(); startNewChat(); });
+    var scroller = document.getElementById('chat-scroll');
+    if (scroller) scroller.addEventListener('scroll', function() { if (proj.current && proj.more && scroller.scrollTop < 60) loadOlderMessages(); });
+    document.addEventListener('visibilitychange', function() { if (!document.hidden && proj.current) pollProject(); });
   }
 
   function renderDocsList(list, filterText) {
@@ -2549,7 +2854,7 @@
     head.onclick = function() { openKnowledgeModal(); };
     list.appendChild(head);
     var filtered = documents.filter(function(d) {
-      if (currentProjectId && d.projectId && d.projectId !== currentProjectId) return false;
+      if (d.projectId) return false;
       if (filterText && !(d.title || '').toLowerCase().includes(filterText)) return false;
       return true;
     });
@@ -2578,7 +2883,6 @@
     });
   }
 
-  function createProject() { openProjectModal(null); }
 
   function addDocument(doc) {
     documents.push({
@@ -2588,7 +2892,7 @@
       type: doc.type || 'note',
       lang: doc.lang || '',
       created: Date.now(),
-      projectId: currentProjectId
+      projectId: null
     });
     while (documents.length > 40) {
       var evict = documents.findIndex(function(x) { return !x.projectId; });
@@ -2994,6 +3298,7 @@
       if (syncBtn) syncBtn.addEventListener('click', syncNow);
       initMemoryPane();
       initSearchPane();
+      initProjects();
       fetch('/api/me', { credentials: 'same-origin' })
         .then(function(r) {
           if (r.status === 401) { location.href = '/login'; return null; }
@@ -3008,7 +3313,13 @@
           updateNoProviderBanner();
           if (!server.d1.ok) { updateUserUI(); setSyncStatus('D1 未就緒，同步停用', true); return; }
           setArtifactDest(artifactDest, false);
-          loadServerState().then(function() { updateUserUI(); });
+          loadServerState().then(function() {
+            updateUserUI();
+            return loadProjectList();
+          }).then(function() {
+            var openId = localStorage.getItem('ta_project_open');
+            if (openId && proj.list.some(function(p) { return p.id === openId; })) openProject(openId);
+          });
           syncBootstrap();
         }).catch(function(e) { console.error('bootstrap failed', e); });
       if (isWebSearch) {
@@ -3262,7 +3573,6 @@
       if (modelOpt) { setModel(modelOpt.getAttribute('data-model')); return; }
       var pickerEl = document.getElementById('model-picker');
       if (pickerEl && !pickerEl.contains(e.target)) pickerEl.classList.remove('open');
-      if (e.target && e.target.id === 'clear-project-filter') { switchProject(null); return; }
       if (e.target && e.target.id === 'toggle-archived') { showArchived = !showArchived; renderSidebar(); return; }
       var closeBtn = e.target.closest('[data-modal]');
       if (closeBtn && closeBtn.tagName === 'BUTTON') { var mId = closeBtn.getAttribute('data-modal'); if (mId) closeModal(mId); return; }

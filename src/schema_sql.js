@@ -16,5 +16,16 @@ export const MIGRATIONS = [
       "CREATE INDEX IF NOT EXISTS idx_memories_scope ON memories (scope, updated_at)",
       "INSERT OR REPLACE INTO schema_meta (k, v) VALUES ('version', '2')"
     ]
+  },
+  {
+    "version": 3,
+    "file": "0003_projects.sql",
+    "statements": [
+      "CREATE TABLE IF NOT EXISTS projects (\n  id           TEXT PRIMARY KEY,\n  name         TEXT NOT NULL,\n  instructions TEXT NOT NULL DEFAULT '',\n  settings     TEXT NOT NULL DEFAULT '{}',\n  summary      TEXT NOT NULL DEFAULT '',\n  summary_upto INTEGER NOT NULL DEFAULT 0,\n  rev          INTEGER NOT NULL DEFAULT 0,\n  epoch        INTEGER NOT NULL DEFAULT 0,\n  created_at   INTEGER NOT NULL,\n  updated_at   INTEGER NOT NULL\n)",
+      "CREATE TABLE IF NOT EXISTS project_messages (\n  id         INTEGER PRIMARY KEY AUTOINCREMENT,\n  project_id TEXT NOT NULL,\n  role       TEXT NOT NULL,\n  content    TEXT NOT NULL,\n  meta       TEXT NOT NULL DEFAULT '{}',\n  created_at INTEGER NOT NULL\n)",
+      "CREATE INDEX IF NOT EXISTS idx_project_messages ON project_messages (project_id, id)",
+      "CREATE TABLE IF NOT EXISTS files (\n  project_id TEXT NOT NULL,\n  path       TEXT NOT NULL,\n  content    TEXT NOT NULL DEFAULT '',\n  is_dir     INTEGER NOT NULL DEFAULT 0,\n  size       INTEGER NOT NULL DEFAULT 0,\n  updated_at INTEGER NOT NULL,\n  seq        INTEGER NOT NULL DEFAULT 0,\n  PRIMARY KEY (project_id, path)\n)",
+      "INSERT OR REPLACE INTO schema_meta (k, v) VALUES ('version', '3')"
+    ]
   }
 ]

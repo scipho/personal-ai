@@ -24,6 +24,7 @@ import { handleImageRequest } from './images.js'
 import { publicTools, runTool } from './tools/registry.js'
 import { handleSync } from './sync.js'
 import { dataApiRoute } from './api.js'
+import { projectsApiRoute } from './projects.js'
 import { openDb } from './db.js'
 import { PASSWORD_SETTING } from './auth.js'
 
@@ -112,6 +113,8 @@ async function apiRoute(request, env, path, method, ctx) {
   if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
   const data = await dataApiRoute(request, env, path, method)
   if (data) return data
+  const projects = await projectsApiRoute(request, env, path, method)
+  if (projects) return projects
   if (path === '/api/sync' || path === '/api/sync/status') {
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
     if (path === '/api/sync/status' && method === 'GET') {

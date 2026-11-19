@@ -1148,6 +1148,51 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
 .params-grid { display: grid; grid-template-columns: minmax(140px, 1fr) minmax(120px, 1fr); gap: 8px 12px; align-items: center; padding: 12px; }
 .danger-card { border-color: rgba(239, 68, 68, 0.35); }
 .btn-danger { color: var(--red) !important; }
+
+/* ---- projects ---- */
+.proj-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 16px; border-bottom: 1px solid var(--line); background: var(--bg); }
+.proj-header[hidden] { display: none; }
+.proj-header-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; flex: 1 1 auto; }
+.proj-header-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.proj-header-label { font-size: 0.72rem; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; }
+.proj-tabs { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 10px; }
+.proj-tab { background: none; border: 0; color: var(--muted); font: inherit; font-size: 0.8rem; padding: 4px 10px; border-radius: 8px; cursor: pointer; }
+.proj-tab.active { background: var(--invert); color: var(--invert-fg); }
+.proj-status { font-size: 0.75rem; color: var(--muted); }
+.proj-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; font: inherit; color: inherit; }
+.proj-item-meta { margin-left: auto; font-size: 0.7rem; color: var(--dim); }
+.proj-more { display: block; margin: 8px auto 12px; }
+.proj-loading { padding: 32px; text-align: center; color: var(--dim); }
+.proj-drawer { position: relative; width: 380px; max-width: 42vw; flex: 0 0 auto; border-left: 1px solid var(--line); background: var(--sidebar); display: flex; flex-direction: column; min-height: 0; }
+.proj-drawer[hidden] { display: none; }
+.proj-drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.proj-drawer-body { padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
+.proj-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.proj-summary { white-space: pre-wrap; font: inherit; font-size: 0.82rem; color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; max-height: 40vh; overflow: auto; margin: 0; }
+.proj-instructions { min-height: 240px; }
+.file-tree { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 10px; background: var(--card); padding: 4px 0; }
+.file-row { display: flex; align-items: center; gap: 4px; padding: 2px 6px; }
+.file-row:hover { background: var(--hover, rgba(127,127,127,.08)); }
+.file-name { flex: 1; min-width: 0; text-align: left; background: none; border: 0; color: var(--text); font: inherit; font-size: 0.82rem; padding: 3px 2px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-size { font-size: 0.7rem; color: var(--dim); }
+.file-row .mini-x { opacity: .7; }
+.file-editor { min-height: 50vh; font-family: var(--mono, ui-monospace, monospace); font-size: 0.8rem; white-space: pre; }
+.editor-path { font-size: 0.82rem; word-break: break-all; }
+.tool-steps { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; font-size: 0.78rem; color: var(--dim); }
+.tool-step summary { cursor: pointer; list-style: none; }
+.tool-step summary::-webkit-details-marker { display: none; }
+.tool-step.error summary { color: var(--red); }
+.tool-step-detail { margin: 4px 0 6px 14px; }
+.tool-step-detail pre { white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow: auto; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; margin: 2px 0 6px; font-size: 0.72rem; }
+.tool-step-k { font-size: 0.7rem; color: var(--dim); }
+@media (max-width: 860px) {
+  .proj-drawer { position: fixed; inset: 0; width: auto; max-width: none; z-index: 60; border-left: 0; padding-top: 48px; }
+  .proj-drawer-head { display: none; }
+  body.proj-drawer-open .proj-header { position: fixed; top: 0; left: 0; right: 0; z-index: 61; }
+  .proj-header-title, #proj-exit-btn { display: none; }
+  .proj-tabs { width: 100%; justify-content: space-between; }
+  .proj-tab { flex: 1; }
+}
 </style>
 </head>
 <body>
@@ -1225,6 +1270,17 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       </div>
     </header>
     <div class="setup-banner" id="setup-banner" role="status" hidden></div>
+    <div class="proj-header" id="proj-header" hidden>
+      <div class="proj-header-title"><span class="proj-header-label">專案</span><strong id="proj-header-name"></strong></div>
+      <div class="proj-tabs" role="tablist" aria-label="專案面板">
+        <button type="button" class="proj-tab" role="tab" data-proj-tab="chat">對話</button>
+        <button type="button" class="proj-tab" role="tab" data-proj-tab="files">檔案</button>
+        <button type="button" class="proj-tab" role="tab" data-proj-tab="instructions">指示</button>
+        <button type="button" class="proj-tab" role="tab" data-proj-tab="settings">設定</button>
+      </div>
+      <span class="proj-status" id="proj-status" role="status"></span>
+      <button type="button" class="hist-bar-btn" id="proj-exit-btn" title="回到一般對話">離開專案</button>
+    </div>
     <div class="ta-chat-scroll" id="chat-scroll">
       <div class="ta-chat-wrap" id="chat-container"></div>
     </div>
@@ -1271,6 +1327,14 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       <p class="disclaimer"><span data-i18n="disclaimer">Personal AI puede equivocarse.</span></p>
     </footer>
   </main>
+
+  <aside class="proj-drawer" id="proj-drawer" aria-label="專案面板" hidden>
+    <div class="proj-drawer-head">
+      <strong>專案</strong>
+      <button type="button" class="icon-btn" id="proj-drawer-close" title="關閉" aria-label="關閉">✕</button>
+    </div>
+    <div class="proj-drawer-body" id="proj-drawer-body"></div>
+  </aside>
 
   <aside class="art-panel" id="art-panel" aria-label="Artifact">
     <div class="art-head">
@@ -1676,17 +1740,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     });
   }
 
-  var projects = [];
-  try {
-    var rawP = localStorage.getItem('ta_projects');
-    if (rawP) projects = JSON.parse(rawP);
-    if (!Array.isArray(projects)) projects = [];
-  } catch(e) { projects = []; }
-  var currentProjectId = null;
-  try {
-    var savedProj = localStorage.getItem('ta_project_active');
-    if (savedProj && projects.some(function(p) { return p && p.id === savedProj; })) currentProjectId = savedProj;
-  } catch(eAp) {}
   var sidebarView = 'chats';
   var abortCtl = null;
   // ---- Server data layer (D1): providers, models, settings, memory -------------
@@ -1950,7 +2003,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   // to stay inside the Worker's per-request D1 and body limits.
   var SYNC_META_KEY = 'ta_sync_meta_v2';
   var SYNC_SETTINGS = [['prompt','favs','ta_prompt_favs'],['prompt','recent','ta_prompt_recent'],['setting','len_mode','ta_len_mode'],['setting','auto_search','ta_auto_search'],['setting','use_docs','ta_use_docs']];
-  var syncMeta = { enabled: false, cursor: 0, known: { chat: [], doc: [], project: [] }, sent: {}, values: {}, timer: 0, applying: false, busy: false };
+  var syncMeta = { enabled: false, cursor: 0, known: { chat: [], doc: [] }, sent: {}, values: {}, timer: 0, applying: false, busy: false };
   try {
     localStorage.removeItem('ta_sync_meta_v1');
     var savedSync = JSON.parse(localStorage.getItem(SYNC_META_KEY) || '{}');
@@ -1959,7 +2012,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       syncMeta.sent = savedSync.sent && typeof savedSync.sent === 'object' ? savedSync.sent : {};
       syncMeta.values = savedSync.values && typeof savedSync.values === 'object' ? savedSync.values : {};
       if (savedSync.known && typeof savedSync.known === 'object') {
-        ['chat','doc','project'].forEach(function(k) { syncMeta.known[k] = Array.isArray(savedSync.known[k]) ? savedSync.known[k] : []; });
+        ['chat','doc'].forEach(function(k) { syncMeta.known[k] = Array.isArray(savedSync.known[k]) ? savedSync.known[k] : []; });
       }
     }
   } catch(eSync) {}
@@ -1977,7 +2030,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   }
   function collectSyncChanges(force) {
     var changes = [];
-    var present = { chat: {}, doc: {}, project: {} };
+    var present = { chat: {}, doc: {} };
     var now = Date.now();
     function add(key, value, at) {
       if (!force && syncMeta.sent[key] && Number(syncMeta.sent[key]) >= at) return;
@@ -1994,11 +2047,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       present.doc[d.id] = true;
       add('doc:' + d.id, syncJson(d), Number(d.updatedAt || d.created || now) || now);
     });
-    projects.forEach(function(pr) {
-      if (!pr || !pr.id || !/^[A-Za-z0-9_-]{1,100}$/.test(pr.id)) return;
-      present.project[pr.id] = true;
-      add('project:' + pr.id, syncJson(pr), Number(pr.updatedAt || now) || now);
-    });
     SYNC_SETTINGS.forEach(function(row) {
       var key = row[0] + ':' + row[1];
       var value = '';
@@ -2006,7 +2054,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       if (!force && syncMeta.values[key] === value) return;
       changes.push({ key: key, value: value, updatedAt: now, deleted: false });
     });
-    ['chat','doc','project'].forEach(function(type) {
+    ['chat','doc'].forEach(function(type) {
       (syncMeta.known[type] || []).forEach(function(id) {
         if (present[type][id]) return;
         changes.push({ key: type + ':' + id, value: '', updatedAt: now, deleted: true });
@@ -2022,15 +2070,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     if (item.deleted) {
       if (type === 'chat' && chats[id]) { delete chats[id]; touched.chats = true; }
       if (type === 'doc') { var nd = documents.filter(function(d) { return d.id !== id; }); if (nd.length !== documents.length) { documents = nd; touched.docs = true; } }
-      if (type === 'project') { var np = projects.filter(function(pr) { return pr.id !== id; }); if (np.length !== projects.length) { projects = np; touched.projects = true; } }
-    } else if (type === 'project') {
-      try {
-        var proj = JSON.parse(item.value);
-        if (!proj || typeof proj !== 'object') return;
-        var pfound = false;
-        for (var j = 0; j < projects.length; j++) if (projects[j].id === id) { pfound = true; if (Number(item.updatedAt) >= Number(projects[j].updatedAt || 0)) { projects[j] = proj; touched.projects = true; } break; }
-        if (!pfound) { projects.push(proj); touched.projects = true; }
-      } catch(e) {}
     } else if (type === 'chat') {
       try {
         var chat = JSON.parse(item.value);
@@ -2057,7 +2096,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     if (!syncMeta.enabled || syncMeta.busy) return false;
     syncMeta.busy = true;
     var total = 0;
-    var touched = { chats: false, docs: false, projects: false };
+    var touched = { chats: false, docs: false };
     try {
       for (var page = 0; page < 20; page++) {
         var data = await apiJson('/api/sync?since=' + encodeURIComponent(String(syncMeta.cursor || 0)) + '&limit=200');
@@ -2072,7 +2111,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       syncMeta.applying = true;
       if (touched.chats) { saveChats(); renderSidebar(); if (chats[currentChatId]) loadChatView(); }
       if (touched.docs) { saveDocuments(); renderSidebar(); }
-      if (touched.projects) { saveProjects(); renderSidebar(); }
       syncMeta.applying = false;
       saveSyncMeta();
       setSyncStatus(total ? ('已同步 ' + total + ' 項') : '已同步', false);
@@ -2108,7 +2146,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
         chunk.push(changes[i]); size += len;
       }
       await flush();
-      var present = { chat: Object.keys(chats).filter(function(id) { return chats[id] && !chats[id].ephemeral; }), doc: documents.filter(function(d) { return d && d.id; }).map(function(d) { return d.id; }), project: projects.filter(function(p) { return p && p.id; }).map(function(p) { return p.id; }) };
+      var present = { chat: Object.keys(chats).filter(function(id) { return chats[id] && !chats[id].ephemeral; }), doc: documents.filter(function(d) { return d && d.id; }).map(function(d) { return d.id; }) };
       syncMeta.known = present;
       saveSyncMeta();
       setSyncStatus('已同步 ' + changes.length + ' 項', false);
@@ -2660,9 +2698,10 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     if (badge) badge.classList.toggle('on', isTempChat() || localStorage.getItem('ta_ephemeral') === '1');
   }
   function startTempChat() {
+    if (proj.current) leaveProject();
     if (shareReadOnly) { shareReadOnly = false; history.replaceState({}, '', '/'); }
     currentChatId = Date.now().toString();
-    chats[currentChatId] = { title: t('tempChat'), messages: [], ephemeral: true, projectId: currentProjectId };
+    chats[currentChatId] = { title: t('tempChat'), messages: [], ephemeral: true };
     loadChatView();
     renderSidebar();
     updateTempBadge();
@@ -2678,14 +2717,8 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     try { localStorage.setItem('ta_knowledge', JSON.stringify(knowledge)); } catch(e) {}
     scheduleSync();
   }
-  function saveProjects() {
-    var now = Date.now();
-    if (!syncMeta.applying) projects.forEach(function(pr) { if (pr) pr.updatedAt = now; });
-    try { localStorage.setItem('ta_projects', JSON.stringify(projects)); } catch(e) {}
-    scheduleSync();
-  }
-
   function startNewChat() {
+    if (proj.current) leaveProject();
     if (shareReadOnly) { shareReadOnly = false; history.replaceState({}, '', '/'); }
     currentChatId = Date.now().toString();
     loadChatView();
@@ -2786,16 +2819,11 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     var chat = chats[currentChatId];
     if (!chat || !Array.isArray(chat.messages) || chat.messages.length === 0) {
       container.innerHTML = '<div class="ta-hero">' +
-        projectHeroHtml() +
         '<img src="__AVATAR_URI__" alt="Personal AI" class="hero-logo-img">' +
         '<h1 class="hero-heading">' + t('heroTitle') + '</h1>' +
         '<p class="hero-subheading">' + t('heroSub') + '</p>' +
         '<div class="hero-chips">' + renderHeroChips() + '</div></div>';
       if (window.TAP) { try { TAP.mountHero(); } catch (eTap) {} }
-      var phEdit = document.getElementById('proj-hero-edit');
-      if (phEdit) phEdit.onclick = function() { var cp = projectById(currentProjectId); if (cp) openProjectModal(cp); };
-      var phExit = document.getElementById('proj-hero-exit');
-      if (phExit) phExit.onclick = function() { switchProject(null); };
       return;
     }
     container.innerHTML = '';
@@ -2825,7 +2853,8 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     if (isNaN(d.getTime())) d = new Date();
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-  function addMessageToDOM(role, content, sources, at, msgIndex, feedback, image) {
+  function addMessageToDOM(role, content, sources, at, msgIndex, feedback, image, opts) {
+    opts = opts || {};
     sources = sources || [];
     var container = document.getElementById('chat-container');
     if (!container) return { row: null, textContainer: null, contentCol: null };
@@ -2912,11 +2941,13 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       voiceBtn.innerHTML = '<span>' + t('listen') + '</span>';
       voiceBtn.onclick = function() { speakText(content || '', voiceBtn); };
       actions.appendChild(voiceBtn);
-      var regenBtn = document.createElement('button');
-      regenBtn.className = 'msg-action-btn';
-      regenBtn.innerHTML = '<span>' + t('regenerate') + '</span>';
-      regenBtn.onclick = function() { regenerateLast(); };
-      actions.appendChild(regenBtn);
+      if (!opts.noRegen) {
+        var regenBtn = document.createElement('button');
+        regenBtn.className = 'msg-action-btn';
+        regenBtn.innerHTML = '<span>' + t('regenerate') + '</span>';
+        regenBtn.onclick = function() { regenerateLast(); };
+        actions.appendChild(regenBtn);
+      }
       if (typeof msgIndex === 'number' && !shareReadOnly) {
         var up = document.createElement('button');
         up.className = 'msg-action-btn' + (feedback === 'up' ? ' on' : '');
@@ -2939,8 +2970,13 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       row.appendChild(avatarCol);
       row.appendChild(contentCol);
     }
-    container.appendChild(row);
-    scrollToEnd();
+    if (opts.prepend) {
+      var firstRow = container.querySelector('.msg-row');
+      if (firstRow) container.insertBefore(row, firstRow); else container.appendChild(row);
+    } else {
+      container.appendChild(row);
+      scrollToEnd();
+    }
     return { row: row, textContainer: textContainer, contentCol: contentCol };
   }
 
@@ -3349,6 +3385,14 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     var promptText = input.value.trim();
     if (!promptText && !attachedFile) return;
     if (window.TAP && promptText && !TAP.beforeSend(promptText)) return;
+    if (proj.current) {
+      if (attachedFile && attachedFile.kind === 'image') { alert('專案對話目前只支援文字；圖片請在一般對話使用。'); return; }
+      var projText = promptText;
+      if (attachedFile) { projText = '[附件：' + attachedFile.name + ']\n' + attachedFile.content + '\n\n' + (promptText || '請分析這份文件。'); removeAttachedFile(); }
+      input.value = '';
+      autoResize(input);
+      return sendProjectMessage(projText);
+    }
     isGenerating = true;
     abortCtl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
     setGenerating(true);
@@ -3368,7 +3412,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     input.value = '';
     autoResize(input);
     if (!chats[currentChatId] || typeof chats[currentChatId] !== 'object') {
-      chats[currentChatId] = { title: promptText.slice(0, 42) || t('newChat'), messages: [], projectId: currentProjectId };
+      chats[currentChatId] = { title: promptText.slice(0, 42) || t('newChat'), messages: [] };
     }
     if (!Array.isArray(chats[currentChatId].messages)) chats[currentChatId].messages = [];
     if ((chats[currentChatId].title === 'Nueva conversación' || chats[currentChatId].title === t('newChat')) && promptText) chats[currentChatId].title = promptText.slice(0, 42);
@@ -3407,9 +3451,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       var headers = { 'Content-Type': 'application/json' };
       var snippets = [];
       if (localStorage.getItem('ta_use_docs') !== '0') {
-        snippets = documents.filter(function(d) {
-          return !currentProjectId || d.projectId === currentProjectId || !d.projectId;
-        }).sort(function(x, y) { return (y.projectId === currentProjectId ? 1 : 0) - (x.projectId === currentProjectId ? 1 : 0); }).slice(0, 20).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 20000) }; });
+        snippets = documents.filter(function(d) { return d && !d.projectId; }).slice(-20).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 20000) }; });
       }
       var tzVal = localStorage.getItem('ta_timezone');
       var resolvedTz = (tzVal && tzVal !== 'auto') ? tzVal : (function() {
@@ -3424,7 +3466,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           messages: chats[currentChatId].messages.slice(-24).map(function(m) {
             return { role: m.role === 'user' ? 'user' : 'assistant', content: m.sent || m.content };
           }).filter(function(m) { return m.content; }),
-          role_context: [projectContext(), (window.TAP ? TAP.roleContext() : '')].filter(Boolean).join('\n'),
+          role_context: window.TAP ? TAP.roleContext() : '',
           documents: snippets,
           search_web: isWebSearch && !pendingImage,
           length_mode: currentLength,
@@ -3837,6 +3879,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       var el = document.getElementById('tab-' + v);
       if (el) { if (v === view) el.classList.add('active'); else el.classList.remove('active'); }
     });
+    if (view === 'projects') loadProjectList();
     renderSidebar();
   }
 
@@ -3861,7 +3904,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     keys = keys.filter(function(k) {
       var c = chats[k];
       if (!c) return false;
-      if (currentProjectId && c.projectId !== currentProjectId) return false;
       if (!!c.archived !== showArchived) return false;
       if (filterText && !(c.title || '').toLowerCase().includes(filterText)) return false;
       return true;
@@ -3873,14 +3915,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       archBar.innerHTML = '<button type="button" class="hist-bar-btn" id="toggle-archived">' +
         (showArchived ? '← ' + t('chats') : t('archived') + (archCount ? ' (' + archCount + ')' : '')) + '</button>';
       list.appendChild(archBar);
-    }
-    if (currentProjectId) {
-      var proj = projects.find(function(p) { return p.id === currentProjectId; });
-      var bar = document.createElement('div');
-      bar.className = 'proj-bar';
-      bar.innerHTML = PROJ_ICON + '<span class="proj-bar-name">' + escapeHtml((proj && proj.name) || '—') + '</span>' +
-        '<button type="button" class="hist-bar-btn" id="clear-project-filter">' + escapeHtml(pt('exit')) + '</button>';
-      list.appendChild(bar);
     }
     if (!keys.length) {
       var emptyH = document.createElement('div');
@@ -3927,6 +3961,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           else renderSidebar();
           return;
         }
+        if (proj.current) leaveProject();
         currentChatId = k;
         loadChatView();
         renderSidebar();
@@ -3938,246 +3973,580 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   }
 
   var PROJ_ICON = '<svg class="proj-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H9l2 2.5h7.5A2.5 2.5 0 0 1 21 10v6.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5z"/></svg>';
-  var PROJ_EDIT_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
-  var PROJ_DEL_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
-  var PROJ_I18N = {
-    es: { emptyTitle: 'Aún no hay proyectos', newProject: 'Nuevo proyecto', editProject: 'Editar proyecto', name: 'Nombre', namePh: 'Ej.: Lanzamiento de la web', desc: 'Descripción', descPh: '¿De qué trata este proyecto?', instr: 'Instrucciones', instrPh: 'Cómo debe responder el asistente en este proyecto: contexto, tono, formato…', role: 'Rol por defecto', files: 'Archivos', filesHint: 'Texto, Markdown, CSV, JSON o código · máx. 200 KB por archivo. Se usan como contexto en los chats del proyecto.', addFiles: 'Añadir archivos', noFiles: 'Sin archivos todavía', remove: 'Quitar', cancel: 'Cancelar', save: 'Guardar', create: 'Crear proyecto', del: 'Eliminar', delTitle: '¿Eliminar el proyecto?', delBody: 'Se eliminarán «{n}» y sus archivos. Las conversaciones se conservan, sin proyecto.', edit: 'Editar', exit: 'Salir', label: 'Proyecto', chatsN: '{n} chats', chat1: '1 chat', filesN: '{n} archivos', file1: '1 archivo', empty: 'Agrupa chats, instrucciones y archivos por tema.', nameReq: 'Ponle un nombre al proyecto.', tooBig: '{f}: demasiado grande (máx. 200 KB)', notText: '{f}: formato no compatible', created: 'Proyecto creado', saved: 'Proyecto guardado', deleted: 'Proyecto eliminado', switched: 'Proyecto activo: {n}', left: 'Sin proyecto activo', ctxHead: 'Contexto del proyecto «{n}»', instrHead: 'Instrucciones del proyecto' },
-    en: { emptyTitle: 'No projects yet', newProject: 'New project', editProject: 'Edit project', name: 'Name', namePh: 'e.g. Website launch', desc: 'Description', descPh: 'What is this project about?', instr: 'Instructions', instrPh: 'How the assistant should answer in this project: context, tone, format…', role: 'Default role', files: 'Files', filesHint: 'Text, Markdown, CSV, JSON or code · max 200 KB per file. Used as context in this project’s chats.', addFiles: 'Add files', noFiles: 'No files yet', remove: 'Remove', cancel: 'Cancel', save: 'Save', create: 'Create project', del: 'Delete', delTitle: 'Delete project?', delBody: '“{n}” and its files will be deleted. Conversations are kept, without a project.', edit: 'Edit', exit: 'Exit', label: 'Project', chatsN: '{n} chats', chat1: '1 chat', filesN: '{n} files', file1: '1 file', empty: 'Group chats, instructions and files by topic.', nameReq: 'Give the project a name.', tooBig: '{f}: too large (max 200 KB)', notText: '{f}: unsupported format', created: 'Project created', saved: 'Project saved', deleted: 'Project deleted', switched: 'Active project: {n}', left: 'No active project', ctxHead: 'Context for project “{n}”', instrHead: 'Project instructions' },
-    ca: { emptyTitle: 'Encara no hi ha projectes', newProject: 'Nou projecte', editProject: 'Edita el projecte', name: 'Nom', namePh: 'P. ex.: Llançament del web', desc: 'Descripció', descPh: 'De què tracta aquest projecte?', instr: 'Instruccions', instrPh: 'Com ha de respondre l’assistent en aquest projecte: context, to, format…', role: 'Rol per defecte', files: 'Fitxers', filesHint: 'Text, Markdown, CSV, JSON o codi · màx. 200 KB per fitxer. S’usen com a context als xats del projecte.', addFiles: 'Afegeix fitxers', noFiles: 'Encara no hi ha fitxers', remove: 'Treu', cancel: 'Cancel·la', save: 'Desa', create: 'Crea el projecte', del: 'Elimina', delTitle: 'Vols eliminar el projecte?', delBody: 'S’eliminaran «{n}» i els seus fitxers. Les converses es conserven, sense projecte.', edit: 'Edita', exit: 'Surt', label: 'Projecte', chatsN: '{n} xats', chat1: '1 xat', filesN: '{n} fitxers', file1: '1 fitxer', empty: 'Agrupa xats, instruccions i fitxers per tema.', nameReq: 'Posa un nom al projecte.', tooBig: '{f}: massa gran (màx. 200 KB)', notText: '{f}: format no compatible', created: 'Projecte creat', saved: 'Projecte desat', deleted: 'Projecte eliminat', switched: 'Projecte actiu: {n}', left: 'Cap projecte actiu', ctxHead: 'Context del projecte «{n}»', instrHead: 'Instruccions del projecte' }
-  };
-  function pt(k) {
-    var l = (window.TA && TA.lang) ? TA.lang() : 'zh-TW';
-    var d = PROJ_I18N[l] || PROJ_I18N[l === 'es' || l === 'ca' ? l : 'en'] || PROJ_I18N.en;
-    return d[k] != null ? d[k] : PROJ_I18N.en[k];
-  }
-  function projectById(id) { if (!id) return null; for (var i = 0; i < projects.length; i++) if (projects[i] && projects[i].id === id) return projects[i]; return null; }
-  function projectDocs(id) { return documents.filter(function(d) { return d.projectId === id; }); }
-  function projCount(n, one, many) { return n === 1 ? pt(one) : pt(many).replace('{n}', n); }
-  function projAnnounce(msg) { try { if (window.TAP && TAP._ && TAP._.announce) TAP._.announce(msg); } catch(eA) {} }
-  function projectContext() {
-    var p = projectById(currentProjectId);
-    if (!p) return '';
-    var parts = [pt('ctxHead').replace('{n}', p.name)];
-    if (p.description) parts.push(String(p.description).slice(0, 300));
-    if (p.instructions) parts.push(pt('instrHead') + ':\n' + String(p.instructions).slice(0, 4000));
-    return parts.join('\n');
-  }
-  function projectHeroHtml() {
-    var p = projectById(currentProjectId);
-    if (!p) return '';
-    return '<div class="proj-hero">' + PROJ_ICON + '<span class="proj-hero-label">' + escapeHtml(pt('label')) + '</span>' +
-      '<strong class="proj-hero-name">' + escapeHtml(p.name) + '</strong>' +
-      '<button type="button" class="hist-bar-btn" id="proj-hero-edit">' + escapeHtml(pt('edit')) + '</button>' +
-      '<button type="button" class="hist-bar-btn" id="proj-hero-exit">' + escapeHtml(pt('exit')) + '</button></div>';
-  }
-  function switchProject(id) {
-    var p = projectById(id);
-    currentProjectId = p ? p.id : null;
-    try { if (currentProjectId) localStorage.setItem('ta_project_active', currentProjectId); else localStorage.removeItem('ta_project_active'); } catch(eS) {}
-    if (p && p.role && window.TAP && TAP._ && TAP._.setRole) { try { TAP._.setRole(p.role); } catch(eR) {} }
-    var cur = chats[currentChatId];
-    if (p && cur && Array.isArray(cur.messages) && cur.messages.length && cur.projectId !== p.id) {
-      currentChatId = Date.now().toString();
-    }
-    sidebarView = 'chats';
-    setSidebarView('chats');
-    var c2 = chats[currentChatId];
-    if (!c2 || !c2.messages || !c2.messages.length) loadChatView();
-    projAnnounce(p ? pt('switched').replace('{n}', p.name) : pt('left'));
-  }
 
+  // ---- Projects (D1): one folder + one permanent conversation per project ------
+  var proj = { list: [], current: null, messages: [], oldestId: 0, newestId: 0, more: false, epoch: 0, rev: 0, treeRev: -1, tree: [], collapsed: {}, openFile: null, pollTimer: 0, drawerTab: '', loadingOlder: false, treeTimer: 0 };
+  window.PAI_projectName = function(id) {
+    for (var i = 0; i < proj.list.length; i++) if (proj.list[i].id === id) return proj.list[i].name;
+    return '';
+  };
+  var PROJ_TOOL_GROUPS = [['web', '網頁（web_search、fetch_url）'], ['files', '檔案工具'], ['memory', '記憶（remember / forget / recall）'], ['history', '搜尋對話紀錄（search_history）'], ['utility', '計算與時間']];
+  function projToast(text, bad) {
+    var el = document.getElementById('proj-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = bad ? 'var(--red)' : 'var(--muted)';
+    clearTimeout(projToast.timer);
+    if (text) projToast.timer = setTimeout(function() { el.textContent = ''; }, 4000);
+  }
+  function loadProjectList() {
+    return apiJson('/api/projects').then(function(d) {
+      proj.list = d.projects || [];
+      if (sidebarView === 'projects') renderSidebar();
+      fillMemoryScopeOptions();
+    }).catch(function(e) { console.warn('projects', e); });
+  }
+  function fillMemoryScopeOptions() {
+    ['memory-new-scope', 'memory-filter'].forEach(function(id) {
+      var sel = document.getElementById(id);
+      if (!sel) return;
+      var keep = sel.value;
+      Array.prototype.slice.call(sel.querySelectorAll('option[data-proj]')).forEach(function(o) { o.remove(); });
+      proj.list.forEach(function(p) {
+        var o = document.createElement('option');
+        o.value = p.id; o.textContent = '專案：' + p.name; o.setAttribute('data-proj', '1');
+        sel.appendChild(o);
+      });
+      sel.value = keep;
+      if (sel.value !== keep) sel.value = id === 'memory-filter' ? '' : 'global';
+    });
+  }
+  window.PAI_onSettingsOpen = function() { fillMemoryScopeOptions(); };
   function renderProjectsList(list, filterText) {
     var head = document.createElement('button');
     head.type = 'button';
     head.className = 'new-chat-btn proj-new-btn';
     head.id = 'new-project-btn';
-    head.innerHTML = '<span class="nc-main"><svg class="nc-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>' + escapeHtml(pt('newProject')) + '</span></span>';
-    head.onclick = function() { openProjectModal(null); };
+    head.innerHTML = '<span class="nc-main"><svg class="nc-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>新增專案</span></span>';
+    head.onclick = createProjectPrompt;
     list.appendChild(head);
-    var filtered = projects.filter(function(p) {
-      if (!p) return false;
-      if (!filterText) return true;
-      return ((p.name || '') + ' ' + (p.description || '')).toLowerCase().includes(filterText);
-    });
-    if (!filtered.length) {
-      var emptyP = document.createElement('div');
-      emptyP.className = 'empty-side proj-empty';
-      emptyP.innerHTML = '<strong>' + escapeHtml(pt('emptyTitle')) + '</strong><span>' + escapeHtml(pt('empty')) + '</span>';
-      list.appendChild(emptyP);
+    var rows = proj.list.filter(function(p) { return !filterText || (p.name || '').toLowerCase().indexOf(filterText) !== -1; });
+    if (!rows.length) {
+      var empty = document.createElement('div');
+      empty.className = 'empty-side proj-empty';
+      empty.textContent = '還沒有專案。每個專案是一個資料夾加一段永久對話。';
+      list.appendChild(empty);
       return;
     }
-    var wrap = document.createElement('div');
-    wrap.className = 'proj-cards';
-    wrap.setAttribute('role', 'list');
-    filtered.forEach(function(p) {
-      var nChats = Object.keys(chats).filter(function(k) { return chats[k] && chats[k].projectId === p.id; }).length;
-      var nFiles = projectDocs(p.id).length;
-      var active = currentProjectId === p.id;
-      var card = document.createElement('div');
-      card.className = 'proj-card' + (active ? ' active' : '');
-      card.setAttribute('role', 'listitem');
-      card.setAttribute('data-proj', p.id);
-      var main = document.createElement('button');
-      main.type = 'button';
-      main.className = 'proj-card-main';
-      if (active) main.setAttribute('aria-current', 'true');
-      main.innerHTML = '<span class="proj-card-ico">' + PROJ_ICON + '</span><span class="proj-card-body">' +
-        '<span class="proj-card-name">' + escapeHtml(p.name) + '</span>' +
-        (p.description ? '<span class="proj-card-desc">' + escapeHtml(p.description) + '</span>' : '') +
-        '<span class="proj-card-meta">' + escapeHtml(projCount(nChats, 'chat1', 'chatsN') + ' · ' + projCount(nFiles, 'file1', 'filesN')) + '</span></span>';
-      main.onclick = function() { switchProject(p.id); if (window.innerWidth <= 860) toggleSidebar(false); };
-      var acts = document.createElement('div');
-      acts.className = 'proj-card-acts';
-      var eb = document.createElement('button');
-      eb.type = 'button'; eb.className = 'proj-act'; eb.setAttribute('data-proj-edit', p.id);
-      eb.setAttribute('aria-label', pt('edit') + ': ' + p.name); eb.title = pt('edit');
-      eb.innerHTML = PROJ_EDIT_ICON;
-      eb.onclick = function(e) { e.stopPropagation(); openProjectModal(p); };
-      var db = document.createElement('button');
-      db.type = 'button'; db.className = 'proj-act'; db.setAttribute('data-proj-del', p.id);
-      db.setAttribute('aria-label', pt('del') + ': ' + p.name); db.title = pt('del');
-      db.innerHTML = PROJ_DEL_ICON;
-      db.onclick = function(e) { e.stopPropagation(); confirmDeleteProject(p); };
-      acts.appendChild(eb); acts.appendChild(db);
-      card.appendChild(main); card.appendChild(acts);
-      wrap.appendChild(card);
+    rows.forEach(function(p) {
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'history-item proj-item' + (proj.current && proj.current.id === p.id ? ' active' : '');
+      item.innerHTML = PROJ_ICON + '<span class="history-title"></span><span class="proj-item-meta"></span>';
+      item.querySelector('.history-title').textContent = p.name;
+      item.querySelector('.proj-item-meta').textContent = (p.files || 0) + ' 個檔案';
+      item.onclick = function() { openProject(p.id); if (window.innerWidth <= 860) toggleSidebar(false); };
+      list.appendChild(item);
     });
-    list.appendChild(wrap);
   }
-
-  function deleteProject(id) {
-    projects = projects.filter(function(x) { return x && x.id !== id; });
-    Object.keys(chats).forEach(function(k) { if (chats[k] && chats[k].projectId === id) chats[k].projectId = null; });
-    documents = documents.filter(function(d) { return d.projectId !== id; });
-    if (currentProjectId === id) { currentProjectId = null; try { localStorage.removeItem('ta_project_active'); } catch(eD) {} }
-    saveProjects(); saveChats(); saveDocuments();
-    renderSidebar();
-    var c = chats[currentChatId];
-    if (!c || !c.messages || !c.messages.length) loadChatView();
-    var nb = document.getElementById('new-project-btn'); if (nb && sidebarView === 'projects') nb.focus();
-    projAnnounce(pt('deleted'));
+  function createProjectPrompt() {
+    var name = prompt('專案名稱');
+    if (!name || !name.trim()) return;
+    apiJson('/api/projects', { method: 'POST', body: { name: name.trim().slice(0, 80) } }).then(function(d) {
+      return loadProjectList().then(function() { openProject(d.project.id); });
+    }).catch(function(e) { alert(e.message); });
   }
-
-  function confirmDeleteProject(p) {
-    if (!(window.TAP && TAP._ && TAP._.dialog)) { if (window.confirm(pt('delTitle'))) deleteProject(p.id); return; }
-    var U = TAP._;
-    var d;
-    var cancel = U.btn(pt('cancel'), '', function() { d.close(); });
-    var del = U.btn(pt('del'), 'primary danger', function() { d.close('ok'); deleteProject(p.id); });
-    del.id = 'proj-del-confirm';
-    d = U.dialog({
-      title: pt('delTitle'),
-      body: U.el('p', { class: 'proj-del-body', text: pt('delBody').replace('{n}', p.name) }),
-      buttons: [cancel, del],
-      initialFocus: cancel,
-      returnFocus: document.getElementById('tab-projects') || undefined
+  function setProjectMode(on) {
+    document.body.classList.toggle('in-project', !!on);
+    var bar = document.getElementById('proj-header');
+    if (bar) bar.hidden = !on;
+    if (!on) closeDrawer();
+  }
+  function openProject(id) {
+    stopProjectPoll();
+    return apiJson('/api/projects/' + encodeURIComponent(id)).then(function(d) {
+      proj.current = d.project;
+      proj.messages = []; proj.oldestId = 0; proj.newestId = 0; proj.more = false;
+      proj.epoch = d.project.epoch; proj.rev = d.project.rev; proj.treeRev = -1; proj.tree = []; proj.openFile = null;
+      try { localStorage.setItem('ta_project_open', id); } catch (e) {}
+      setProjectMode(true);
+      renderProjectHeader();
+      var container = document.getElementById('chat-container');
+      if (container) container.innerHTML = '<div class="proj-loading">載入中…</div>';
+      renderSidebar();
+      return loadProjectMessages().then(function() {
+        startProjectPoll();
+        if (proj.drawerTab) renderDrawer();
+      });
+    }).catch(function(e) {
+      try { localStorage.removeItem('ta_project_open'); } catch (er) {}
+      alert(e.message || '無法開啟專案');
     });
-    d.card.classList.add('proj-dialog-sm');
   }
-
-  var PROJ_TEXT_EXT = /\.(txt|md|markdown|csv|tsv|json|html?|css|js|mjs|ts|tsx|jsx|py|rb|go|rs|java|c|cpp|h|sh|xml|ya?ml|toml|ini|sql|log)$/i;
-  function openProjectModal(p) {
-    if (!(window.TAP && TAP._ && TAP._.dialog)) {
-      var nm = prompt(t('projName'));
-      if (!nm || !nm.trim()) return;
-      var np = { id: 'p_' + Date.now(), name: nm.trim().slice(0, 60), description: '', instructions: '', role: '', created: Date.now() };
-      projects.unshift(np); saveProjects(); switchProject(np.id);
+  function leaveProject() {
+    stopProjectPoll();
+    proj.current = null;
+    try { localStorage.removeItem('ta_project_open'); } catch (e) {}
+    setProjectMode(false);
+  }
+  function renderProjectHeader() {
+    var name = document.getElementById('proj-header-name');
+    if (name && proj.current) name.textContent = proj.current.name;
+  }
+  function projectMessageNode(m) {
+    var refs = addMessageToDOM(m.role === 'user' ? 'user' : 'ai', m.content, (m.meta && m.meta.sources) || [], m.created_at, undefined, null, null, { noRegen: true, prepend: m.__prepend });
+    if (refs && refs.row) refs.row.setAttribute('data-msg-id', String(m.id));
+    if (m.role !== 'user' && refs && refs.contentCol && m.meta && m.meta.steps && m.meta.steps.length) {
+      var box = document.createElement('div');
+      box.innerHTML = stepsHtml(m.meta.steps);
+      if (box.firstChild) refs.contentCol.insertBefore(box.firstChild, refs.contentCol.firstChild);
+    }
+    return refs;
+  }
+  var TOOL_LABELS = { web_search: '搜尋網頁', fetch_url: '讀取網頁', calculate: '計算', current_time: '查詢時間', document_search: '搜尋文件', remember: '記住', forget: '忘記', recall: '回想記憶', list_files: '列出檔案', read_file: '讀取檔案', write_file: '寫入檔案', edit_file: '編輯檔案', append_file: '附加內容', move_file: '移動', delete_file: '刪除', make_dir: '建立資料夾', search_files: '搜尋檔案', search_history: '搜尋對話紀錄', load_skill: '載入技能' };
+  function stepsHtml(steps) {
+    if (!steps || !steps.length) return '';
+    return '<div class="tool-steps">' + steps.map(function(st) {
+      var mark = st.status === 'running' ? '…' : (st.status === 'error' ? '✕' : '✓');
+      var name = TOOL_LABELS[st.name] || (String(st.name || '').indexOf('mcp__') === 0 ? 'MCP ' + String(st.name).slice(5).replace('__', ' · ') : st.name);
+      var label = name + (st.label ? '：' + st.label : '');
+      var err = st.status === 'error' && st.error ? '（' + st.error + '）' : '';
+      var detail = (st.args || st.result) ? '<div class="tool-step-detail">' +
+        (st.args ? '<div class="tool-step-k">參數</div><pre>' + escapeHtml(st.args) + '</pre>' : '') +
+        (st.result ? '<div class="tool-step-k">結果（截斷）</div><pre>' + escapeHtml(st.result) + '</pre>' : '') + '</div>' : '';
+      return '<details class="tool-step ' + escapeHtml(st.status || '') + '"><summary>' + mark + ' ' + escapeHtml(label) + escapeHtml(err) + '</summary>' + detail + '</details>';
+    }).join('') + '</div>';
+  }
+  function loadProjectMessages() {
+    if (!proj.current) return Promise.resolve();
+    var pid = proj.current.id;
+    return apiJson('/api/projects/' + encodeURIComponent(pid) + '/messages?limit=30').then(function(d) {
+      if (!proj.current || proj.current.id !== pid) return;
+      proj.messages = d.messages || [];
+      proj.more = !!d.more;
+      proj.epoch = d.epoch; proj.rev = d.rev;
+      proj.oldestId = proj.messages.length ? proj.messages[0].id : 0;
+      proj.newestId = proj.messages.length ? proj.messages[proj.messages.length - 1].id : 0;
+      renderProjectMessages();
+    });
+  }
+  function renderProjectMessages() {
+    var container = document.getElementById('chat-container');
+    if (!container || !proj.current) return;
+    container.innerHTML = '';
+    if (!proj.messages.length) {
+      container.innerHTML = '<div class="ta-hero proj-hero-empty"><h1 class="hero-heading"></h1><p class="hero-subheading">這是專案的永久對話。模型可以讀寫專案資料夾裡的檔案，也會記得專案指示與記憶。</p></div>';
+      container.querySelector('.hero-heading').textContent = proj.current.name;
       return;
     }
-    var U = TAP._;
-    var editing = !!p;
-    var name = U.el('input', { class: 'form-input', type: 'text', maxlength: '60', placeholder: pt('namePh'), autocomplete: 'off', id: 'proj-f-name', required: true });
-    var desc = U.el('textarea', { class: 'form-textarea proj-desc', rows: '2', maxlength: '300', placeholder: pt('descPh'), id: 'proj-f-desc' });
-    var instr = U.el('textarea', { class: 'form-textarea', rows: '5', maxlength: '4000', placeholder: pt('instrPh'), id: 'proj-f-instr' });
-    var role = U.el('select', { class: 'form-input proj-role', id: 'proj-f-role' });
-    var roleList = [];
-    try { roleList = (U.roles() || []).filter(function(r) { return r.id !== 'custom'; }); } catch(eRl) {}
-    roleList.forEach(function(r) { role.appendChild(U.el('option', { value: r.id === 'none' ? '' : r.id, text: r.name })); });
-    if (editing) { name.value = p.name || ''; desc.value = p.description || ''; instr.value = p.instructions || ''; role.value = p.role || ''; }
-    var err = U.el('p', { class: 'proj-err', role: 'alert', id: 'proj-f-err' });
-    var keep = editing ? projectDocs(p.id).map(function(d) { return { id: d.id, title: d.title, size: String(d.content || '').length }; }) : [];
-    var removed = {};
-    var added = [];
-    var fileList = U.el('ul', { class: 'proj-files', id: 'proj-f-files' });
-    function paintFiles() {
-      fileList.innerHTML = '';
-      var items = keep.filter(function(f) { return !removed[f.id]; }).concat(added);
-      if (!items.length) { fileList.appendChild(U.el('li', { class: 'proj-file-empty', text: pt('noFiles') })); return; }
-      items.forEach(function(f) {
-        var kb = Math.max(1, Math.round((f.size || 0) / 1024)) + ' KB';
-        var x = U.el('button', { type: 'button', class: 'proj-file-x', 'aria-label': pt('remove') + ': ' + f.title, title: pt('remove'), text: '✕', onclick: function() {
-          if (f.id) removed[f.id] = true; else added = added.filter(function(a) { return a !== f; });
-          paintFiles();
-        } });
-        fileList.appendChild(U.el('li', { class: 'proj-file' }, [U.el('span', { class: 'proj-file-name', text: f.title }), U.el('span', { class: 'proj-file-size', text: kb }), x]));
-      });
+    if (proj.more) {
+      var more = document.createElement('button');
+      more.type = 'button'; more.className = 'hist-bar-btn proj-more'; more.id = 'proj-load-older';
+      more.textContent = '載入較早的訊息';
+      more.onclick = loadOlderMessages;
+      container.appendChild(more);
     }
-    paintFiles();
-    var picker = U.el('input', { type: 'file', multiple: true, class: 'proj-file-input', id: 'proj-f-input', tabindex: '-1', 'aria-hidden': 'true',
-      accept: '.txt,.md,.markdown,.csv,.tsv,.json,.html,.htm,.css,.js,.mjs,.ts,.tsx,.jsx,.py,.rb,.go,.rs,.java,.c,.cpp,.h,.sh,.xml,.yaml,.yml,.toml,.ini,.sql,.log,text/*' });
-    picker.addEventListener('change', function() {
-      var fs = Array.prototype.slice.call(picker.files || []);
-      var msgs = [];
-      var jobs = fs.map(function(f) {
-        if (f.size > 200 * 1024) { msgs.push(pt('tooBig').replace('{f}', f.name)); return Promise.resolve(); }
-        if (!(PROJ_TEXT_EXT.test(f.name) || /^text\//.test(f.type || ''))) { msgs.push(pt('notText').replace('{f}', f.name)); return Promise.resolve(); }
-        return f.text().then(function(txt) {
-          if (txt.indexOf('\u0000') !== -1) { msgs.push(pt('notText').replace('{f}', f.name)); return; }
-          added.push({ title: f.name.slice(0, 120), content: txt.slice(0, 20000), size: Math.min(txt.length, 20000), lang: (f.name.split('.').pop() || '').toLowerCase() });
-        }).catch(function() { msgs.push(pt('notText').replace('{f}', f.name)); });
-      });
-      Promise.all(jobs).then(function() { picker.value = ''; err.textContent = msgs.join(' · '); paintFiles(); });
+    proj.messages.forEach(projectMessageNode);
+    scrollToEnd();
+  }
+  function loadOlderMessages() {
+    if (!proj.current || !proj.more || proj.loadingOlder) return;
+    proj.loadingOlder = true;
+    var scroller = document.getElementById('chat-scroll');
+    var prevHeight = scroller ? scroller.scrollHeight : 0;
+    var pid = proj.current.id;
+    apiJson('/api/projects/' + encodeURIComponent(pid) + '/messages?limit=30&before=' + proj.oldestId).then(function(d) {
+      if (!proj.current || proj.current.id !== pid) return;
+      var older = d.messages || [];
+      proj.more = !!d.more;
+      if (!older.length) return;
+      proj.oldestId = older[0].id;
+      var container = document.getElementById('chat-container');
+      var btn = document.getElementById('proj-load-older');
+      if (btn) btn.remove();
+      older.slice().reverse().forEach(function(m) { m.__prepend = true; projectMessageNode(m); });
+      proj.messages = older.concat(proj.messages);
+      if (proj.more && container) {
+        var more = document.createElement('button');
+        more.type = 'button'; more.className = 'hist-bar-btn proj-more'; more.id = 'proj-load-older';
+        more.textContent = '載入較早的訊息';
+        more.onclick = loadOlderMessages;
+        container.insertBefore(more, container.firstChild);
+      }
+      if (scroller) scroller.scrollTop = scroller.scrollHeight - prevHeight;
+    }).catch(function(e) { projToast(e.message, true); }).then(function() { proj.loadingOlder = false; });
+  }
+  function startProjectPoll() {
+    stopProjectPoll();
+    proj.pollTimer = setInterval(pollProject, 10000);
+  }
+  function stopProjectPoll() {
+    if (proj.pollTimer) clearInterval(proj.pollTimer);
+    proj.pollTimer = 0;
+  }
+  function pollProject() {
+    if (!proj.current || isGenerating || document.hidden) return;
+    var pid = proj.current.id;
+    apiJson('/api/projects/' + encodeURIComponent(pid) + '/poll?after=' + proj.newestId).then(function(d) {
+      if (!proj.current || proj.current.id !== pid || isGenerating) return;
+      if (d.epoch !== proj.epoch) { proj.epoch = d.epoch; loadProjectMessages(); return; }
+      var fresh = (d.messages || []).filter(function(m) { return m.id > proj.newestId; });
+      if (fresh.length) {
+        if (!proj.messages.length) { proj.messages = fresh; proj.newestId = fresh[fresh.length - 1].id; proj.oldestId = fresh[0].id; renderProjectMessages(); }
+        else {
+          fresh.forEach(function(m) { proj.messages.push(m); projectMessageNode(m); });
+          proj.newestId = fresh[fresh.length - 1].id;
+        }
+      }
+      if (d.rev !== proj.rev) { proj.rev = d.rev; if (proj.drawerTab === 'files') refreshTree(); }
+    }).catch(function() {});
+  }
+  function scheduleTreeRefresh() {
+    clearTimeout(proj.treeTimer);
+    proj.treeTimer = setTimeout(function() { if (proj.drawerTab === 'files') refreshTree(); else proj.treeRev = -1; }, 400);
+  }
+
+  // Streams a project chat turn. The server saves both messages in D1.
+  async function sendProjectMessage(text) {
+    var p = proj.current;
+    if (!p) return;
+    isGenerating = true;
+    abortCtl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    setGenerating(true);
+    var hero = document.querySelector('#chat-container .proj-hero-empty');
+    if (hero) hero.remove();
+    var userRefs = addMessageToDOM('user', text, null, Date.now(), undefined, null, null, { noRegen: true });
+    var msgDom = addMessageToDOM('ai', '', null, Date.now(), undefined, null, null, { noRegen: true });
+    var textContainer = msgDom.textContainer;
+    if (textContainer) textContainer.innerHTML = '<span class="pulse-cursor"></span>';
+    var fullText = '', sources = [], steps = [], notices = [], streamError = null, savedIds = null;
+    function paint(done) {
+      if (!textContainer) return;
+      textContainer.innerHTML = stepsHtml(steps) + renderMarkdown(fullText) +
+        (notices.length ? '<div class="msg-time">' + escapeHtml(notices.join(' ')) + '</div>' : '') +
+        (done ? '' : '<span class="pulse-cursor"></span>');
+      scrollToEnd();
+    }
+    try {
+      var tzVal = localStorage.getItem('ta_timezone');
+      var tz = (tzVal && tzVal !== 'auto') ? tzVal : (function() { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei'; } catch (e) { return 'Asia/Taipei'; } })();
+      var payload = { project_id: p.id, message: text, search_web: isWebSearch, length_mode: currentLength, locale: (window.TA && TA.lang) ? TA.lang() : 'zh-TW', timezone: tz };
+      if (window.PAI_toolsOff) payload.tools_off = window.PAI_toolsOff();
+      if (window.PAI_forcedSkill) payload.skill = window.PAI_forcedSkill(text);
+      var response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: abortCtl ? abortCtl.signal : undefined, body: JSON.stringify(payload) });
+      if (!response.ok) {
+        var errJson = await response.json().catch(function() { return {}; });
+        throw new Error(errJson.error || ('HTTP ' + response.status));
+      }
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var buffer = '';
+      var handle = function(dataStr) {
+        if (!dataStr || dataStr === '[DONE]') return;
+        var ev; try { ev = JSON.parse(dataStr); } catch (e) { return; }
+        if (!ev || typeof ev !== 'object') return;
+        if (ev.error) { streamError = String(ev.error); return; }
+        if (ev.sources) sources = ev.sources;
+        if (ev.notice) { notices.push(String(ev.notice)); paint(false); }
+        if (ev.memory && ev.memory.op === 'remember') notices.push('已記住：' + ev.memory.text);
+        if (ev.fs_op) scheduleTreeRefresh();
+        if (ev.saved) savedIds = Object.assign(savedIds || {}, ev.saved);
+        if (ev.tool && ev.tool.id) {
+          var found = null;
+          for (var k = 0; k < steps.length; k++) if (steps[k].id === ev.tool.id) found = steps[k];
+          if (found) Object.assign(found, ev.tool); else steps.push(Object.assign({}, ev.tool));
+          paint(false);
+        }
+        if (ev.content) { fullText += ev.content; paint(false); }
+      };
+      while (true) {
+        var chunk = await reader.read();
+        if (chunk.done) break;
+        buffer += decoder.decode(chunk.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (var i = 0; i < lines.length; i++) {
+          var tl = lines[i].trim();
+          if (tl.indexOf('data:') === 0) handle(tl.replace(/^data:\s*/, ''));
+        }
+      }
+      if (buffer.trim().indexOf('data:') === 0) handle(buffer.trim().replace(/^data:\s*/, ''));
+      if (streamError && !fullText) throw new Error(streamError);
+      if (streamError) notices.push(t('error') + ': ' + streamError);
+      paint(true);
+      if (sources.length && msgDom.contentCol) {
+        var srcBox = document.createElement('div');
+        srcBox.className = 'sources-box';
+        srcBox.innerHTML = '<div class="sources-title">' + t('sources') + '</div><div class="sources-list">' +
+          sources.filter(function(s) { return s && /^https?:\/\//i.test(String(s.url || '')); }).map(function(s) { return '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener noreferrer" class="source-tag">' + escapeHtml(s.title || s.url) + '</a>'; }).join('') + '</div>';
+        msgDom.contentCol.appendChild(srcBox);
+      }
+    } catch (err) {
+      var aborted = err && (err.name === 'AbortError' || /abort/i.test(err.message || ''));
+      if (textContainer) textContainer.innerHTML = aborted ? '<span style="color:var(--dim)">' + escapeHtml(t('stopped')) + '（伺服器仍會完成並儲存這次回覆）</span>' : '<span style="color:var(--red);font-weight:600">' + escapeHtml(t('error') + ': ' + err.message) + '</span>';
+    } finally {
+      isGenerating = false;
+      abortCtl = null;
+      setGenerating(false);
+      if (savedIds && proj.current && proj.current.id === p.id) {
+        if (savedIds.user_id && userRefs.row) userRefs.row.setAttribute('data-msg-id', String(savedIds.user_id));
+        if (savedIds.assistant_id && msgDom.row) msgDom.row.setAttribute('data-msg-id', String(savedIds.assistant_id));
+        var newest = Math.max(savedIds.user_id || 0, savedIds.assistant_id || 0);
+        if (savedIds.user_id) proj.messages.push({ id: savedIds.user_id, role: 'user', content: text, meta: {} });
+        if (savedIds.assistant_id) proj.messages.push({ id: savedIds.assistant_id, role: 'assistant', content: fullText, meta: { steps: steps, sources: sources } });
+        if (newest > proj.newestId) proj.newestId = newest;
+        if (proj.drawerTab === 'chat') renderDrawer();
+      }
+      scrollToEnd();
+    }
+  }
+
+  // ---- Project drawer: 對話 / 檔案 / 指示 / 設定 ----
+  function openDrawer(tab) {
+    proj.drawerTab = tab || 'files';
+    var d = document.getElementById('proj-drawer');
+    if (d) d.hidden = false;
+    document.body.classList.add('proj-drawer-open');
+    renderDrawer();
+  }
+  function closeDrawer() {
+    proj.drawerTab = '';
+    var d = document.getElementById('proj-drawer');
+    if (d) d.hidden = true;
+    document.body.classList.remove('proj-drawer-open');
+    syncDrawerTabs();
+  }
+  function syncDrawerTabs() {
+    document.querySelectorAll('[data-proj-tab]').forEach(function(b) {
+      var on = b.getAttribute('data-proj-tab') === (proj.drawerTab || 'chat');
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    var addBtn = U.el('button', { type: 'button', class: 'settings-foot-btn proj-add-files', id: 'proj-f-add', text: '+ ' + pt('addFiles'), onclick: function() { picker.click(); } });
-    var filesGroup = U.el('div', { class: 'form-group proj-files-group' }, [
-      U.el('span', { class: 'form-label', id: 'proj-f-files-l', text: pt('files') }),
-      U.el('p', { class: 'proj-hint', text: pt('filesHint') }),
-      fileList, addBtn, picker
-    ]);
-    fileList.setAttribute('aria-labelledby', 'proj-f-files-l');
-    var rowTop = U.el('div', { class: 'proj-row' }, [U.field(pt('name'), name), roleList.length ? U.field(pt('role'), role) : null]);
-    var body = U.el('div', { class: 'proj-form' }, [rowTop, U.field(pt('desc'), desc), U.field(pt('instr'), instr), filesGroup, err]);
-    var d;
-    function save() {
-      var n = name.value.trim();
-      if (!n) { err.textContent = pt('nameReq'); name.setAttribute('aria-invalid', 'true'); name.focus(); return; }
-      var obj = editing ? p : { id: 'p_' + Date.now() + Math.random().toString(36).slice(2, 6), created: Date.now() };
-      obj.name = n.slice(0, 60);
-      obj.description = desc.value.trim().slice(0, 300);
-      obj.instructions = instr.value.trim().slice(0, 4000);
-      obj.role = role.value || '';
-      obj.updated = Date.now();
-      if (!editing) projects.unshift(obj);
-      documents = documents.filter(function(x) { return !removed[x.id]; });
-      added.forEach(function(f, i) {
-        documents.push({ id: 'doc_' + Date.now() + '_' + i, title: f.title, content: f.content, type: 'file', lang: f.lang, created: Date.now(), projectId: obj.id });
+  }
+  function renderDrawer() {
+    syncDrawerTabs();
+    var body = document.getElementById('proj-drawer-body');
+    if (!body || !proj.current) return;
+    body.innerHTML = '';
+    if (proj.drawerTab === 'chat') return renderChatTab(body);
+    if (proj.drawerTab === 'files') return renderFilesTab(body);
+    if (proj.drawerTab === 'instructions') return renderInstructionsTab(body);
+    if (proj.drawerTab === 'settings') return renderProjectSettingsTab(body);
+  }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function(k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'onclick') n.onclick = attrs[k];
+      else if (k === 'className') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function(c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function renderChatTab(body) {
+    var p = proj.current;
+    body.appendChild(el('p', { className: 'settings-hint', text: '這個專案只有一段永久對話。訊息存在 D1，在所有裝置同步；較早的內容會自動濃縮成摘要。' }));
+    body.appendChild(el('div', { className: 'settings-block-title', text: '對話摘要' }));
+    body.appendChild(el('pre', { className: 'proj-summary', text: p.summary || '（還沒有摘要；對話變長時會自動產生）' }));
+    body.appendChild(el('div', { className: 'settings-actions proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '壓縮（立即產生摘要）', onclick: compactProject }),
+      el('button', { type: 'button', className: 'topbar-action-btn btn-danger', text: '清空對話', onclick: clearProjectChat }),
+    ]));
+    body.appendChild(el('p', { className: 'settings-hint', text: '清空對話只刪除訊息與摘要；檔案、指示與記憶不受影響。' }));
+  }
+  function compactProject() {
+    if (!proj.current) return;
+    projToast('壓縮中…');
+    apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/compact', { method: 'POST', body: {} }).then(function(d) {
+      projToast(d.compacted ? '已更新摘要' : '訊息太少，不需要壓縮');
+      return apiJson('/api/projects/' + encodeURIComponent(proj.current.id));
+    }).then(function(d) { if (d && d.project) { proj.current = d.project; if (proj.drawerTab === 'chat') renderDrawer(); } })
+      .catch(function(e) { projToast(e.message, true); });
+  }
+  function clearProjectChat() {
+    if (!proj.current || !confirm('清空「' + proj.current.name + '」的所有對話訊息？檔案與記憶會保留。')) return;
+    apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/messages', { method: 'DELETE' }).then(function() {
+      proj.current.summary = '';
+      proj.epoch++;
+      return loadProjectMessages();
+    }).then(function() { projToast('已清空對話'); if (proj.drawerTab === 'chat') renderDrawer(); })
+      .catch(function(e) { projToast(e.message, true); });
+  }
+
+  // Files tab: tree + editor.
+  function refreshTree() {
+    if (!proj.current) return Promise.resolve();
+    var pid = proj.current.id;
+    return apiJson('/api/projects/' + encodeURIComponent(pid) + '/files').then(function(d) {
+      if (!proj.current || proj.current.id !== pid) return;
+      proj.tree = d.entries || [];
+      proj.treeRev = d.rev;
+      proj.rev = d.rev;
+      if (proj.drawerTab === 'files' && !proj.openFile) renderDrawer();
+    });
+  }
+  function fsOp(body) {
+    return apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/fs', { method: 'POST', body: body }).then(refreshTree);
+  }
+  function askPath(question, def) {
+    var v = prompt(question, def || '');
+    if (v === null) return null;
+    v = v.trim().replace(/^\/+/, '');
+    return v || null;
+  }
+  function renderFilesTab(body) {
+    if (proj.openFile) return renderEditor(body);
+    if (proj.treeRev !== proj.rev || proj.treeRev < 0) { body.appendChild(el('p', { className: 'settings-hint', text: '載入中…' })); refreshTree(); return; }
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '＋ 檔案', onclick: function() {
+        var path = askPath('新檔案路徑（例如 notes/todo.md）');
+        if (!path) return;
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file', { method: 'PUT', body: { path: path, content: '' } })
+          .then(function() { return refreshTree(); }).then(function() { openFileInEditor(path); }).catch(function(e) { projToast(e.message, true); });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '＋ 資料夾', onclick: function() {
+        var path = askPath('資料夾路徑');
+        if (path) fsOp({ op: 'mkdir', path: path }).catch(function(e) { projToast(e.message, true); });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '重新整理', onclick: function() { proj.treeRev = -1; refreshTree(); } }),
+    ]));
+    if (!proj.tree.length) { body.appendChild(el('p', { className: 'settings-hint', text: '資料夾是空的。新增檔案，或請模型幫你建立。只支援文字檔，單檔上限 1 MB。' })); return; }
+    var list = el('div', { className: 'file-tree', role: 'tree' });
+    proj.tree.forEach(function(e) {
+      var hidden = false;
+      var parts = e.path.split('/');
+      for (var i = 1; i < parts.length; i++) if (proj.collapsed[parts.slice(0, i).join('/')]) hidden = true;
+      if (hidden) return;
+      var depth = parts.length - 1;
+      var name = parts[parts.length - 1];
+      var row = el('div', { className: 'file-row' + (e.dir ? ' dir' : ''), role: 'treeitem' });
+      row.style.paddingLeft = (6 + depth * 14) + 'px';
+      var main = el('button', { type: 'button', className: 'file-name', title: e.path });
+      main.textContent = (e.dir ? (proj.collapsed[e.path] ? '▸ ' : '▾ ') + '📁 ' : '📄 ') + name;
+      main.onclick = function() {
+        if (e.dir) { proj.collapsed[e.path] = !proj.collapsed[e.path]; renderDrawer(); }
+        else openFileInEditor(e.path);
+      };
+      row.appendChild(main);
+      if (!e.dir) row.appendChild(el('span', { className: 'file-size', text: e.size >= 1024 ? Math.round(e.size / 1024) + ' KB' : e.size + ' B' }));
+      row.appendChild(el('button', { type: 'button', className: 'mini-x', title: '移動或重新命名', 'aria-label': '移動或重新命名 ' + e.path, text: '↗', onclick: function() {
+        var to = askPath('移動或重新命名到：', e.path);
+        if (to && to !== e.path) fsOp({ op: 'move', from: e.path, to: to }).catch(function(err) { projToast(err.message, true); });
+      } }));
+      row.appendChild(el('button', { type: 'button', className: 'mini-x', title: '刪除', 'aria-label': '刪除 ' + e.path, text: '✕', onclick: function() {
+        if (!confirm('刪除 ' + e.path + (e.dir ? ' 與其中所有檔案' : '') + '？')) return;
+        fsOp({ op: 'delete', path: e.path, recursive: !!e.dir }).catch(function(err) { projToast(err.message, true); });
+      } }));
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+  }
+  function openFileInEditor(path) {
+    if (!proj.current) return;
+    apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file?path=' + encodeURIComponent(path)).then(function(d) {
+      proj.openFile = { path: d.path, content: d.content, seq: d.seq };
+      if (proj.drawerTab !== 'files') openDrawer('files'); else renderDrawer();
+    }).catch(function(e) { projToast(e.message, true); });
+  }
+  function renderEditor(body) {
+    var f = proj.openFile;
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '← 檔案', onclick: function() { proj.openFile = null; renderDrawer(); } }),
+      el('strong', { className: 'editor-path', text: f.path }),
+    ]));
+    var ta = el('textarea', { className: 'form-textarea file-editor', spellcheck: 'false', 'aria-label': f.path });
+    ta.value = f.content;
+    body.appendChild(ta);
+    var info = el('p', { className: 'settings-hint', id: 'editor-info' });
+    var updateInfo = function() { var n = new TextEncoder().encode(ta.value).length; info.textContent = n + ' bytes / 1,000,000'; info.style.color = n > 1000000 ? 'var(--red)' : ''; };
+    ta.addEventListener('input', updateInfo); updateInfo();
+    body.appendChild(info);
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn primary', text: '儲存', onclick: function() {
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file', { method: 'PUT', body: { path: f.path, content: ta.value, seq: f.seq } })
+          .then(function(d) { f.content = ta.value; f.seq = d.seq; projToast('已儲存'); proj.treeRev = -1; })
+          .catch(function(e) {
+            if (e.code === 'stale') { if (confirm('檔案已被其他裝置或模型修改。要覆蓋嗎？（取消則保留你的編輯）')) { apiJson('/api/projects/' + encodeURIComponent(proj.current.id) + '/file', { method: 'PUT', body: { path: f.path, content: ta.value } }).then(function(d) { f.seq = d.seq; projToast('已覆蓋儲存'); }).catch(function(e2) { projToast(e2.message, true); }); } }
+            else projToast(e.message, true);
+          });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn', text: '重新載入', onclick: function() { openFileInEditor(f.path); } }),
+    ]));
+  }
+  function renderInstructionsTab(body) {
+    body.appendChild(el('p', { className: 'settings-hint', text: '專案指示會加在每次對話的系統提示最後，優先於其他指示。' }));
+    var ta = el('textarea', { className: 'form-textarea proj-instructions', 'aria-label': '專案指示', maxlength: '20000' });
+    ta.value = proj.current.instructions || '';
+    body.appendChild(ta);
+    body.appendChild(el('div', { className: 'proj-actions' }, [el('button', { type: 'button', className: 'topbar-action-btn primary', text: '儲存指示', onclick: function() {
+      apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'PUT', body: { instructions: ta.value } })
+        .then(function(d) { proj.current = d.project; projToast('已儲存指示'); }).catch(function(e) { projToast(e.message, true); });
+    } })]));
+  }
+  function renderProjectSettingsTab(body) {
+    var s = proj.current.settings || {};
+    var name = el('input', { className: 'form-input', type: 'text', maxlength: '80', 'aria-label': '專案名稱' });
+    name.value = proj.current.name;
+    body.appendChild(el('label', { className: 'form-label', text: '名稱' }));
+    body.appendChild(name);
+    body.appendChild(el('div', { className: 'settings-block-title', text: '模型（留空使用全域設定）' }));
+    var provSel = el('select', { className: 'form-input', 'aria-label': '供應商' });
+    provSel.appendChild(el('option', { value: '', text: '使用全域供應商' }));
+    server.providers.forEach(function(p) { var o = el('option', { value: p.id, text: p.name }); if (p.id === s.provider_id) o.selected = true; provSel.appendChild(o); });
+    var model = el('input', { className: 'form-input', type: 'text', placeholder: '模型 ID（留空使用預設）', list: 'provider-model-list', 'aria-label': '模型' });
+    model.value = s.model || '';
+    body.appendChild(provSel); body.appendChild(model);
+    body.appendChild(el('div', { className: 'settings-block-title', text: '參數覆寫（留空使用全域值）' }));
+    var pp = s.params || {};
+    var grid = el('div', { className: 'params-grid' });
+    var fields = [['temperature', 'temperature', 'number'], ['top-p', 'top_p', 'number'], ['max-tokens', 'max_tokens', 'number'], ['max-steps', 'max_steps', 'number']];
+    fields.forEach(function(f) {
+      grid.appendChild(el('label', { className: 'form-label', for: 'pp-' + f[0], text: f[1] }));
+      var inp = el('input', { className: 'form-input', type: 'number', id: 'pp-' + f[0], step: 'any' });
+      inp.value = pp[f[1]] === undefined || pp[f[1]] === null ? '' : pp[f[1]];
+      grid.appendChild(inp);
+    });
+    grid.appendChild(el('label', { className: 'form-label', for: 'pp-reasoning', text: 'reasoning_effort' }));
+    var rs = el('select', { className: 'form-input', id: 'pp-reasoning' });
+    ['', 'none', 'minimal', 'low', 'medium', 'high'].forEach(function(v) { var o = el('option', { value: v, text: v || '使用全域' }); if ((pp.reasoning_effort || '') === v) o.selected = true; rs.appendChild(o); });
+    grid.appendChild(rs);
+    body.appendChild(grid);
+    body.appendChild(el('div', { className: 'settings-block-title', text: '啟用的工具' }));
+    var off = s.tools_disabled || [];
+    var checks = PROJ_TOOL_GROUPS.map(function(g) {
+      var cb = el('input', { type: 'checkbox', 'data-group': g[0] });
+      cb.checked = off.indexOf(g[0]) === -1;
+      body.appendChild(el('label', { className: 'toggle-row' }, [el('span', { text: g[1] }), cb]));
+      return cb;
+    });
+    if (window.PAI_projectSettingsExtra) try { window.PAI_projectSettingsExtra(body, s); } catch (e) {}
+    body.appendChild(el('div', { className: 'proj-actions' }, [
+      el('button', { type: 'button', className: 'topbar-action-btn primary', text: '儲存設定', onclick: function() {
+        var params = readParamsForm('pp-');
+        Object.keys(params).forEach(function(k) { if (params[k] === null || params[k] === '') delete params[k]; });
+        var settings = { provider_id: provSel.value, model: model.value.trim(), params: params, tools_disabled: checks.filter(function(c) { return !c.checked; }).map(function(c) { return c.getAttribute('data-group'); }) };
+        if (window.PAI_projectSettingsCollect) try { Object.assign(settings, window.PAI_projectSettingsCollect(body)); } catch (e) {}
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'PUT', body: { name: name.value.trim(), settings: settings } })
+          .then(function(d) { proj.current = d.project; renderProjectHeader(); loadProjectList(); projToast('已儲存設定'); })
+          .catch(function(e) { projToast(e.message, true); });
+      } }),
+      el('button', { type: 'button', className: 'topbar-action-btn btn-danger', text: '刪除專案…', onclick: function() {
+        var n = prompt('刪除專案會一併刪除它的對話、檔案與專案記憶，無法復原。\n請輸入專案名稱確認：');
+        if (n === null) return;
+        if (n.trim() !== proj.current.name) { projToast('名稱不符，未刪除', true); return; }
+        apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'DELETE' }).then(function() {
+          leaveProject(); loadProjectList(); startNewChat();
+        }).catch(function(e) { projToast(e.message, true); });
+      } }),
+    ]));
+  }
+  function initProjects() {
+    document.querySelectorAll('[data-proj-tab]').forEach(function(b) {
+      b.addEventListener('click', function() {
+        var tab = b.getAttribute('data-proj-tab');
+        if (tab === 'chat' && window.innerWidth <= 860) { closeDrawer(); return; }
+        if (proj.drawerTab === tab && window.innerWidth > 860) { closeDrawer(); return; }
+        openDrawer(tab);
       });
-      while (documents.length > 40) {
-        var idx = documents.findIndex(function(x) { return !x.projectId; });
-        documents.splice(idx === -1 ? 0 : idx, 1);
-      }
-      saveProjects(); saveDocuments();
-      d.close('ok');
-      if (!editing) { switchProject(obj.id); if (window.innerWidth <= 860) toggleSidebar(false); }
-      else {
-        if (currentProjectId === obj.id && obj.role && window.TAP && TAP._ && TAP._.setRole) { try { TAP._.setRole(obj.role); } catch(eR2) {} }
-        renderSidebar();
-        var cc = chats[currentChatId];
-        if (!cc || !cc.messages || !cc.messages.length) loadChatView();
-      }
-      projAnnounce(editing ? pt('saved') : pt('created'));
-    }
-    var saveBtn = U.btn(editing ? pt('save') : pt('create'), 'primary', save);
-    saveBtn.id = 'proj-f-save';
-    var buttons = [U.btn(pt('cancel'), 'proj-cancel', function() { d.close(); }), saveBtn];
-    if (editing) {
-      var delBtn = U.btn(pt('del'), 'proj-del-link', function() { d.close('del'); confirmDeleteProject(p); });
-      buttons.unshift(delBtn);
-    }
-    name.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); save(); } });
-    d = U.dialog({ title: editing ? pt('editProject') : pt('newProject'), body: body, buttons: buttons, initialFocus: name, wide: false });
-    d.card.classList.add('proj-dialog');
-    d.card.id = 'proj-dialog';
+    });
+    var closeBtn = document.getElementById('proj-drawer-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    var exitBtn = document.getElementById('proj-exit-btn');
+    if (exitBtn) exitBtn.addEventListener('click', function() { leaveProject(); startNewChat(); });
+    var scroller = document.getElementById('chat-scroll');
+    if (scroller) scroller.addEventListener('scroll', function() { if (proj.current && proj.more && scroller.scrollTop < 60) loadOlderMessages(); });
+    document.addEventListener('visibilitychange', function() { if (!document.hidden && proj.current) pollProject(); });
   }
 
   function renderDocsList(list, filterText) {
@@ -4189,7 +4558,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     head.onclick = function() { openKnowledgeModal(); };
     list.appendChild(head);
     var filtered = documents.filter(function(d) {
-      if (currentProjectId && d.projectId && d.projectId !== currentProjectId) return false;
+      if (d.projectId) return false;
       if (filterText && !(d.title || '').toLowerCase().includes(filterText)) return false;
       return true;
     });
@@ -4218,7 +4587,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     });
   }
 
-  function createProject() { openProjectModal(null); }
 
   function addDocument(doc) {
     documents.push({
@@ -4228,7 +4596,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       type: doc.type || 'note',
       lang: doc.lang || '',
       created: Date.now(),
-      projectId: currentProjectId
+      projectId: null
     });
     while (documents.length > 40) {
       var evict = documents.findIndex(function(x) { return !x.projectId; });
@@ -4634,6 +5002,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       if (syncBtn) syncBtn.addEventListener('click', syncNow);
       initMemoryPane();
       initSearchPane();
+      initProjects();
       fetch('/api/me', { credentials: 'same-origin' })
         .then(function(r) {
           if (r.status === 401) { location.href = '/login'; return null; }
@@ -4648,7 +5017,13 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           updateNoProviderBanner();
           if (!server.d1.ok) { updateUserUI(); setSyncStatus('D1 未就緒，同步停用', true); return; }
           setArtifactDest(artifactDest, false);
-          loadServerState().then(function() { updateUserUI(); });
+          loadServerState().then(function() {
+            updateUserUI();
+            return loadProjectList();
+          }).then(function() {
+            var openId = localStorage.getItem('ta_project_open');
+            if (openId && proj.list.some(function(p) { return p.id === openId; })) openProject(openId);
+          });
           syncBootstrap();
         }).catch(function(e) { console.error('bootstrap failed', e); });
       if (isWebSearch) {
@@ -4902,7 +5277,6 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       if (modelOpt) { setModel(modelOpt.getAttribute('data-model')); return; }
       var pickerEl = document.getElementById('model-picker');
       if (pickerEl && !pickerEl.contains(e.target)) pickerEl.classList.remove('open');
-      if (e.target && e.target.id === 'clear-project-filter') { switchProject(null); return; }
       if (e.target && e.target.id === 'toggle-archived') { showArchived = !showArchived; renderSidebar(); return; }
       var closeBtn = e.target.closest('[data-modal]');
       if (closeBtn && closeBtn.tagName === 'BUTTON') { var mId = closeBtn.getAttribute('data-modal'); if (mId) closeModal(mId); return; }

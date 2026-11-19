@@ -81,7 +81,7 @@ test('agent reports unknown tools and bad JSON back to the model instead of cras
       return jsonReply({
         content: '',
         tool_calls: [
-          { id: 'a', type: 'function', function: { name: 'web_search', arguments: '{"query":"x"}' } },
+          { id: 'a', type: 'function', function: { name: 'shell_exec', arguments: '{"cmd":"ls"}' } },
           { id: 'b', type: 'function', function: { name: 'calculate', arguments: '{bad json' } },
         ],
       }, 'tool_calls')

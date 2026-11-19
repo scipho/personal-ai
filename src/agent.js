@@ -173,8 +173,15 @@ async function executeToolCall(call, ctx) {
   }
   if (ctx.budget.exhausted()) return { name, args, result: { ok: false, error: WRAP_UP, code: 'budget' } }
   try {
-    const result = await withTimeout(ctx.execute(name, args), TOOL_TIMEOUT_MS)
-    return { name, args, result: result && typeof result === 'object' ? result : { ok: true, result } }
+    let result = await withTimeout(ctx.execute(name, args), TOOL_TIMEOUT_MS)
+    if (!result || typeof result !== 'object') result = { ok: true, result }
+    let events
+    if (result.__events) {
+      events = result.__events
+      result = { ...result }
+      delete result.__events
+    }
+    return { name, args, result, events }
   } catch (err) {
     if (err instanceof BudgetError) return { name, args, result: { ok: false, error: WRAP_UP, code: 'budget' } }
     return { name, args, result: { ok: false, error: err && err.message ? err.message : '工具執行失敗' } }
