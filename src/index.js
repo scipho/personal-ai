@@ -22,14 +22,16 @@ import { bodyErrorMessage, readFormBody, readJsonBody } from './body.js'
 import { handleChat } from './chat.js'
 import { handleImageRequest } from './images.js'
 import { publicTools, runTool } from './tools/registry.js'
-import { DEFAULT_GROQ_MODEL, fetchWithTimeout, modelsUrl, providerFromBody } from './providers.js'
 import { handleSync } from './sync.js'
+import { dataApiRoute } from './api.js'
+import { openDb } from './db.js'
+import { PASSWORD_SETTING } from './auth.js'
 
 const STATIC_PREFIXES = ['/assets/', '/favicon']
 const STATIC_FILES = new Set(['/avatar.png', '/manifest.json', '/robots.txt', '/favicon.ico'])
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url)
     const path = url.pathname
     const method = request.method.toUpperCase()
@@ -43,10 +45,8 @@ export default {
           ok: true,
           app: APP_NAME,
           version: APP_VERSION,
-          sync: !!env.DB,
-          search: !!env.TAVILY_API_KEY,
+          d1: !!env.DB,
           image: true,
-          providers: true,
           agent: true,
         })
       } else if (path === '/api/login') {
@@ -64,7 +64,7 @@ export default {
           headers: { 'Content-Type': 'text/plain; charset=UTF-8', 'Cache-Control': 'public, max-age=3600' },
         })
       } else if (path.startsWith('/api/')) {
-        response = await apiRoute(request, env, path, method)
+        response = await apiRoute(request, env, path, method, ctx)
       } else if (path === '/' || path === '/index.html') {
         const session = await requireAuth(request, env)
         if (!session) return redirect('/login')
@@ -86,24 +86,19 @@ export default {
   },
 }
 
-async function apiRoute(request, env, path, method) {
+async function apiRoute(request, env, path, method, ctx) {
   if (!['GET', 'HEAD'].includes(method) && !sameOriginRequest(request)) {
     return errorJson('跨來源請求被拒絕', 403, 'bad_origin')
   }
   if (path === '/api/chat') {
     if (method !== 'POST') return errorJson('Method not allowed', 405)
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
-    return handleChat(request, env)
+    return handleChat(request, env, ctx)
   }
   if (path === '/api/image') {
     if (!['GET', 'POST'].includes(method)) return errorJson('Method not allowed', 405)
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
     return handleImageRequest(request, env)
-  }
-  if (path === '/api/models') {
-    if (method !== 'POST') return errorJson('Method not allowed', 405)
-    if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
-    return modelsRoute(request, env)
   }
   if (path === '/api/tool') {
     if (method === 'GET') {
@@ -114,11 +109,15 @@ async function apiRoute(request, env, path, method) {
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
     return toolRoute(request, env)
   }
+  if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
+  const data = await dataApiRoute(request, env, path, method)
+  if (data) return data
   if (path === '/api/sync' || path === '/api/sync/status') {
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
     if (path === '/api/sync/status' && method === 'GET') {
       return json({ ok: true, enabled: !!env.DB })
     }
+    if (!['GET', 'POST', 'DELETE'].includes(method)) return errorJson('Method not allowed', 405)
     return handleSync(request, env)
   }
   return errorJson('Not found', 404, 'not_found')
@@ -164,7 +163,17 @@ async function loginRoute(request, env) {
     return isForm ? redirect('/login?error=1') : errorJson(bodyErrorMessage(err), 400, 'invalid_body')
   }
 
-  if (!password || !(await passwordMatches(password, env))) {
+  let stored = null
+  try {
+    const db = await openDb(env)
+    if (db) {
+      const row = await db.first('SELECT v FROM settings WHERE k = ?', PASSWORD_SETTING)
+      stored = row ? JSON.parse(row.v) : null
+    }
+  } catch (err) {
+    console.error('password lookup failed', err && err.message)
+  }
+  if (!password || !(await passwordMatches(password, env, stored))) {
     recordLoginFailure(request)
     return isForm ? redirect('/login?error=1') : errorJson('密碼不正確', 401, 'bad_password')
   }
@@ -190,58 +199,26 @@ async function logoutRoute(request, env) {
 async function meRoute(request, env) {
   const session = await requireAuth(request, env)
   if (!session) return errorJson('請先登入', 401, 'unauthorized')
+  let d1 = { ok: false, error: 'D1 未綁定（binding: DB）' }
+  if (env.DB) {
+    try {
+      const db = await openDb(env)
+      const row = await db.first('SELECT COUNT(*) AS n FROM providers')
+      d1 = { ok: true, providers: (row && row.n) || 0 }
+    } catch (err) {
+      d1 = { ok: false, error: `D1 無法使用：${String((err && err.message) || err).slice(0, 200)}` }
+    }
+  }
   return json({
     ok: true,
     user: { name: 'Owner' },
     config: {
-      sync: !!env.DB,
-      search: !!env.TAVILY_API_KEY,
+      d1,
+      sync: d1.ok,
       image: true,
-      defaultProvider: !!env.GROQ_API_KEY,
-      defaultModel: env.GROQ_MODEL || DEFAULT_GROQ_MODEL,
       version: APP_VERSION,
     },
   })
-}
-
-async function modelsRoute(request, env) {
-  let body
-  try { body = await readJsonBody(request) } catch (err) {
-    return errorJson(bodyErrorMessage(err), 400, 'invalid_body')
-  }
-  let baseUrl
-  let apiKey
-  try {
-    const provider = providerFromBody({ ...body, model: body.model || 'models' }, env)
-    baseUrl = provider.baseUrl
-    apiKey = provider.apiKey
-  } catch (err) {
-    return errorJson(err.message || '供應商設定不正確', 400, 'provider_config')
-  }
-  let upstream
-  try {
-    upstream = await fetchWithTimeout(modelsUrl(baseUrl), {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Accept': 'application/json',
-        'User-Agent': 'personal-ai/1.0',
-      },
-      signal: request.signal,
-    }, 30_000)
-  } catch {
-    return errorJson('無法連線到供應商', 502, 'provider_unreachable')
-  }
-  if (!upstream.ok) {
-    return errorJson(`供應商回傳 HTTP ${upstream.status}`, upstream.status === 401 || upstream.status === 403 ? 400 : 502, 'provider_error')
-  }
-  let data
-  try { data = await upstream.json() } catch { return errorJson('供應商回應格式不正確', 502, 'bad_provider_json') }
-  const rows = Array.isArray(data.data) ? data.data : Array.isArray(data.models) ? data.models : []
-  const models = rows
-    .map((row) => typeof row === 'string' ? row : row && (row.id || row.name))
-    .filter((id) => typeof id === 'string' && id.length > 0 && id.length < 200)
-    .slice(0, 500)
-  return json({ ok: true, models })
 }
 
 async function toolRoute(request, env) {
@@ -251,7 +228,9 @@ async function toolRoute(request, env) {
   }
   const name = String(body.name || body.tool || '')
   if (!name) return errorJson('缺少工具名稱', 400, 'missing_tool')
-  const result = await runTool(name, body.arguments || body.args || {}, env)
+  // Only side-effect-free tools are callable directly.
+  if (!['calculate', 'current_time', 'fetch_url'].includes(name)) return errorJson('此工具只能在對話中使用', 400, 'tool_not_direct')
+  const result = await runTool(name, body.arguments || body.args || {}, {})
   return json(result, result.ok ? 200 : 400)
 }
 

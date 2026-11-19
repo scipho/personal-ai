@@ -1,186 +1,108 @@
 # Personal AI
 
-私人、單使用者的 AI 對話工作區，部署在 Cloudflare Workers 免費層。前端沿用原始專案成熟的聊天介面（主題、文件、專案、Artifacts、Prompt 庫、i18n），後端改寫為單一密碼登入、OpenAI 相容供應商代理、D1 同步、Tavily 搜尋與 Pollinations 圖片生成。
+私人、單使用者的 AI 對話工作區，部署在 Cloudflare Workers 免費層。前端沿用原始專案的聊天介面（主題、文件、Artifacts、Prompt 庫、i18n），後端為單一密碼登入、OpenAI 相容供應商代理、工具呼叫代理（agent）與 D1 資料層。
 
 ## 功能
 
-- 單一密碼登入（`APP_PASSWORD`），HMAC 簽章工作階段，不用資料庫查詢
-- 自訂 OpenAI 相容供應商：Base URL、API Key、模型
-- 原始 SSE 轉發，不逐 token 解析，降低 Workers CPU 使用
-- 串流聊天、Markdown/程式碼區塊、Artifacts 預覽
-- 文件／專案／聊天／Prompt 設定的 D1 跨裝置同步（可選）
-- Tavily 低 token 網頁搜尋（`search_depth=basic`、5 筆、10 分鐘快取）
-- Pollinations 免費圖片生成，經 Worker 代理以處理 429／逾時
-- 工具介面預留 MCP 擴充點；v1 不啟用 MCP
-- Agent 工具呼叫循環：模型可自行呼叫 `web_search`、`fetch_url`、`calculate`、`current_time`、`document_search`，最多 6 步後強制作答；供應商不支援 tools 時自動退回純串流聊天（回應標頭 `X-Agent` / `X-Agent-Fallback`）
+- 單一密碼登入（`APP_PASSWORD`）；可在介面中變更密碼（PBKDF2 雜湊存在 D1，取代 `APP_PASSWORD`）
+- 多個 OpenAI 相容供應商（Base URL、API Key、模型），在「設定 → 供應商與模型」管理；**API Key 以 AES-GCM 加密存在 D1**，金鑰由 `AUTH_SECRET` 以 HKDF 衍生，永遠不會以明文回傳給瀏覽器（只顯示遮罩提示）
+- 模型參數：temperature、top_p、max_tokens、reasoning_effort、最多代理步數；供應商拒絕某個參數時自動移除後重試一次
+- Agent 工具呼叫循環：`web_search`（Tavily）、`fetch_url`、`calculate`、`current_time`、`document_search`、`remember` / `forget` / `recall`
+- 長期記憶存在 D1，可在「設定 → 記憶」檢視、編輯、刪除
+- 一般對話、文件與介面偏好透過 D1 跨裝置同步（以伺服器序號為游標）
+- 「清除所有資料」：刪除 D1 與本機資料（保留變更過的密碼）
+- Pollinations 免費圖片生成，經 Worker 代理
 - 無 Google Fonts、無追蹤腳本、`robots.txt` 全面禁止索引
 
-## 部署方式一：Cloudflare Dashboard（Workers Builds）
+## 平台限制與設計（Workers Free / D1 Free）
 
-需求：Cloudflare 帳號、已推送的 GitHub repo。這個專案是 **Worker + Static Assets**，不是 Pages。
+| 限制 | 對應設計 |
+| --- | --- |
+| 每個請求 CPU 10 ms（不含 I/O 等待） | 不在 Worker 中做大型 JSON 解析或索引；代理步驟呼叫模型時不逐 token 解析，結果以 SSE 事件送出；同步分頁 200 筆 |
+| 每個請求 50 個外部子請求 | 每次聊天最多 40 個（每次模型呼叫 1 個、工具每次 fetch 與每次轉址各 1 個）；用完時工具回報錯誤，模型被要求直接作答 |
+| D1 每次呼叫 50 個查詢（`batch` 算 1 個） | 所有資料存取經過計數的 `Db` 包裝；聊天開始時以一個 batch 讀入設定、供應商、金鑰與記憶；上限約 40 |
+| D1 單列 2 MB、SQL 100 KB、100 個綁定參數 | 同步單項上限 900 KB、每次推送最多 40 項 |
+| 無 eval、無子行程 | 不提供程式執行；所有工具都是純 HTTP 或 D1 |
 
-### 1. 建立 Worker 並連接 GitHub
+## 環境變數
 
-1. Cloudflare Dashboard → **Workers & Pages → Create**
-2. 選 **Workers**，不要選 Pages
-3. 選 **Connect to Git**
-4. 選擇 `scupro/personal-ai`，Branch 選 `main`，Root directory 保持 `/`
-5. Build command 填：
+只有兩個 Secret：
 
-```bash
-npm ci && npm run build:web
-```
+| 名稱 | 說明 |
+| --- | --- |
+| `APP_PASSWORD` | 初始登入密碼（在介面變更後由 D1 中的雜湊取代） |
+| `AUTH_SECRET` | 至少 32 字元隨機字串；簽署工作階段，並衍生加密 D1 中金鑰的 AES 金鑰 |
 
-6. Deploy command 填：
+> **注意：** 更換 `AUTH_SECRET` 後，D1 中已加密的 API Key 無法解密，介面會顯示「請重新輸入」，所有工作階段也會失效。
+>
+> 舊版的 `GROQ_API_KEY`、`GROQ_MODEL`、`TAVILY_API_KEY` 已移除，不再讀取。請在介面中新增供應商與 Tavily 金鑰。
 
-```bash
-npx wrangler deploy
-```
+## 部署（Wrangler CLI）
 
-這時可以直接部署。`wrangler.toml` 的 D1 區塊預設是註解狀態，所以不需要 Database ID；聊天、圖片、登入都能用，但跨裝置同步會顯示為停用。
-
-### 2. 設定 Secrets
-
-Worker → **Settings → Variables and Secrets**，新增：
-
-| 名稱 | 必要性 | 說明 |
-| --- | --- | --- |
-| `APP_PASSWORD` | 必要 | 登入密碼 |
-| `AUTH_SECRET` | 必要 | 至少 32 字元隨機字串 |
-| `GROQ_API_KEY` | 選用 | 伺服器端預設 Groq |
-| `TAVILY_API_KEY` | 選用 | 網頁搜尋 |
-
-`AUTH_SECRET` 可用下列指令產生：
-
-```bash
-openssl rand -base64 32
-```
-
-### 3. 之後啟用 D1 同步
-
-第一次部署不需要 D1。要啟用跨裝置同步時：
-
-1. Dashboard → **Storage & Databases → D1 SQL Database → Create**，名稱 `personal-ai`
-2. 進入該 D1 → **Console**，執行 `migrations/0001_init.sql` 的內容
-3. 複製 D1 的 **Database ID**
-4. 編輯 `wrangler.toml`，取消 `[[d1_databases]]` 區塊的註解，填入真實 ID：
-
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "personal-ai"
-database_id = "你的-Database-ID"
-migrations_dir = "migrations"
-```
-
-5. Commit／push，Workers Builds 會重新部署
-
-啟用後 `/api/me` 會回報 `sync:true`，設定頁的同步功能才會出現。
-
-> 也可以完全不用 Dashboard 的 D1 綁定，改用 `wrangler d1 migrations apply personal-ai --remote`；但 Git 部署仍建議把 ID 寫進 `wrangler.toml`，避免下次部署覆蓋 Dashboard 設定。
-
-### 4. 開啟網站
-
-第一次開啟 `https://<worker>.workers.dev` 會導向 `/login`。輸入 `APP_PASSWORD` 即可。
-
-## 部署方式二：Wrangler CLI
-
-這種方式不需要 Dashboard 的 Git 整合，適合從本機直接部署。兩種方式可以並存，但都要使用同一份 `wrangler.toml`。
+D1 是**必要**的。
 
 ```bash
 npm install
 npx wrangler login
 
-# 1. 選用：建立 D1 並啟用同步
+# 1. 建立 D1，將輸出的 database_id 填入 wrangler.toml 的 [[d1_databases]]
 npx wrangler d1 create personal-ai
-# 將輸出的 database_id 填入 wrangler.toml，
-# 並取消 [[d1_databases]] 區塊的註解
+
+# 2. 套用資料表（可省略：Worker 第一次收到請求時會自動建立/升級；所有遷移都可重複執行）
 npx wrangler d1 migrations apply personal-ai --remote
 
-# 2. 設定 Secrets
+# 3. 設定 Secrets
 npx wrangler secret put APP_PASSWORD
-npx wrangler secret put AUTH_SECRET
-# 選用：伺服器端預設 Groq
-npx wrangler secret put GROQ_API_KEY
-# 選用：Tavily 網頁搜尋
-npx wrangler secret put TAVILY_API_KEY
+npx wrangler secret put AUTH_SECRET     # openssl rand -base64 32
 
-# 3. 建置前端並部署
+# 4. 建置前端並部署
 npm run deploy
 ```
 
-如果暫時不啟用 D1，跳過第 1 步即可；`wrangler.toml` 的 D1 區塊保持註解，聊天與圖片功能仍會部署。
+部署後開啟 `https://<worker>.workers.dev`，會導向 `/login`。登入後到「設定 → 供應商與模型」新增第一個供應商。
 
-`AUTH_SECRET` 請使用至少 32 字元的隨機字串：
+### Cloudflare Dashboard（Workers Builds）
 
-```bash
-openssl rand -base64 32
-```
+1. Workers & Pages → Create → Workers → Connect to Git，選擇這個 repo
+2. Build command：`npm ci && npm run build:web`；Deploy command：`npx wrangler deploy`
+3. Storage & Databases → D1 → Create，名稱 `personal-ai`；把 Database ID 填入 `wrangler.toml` 後 commit
+4. （可選）在 D1 Console 依序執行 `migrations/*.sql`；不執行時 Worker 會自動建立
+5. Worker → Settings → Variables and Secrets：新增 `APP_PASSWORD`、`AUTH_SECRET`
 
-部署後開啟 `https://<worker>.workers.dev`，會導向 `/login`。
+若 D1 未綁定，登入後畫面頂端會顯示錯誤，`/api/me` 回報 `d1.ok: false`，聊天會回傳 503 `d1_required`。
+
+### 從舊版升級
+
+1. 依上方步驟綁定 D1（舊版的 `sync_items` 資料會自動複製到 `sync_items_v2`）
+2. 刪除舊的 `GROQ_API_KEY`、`GROQ_MODEL`、`TAVILY_API_KEY` Secrets（可選，已不再讀取）
+3. 第一次開啟新版時，瀏覽器中舊的供應商設定（含金鑰）、「記住我」的筆記、自訂指示與語氣會自動搬到 D1，然後從 localStorage 移除
 
 ### 自訂網域
 
-先在 Cloudflare 綁定網域，再到 Worker 設定 `APP_ORIGIN=https://你的網域`。Cookie 使用 `__Host-session`，沒有 `Domain` 屬性，換網域不需要改程式。
+先在 Cloudflare 綁定網域，再設定 `[vars] APP_ORIGIN = "https://你的網域"`。Cookie 使用 `__Host-session`，換網域不需要改程式。
 
 ### 本機開發
 
 ```bash
-cp .dev.vars.example .dev.vars
-# 填入 APP_PASSWORD、AUTH_SECRET；可選 TAVILY_API_KEY
-npm run dev
+cp .dev.vars.example .dev.vars   # 填入 APP_PASSWORD、AUTH_SECRET
+npm run dev                      # 使用本機 D1（自動建立資料表）
 ```
-
-若要在本機測試 D1 同步，先取消 `wrangler.toml` 的 `[[d1_databases]]` 註解、填入一個本機用的 Database ID，再執行 `npm run db:migrate:local`。不啟用 D1 時，其他功能仍可正常測試。
-
-`.dev.vars` 已被 `.gitignore` 排除，請勿提交。
-
-## 設定供應商
-
-登入後到「設定 → 供應商」：
-
-| 欄位 | 範例 |
-| --- | --- |
-| 名稱 | Groq |
-| Base URL | `https://api.groq.com/openai/v1` |
-| API Key | 你的供應商金鑰 |
-| 模型 | `openai/gpt-oss-120b` |
-
-也支援 OpenAI、OpenRouter、DeepSeek、Mistral 等 OpenAI 相容 `/chat/completions`。只允許公開 HTTPS 位址；localhost、私有 IP、`.local`、`.internal` 會被拒絕。
-
-API Key 只存在瀏覽器 `localStorage`，不會寫入 D1，也不會出現在伺服器日誌。
-
-若設定 `GROQ_API_KEY`，沒有建立瀏覽器供應商時會自動使用伺服器端 Groq；模型預設為 `openai/gpt-oss-120b`，可用 `GROQ_MODEL` 或請求中的模型覆寫。只要瀏覽器有設定供應商，該供應商就優先，伺服器預設不會被使用。
-
-## 同步
-
-同步採「每個項目一列」的 last-write-wins：
-
-- `chat:<id>`、`doc:<id>`、`project:<id>`、`prompt:<name>`、`setting:<name>`
-- 刪除以 tombstone 傳播
-- 每次同步最多 200 項，單項 900 KB
-- 前端會在聊天／文件／專案儲存後 debounce 推送，啟動時 pull
-
-D1 免費層額度（2026-10）：每日 500 萬次讀取、10 萬次寫入、500 MB。個人使用足夠。
 
 ## 安全邊界
 
-- 所有 `/api/*`（除 health/config/login）都需要工作階段
-- POST 檢查同源 `Origin`
+- 所有 `/api/*`（除 health/config/login）都需要工作階段；非 GET 請求檢查同源 `Origin`
 - 登入失敗 5 次鎖定 5 分鐘（單一 isolate 記憶體）
-- 上游 URL 只允許 HTTPS，封鎖私有網段與本地位址
-- 讀取網頁工具最多 4 次重新導向、220 KB、20 秒
-- CSP 限制 script/connect/frame；圖片只允許自身與 Pollinations
-- 不提供註冊、Email、OAuth、公開分享、Messaging/Slack、市場報價、Connectors、MCP
+- 金鑰：AES-GCM 加密存 D1，名稱綁定為 AAD；API 只回傳遮罩提示
+- SSRF：供應商 URL 與 `fetch_url` 只允許 HTTPS，封鎖私有、迴路、鏈路本地、CGNAT、保留網段、IPv4 映射的 IPv6 與雲端 metadata 主機；`fetch_url` 最多 3 次轉址、220 KB、20 秒，只讀文字類型
+- 模型清單、來源連結等外部字串一律以 `textContent` 或跳脫後顯示；Markdown 經過白名單淨化
+- 不提供註冊、Email、OAuth、公開分享、匯出、程式執行；不使用 R2
 
 ## 測試
 
 ```bash
-npm test
-npm run check
+npm test         # node:test，D1 以 node:sqlite 模擬
+npm run check    # 建置 + wrangler deploy --dry-run
 ```
-
-`npm run check` 會執行 `wrangler deploy --dry-run`，不會真的部署。
 
 ## 授權
 

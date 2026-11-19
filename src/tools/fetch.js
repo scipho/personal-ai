@@ -34,10 +34,12 @@ function titleFromHtml(html) {
   return m ? m[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200) : ''
 }
 
-export async function fetchPage(input, { maxChars = 12_000 } = {}) {
+export async function fetchPage(input, { maxChars = 12_000, budget = null } = {}) {
   let url = validateFetchUrl(input)
   let response = null
   for (let hop = 0; hop < 4; hop++) {
+    // Every hop (including redirects) is a separate subrequest.
+    if (budget) budget.fetch(1)
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort('timeout'), 20_000)
     try {
@@ -57,7 +59,9 @@ export async function fetchPage(input, { maxChars = 12_000 } = {}) {
     if (response.status >= 300 && response.status < 400) {
       const location = response.headers.get('location')
       if (!location) break
+      try { await response.body?.cancel() } catch {}
       url = validateFetchUrl(new URL(location, url).toString())
+      if (hop === 3) throw new Error('重新導向次數過多')
       continue
     }
     break
@@ -65,9 +69,11 @@ export async function fetchPage(input, { maxChars = 12_000 } = {}) {
   if (!response) throw new Error('無法取得頁面')
   if (!response.ok) throw new Error(`頁面回傳 HTTP ${response.status}`)
   const type = (response.headers.get('content-type') || '').toLowerCase()
-  if (!/text\/html|text\/plain|application\/xhtml|application\/json/.test(type)) {
-    throw new Error('此內容類型不支援')
+  if (!/text\/html|text\/plain|text\/markdown|text\/csv|application\/xhtml|application\/json|application\/xml|text\/xml/.test(type)) {
+    try { await response.body?.cancel() } catch {}
+    throw new Error('此內容類型不支援（只讀取文字網頁）')
   }
+  if (!response.body) return { url: url.toString(), title: '', text: '' }
   const reader = response.body.getReader()
   const chunks = []
   let total = 0
@@ -81,14 +87,14 @@ export async function fetchPage(input, { maxChars = 12_000 } = {}) {
     }
     chunks.push(value)
   }
-  const raw = new TextDecoder('utf-8', { fatal: false }).decode(
-    chunks.reduce((out, chunk) => {
-      const merged = new Uint8Array(out.length + chunk.length)
-      merged.set(out)
-      merged.set(chunk, out.length)
-      return merged
-    }, new Uint8Array()),
-  )
+  const merged = new Uint8Array(Math.min(total, MAX_BYTES))
+  let offset = 0
+  for (const chunk of chunks) {
+    const take = Math.min(chunk.byteLength, merged.length - offset)
+    merged.set(take === chunk.byteLength ? chunk : chunk.subarray(0, take), offset)
+    offset += take
+  }
+  const raw = new TextDecoder('utf-8', { fatal: false }).decode(merged.subarray(0, offset))
   const isHtml = /html|xhtml/.test(type)
   return {
     url: url.toString(),

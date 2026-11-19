@@ -2,54 +2,55 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import { handleChat } from '../src/chat.js'
+import { jsonReply, sseEvents, withFetch } from './helpers/d1.mjs'
+import { api, chatRequest, providerEnv } from './helpers/setup.mjs'
 
-const provider = { baseUrl: 'https://api.example.com/v1', apiKey: 'sk-12345678', model: 'test-model' }
-const req = (body) => new Request('https://example.com/api/chat', {
-  method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
-})
-const reply = (message, finish = 'stop') => new Response(JSON.stringify({ choices: [{ message, finish_reason: finish }] }), {
-  status: 200, headers: { 'content-type': 'application/json' },
-})
-
-test('length_mode becomes a system instruction', async () => {
-  const original = globalThis.fetch
+test('length_mode and tone become system instructions', async () => {
+  const env = await providerEnv()
+  await api(env, '/api/settings', 'PUT', { prefs: { tone: 'concise', custom_prompt: '用條列' } })
   let body
-  globalThis.fetch = async (u, init) => { body = JSON.parse(init.body); return reply({ content: 'ok' }) }
-  try {
-    await handleChat(req({ prompt: 'hi', provider, length_mode: 'corto' }), {})
-    assert.match(body.messages[0].content, /簡短/)
-  } finally { globalThis.fetch = original }
+  await withFetch(async (u, init) => { body = JSON.parse(init.body); return jsonReply({ content: 'ok' }) }, async () => {
+    await (await handleChat(chatRequest({ prompt: 'hi', length_mode: 'corto' }), env)).text()
+  })
+  assert.match(body.messages[0].content, /簡短/)
+  assert.match(body.messages[0].content, /最少但足夠/)
+  assert.match(body.messages[0].content, /用條列/)
 })
 
-test('remember tool updates the browser profile and streams it back', async () => {
-  const original = globalThis.fetch
+test('remember writes to D1 memory and streams a memory event', async () => {
+  const env = await providerEnv()
   let n = 0
   let seenTools
-  globalThis.fetch = async (u, init) => {
+  await withFetch(async (u, init) => {
     n++
     const body = JSON.parse(init.body)
     if (n === 1) {
       seenTools = body.tools.map((t) => t.function.name)
-      return reply({ content: null, tool_calls: [{ id: 'm1', type: 'function', function: { name: 'remember', arguments: '{"fact":"偏好 TypeScript"}' } }] }, 'tool_calls')
+      return jsonReply({ content: null, tool_calls: [{ id: 'm1', type: 'function', function: { name: 'remember', arguments: '{"fact":"偏好 TypeScript"}' } }] }, 'tool_calls')
     }
-    return reply({ content: '記住了' })
-  }
-  try {
-    const res = await handleChat(req({ prompt: '記住我偏好 TypeScript', provider, adapt: true, profile: { notes: [] } }), {})
-    const evs = (await res.text()).split('\n').filter((l) => l.startsWith('data:') && !l.includes('[DONE]')).map((l) => JSON.parse(l.slice(5)))
+    return jsonReply({ content: '記住了' })
+  }, async () => {
+    const res = await handleChat(chatRequest({ prompt: '記住我偏好 TypeScript' }), env)
+    const evs = sseEvents(await res.text())
     assert.ok(seenTools.includes('remember'))
-    const ev = evs.find((e) => e.profile)
-    assert.equal(ev.profile.notes[0].fact, '偏好 TypeScript')
-    assert.deepEqual(ev.remembered, ['偏好 TypeScript'])
-  } finally { globalThis.fetch = original }
+    const ev = evs.find((e) => e.memory)
+    assert.deepEqual(ev.memory, { op: 'remember', text: '偏好 TypeScript' })
+  })
+  const { data } = await api(env, '/api/memory?scope=global')
+  assert.equal(data.memories[0].content, '偏好 TypeScript')
 })
 
-test('memory tools are not offered when adapt is off', async () => {
-  const original = globalThis.fetch
-  let body
-  globalThis.fetch = async (u, init) => { body = JSON.parse(init.body); return reply({ content: 'ok' }) }
-  try {
-    await handleChat(req({ prompt: 'hi', provider, profile: { notes: [] } }), {})
-    assert.ok(!body.tools.some((t) => t.function.name === 'remember'))
-  } finally { globalThis.fetch = original }
+test('forget removes matching memories', async () => {
+  const env = await providerEnv()
+  await api(env, '/api/memory', 'POST', { items: [{ content: '住在台北' }, { content: '喜歡貓' }] })
+  let n = 0
+  await withFetch(async () => {
+    n++
+    if (n === 1) return jsonReply({ content: null, tool_calls: [{ id: 'f', type: 'function', function: { name: 'forget', arguments: '{"text":"台北"}' } }] }, 'tool_calls')
+    return jsonReply({ content: '好' })
+  }, async () => {
+    await (await handleChat(chatRequest({ prompt: '忘掉我住哪' }), env)).text()
+  })
+  const { data } = await api(env, '/api/memory')
+  assert.deepEqual(data.memories.map((m) => m.content), ['喜歡貓'])
 })

@@ -1,6 +1,6 @@
 {
   "name": "personal-ai",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Private, single-user AI chat workspace on Cloudflare Workers",
   "type": "module",
@@ -10,11 +10,12 @@
     "dev": "npm run build:web && wrangler dev",
     "deploy": "npm run build:web && wrangler deploy",
     "build": "npm run build:web",
-    "build:web": "node scripts/extract-assets.mjs && node scripts/addThemes.cjs",
+    "build:web": "node scripts/build-schema.mjs && node scripts/extract-assets.mjs && node scripts/addThemes.cjs",
     "test": "node --test test/*.test.mjs",
-    "check": "wrangler deploy --dry-run",
+    "check": "npm run build && wrangler deploy --dry-run --outdir /tmp/wout",
     "db:migrate": "wrangler d1 migrations apply personal-ai --remote",
-    "db:migrate:local": "wrangler d1 migrations apply personal-ai --local"
+    "db:migrate:local": "wrangler d1 migrations apply personal-ai --local",
+    "build:schema": "node scripts/build-schema.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.151.0"

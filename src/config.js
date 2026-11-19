@@ -1,5 +1,5 @@
 export const APP_NAME = 'Personal AI'
-export const APP_VERSION = '1.0.0'
+export const APP_VERSION = '2.0.0'
 
 export const SESSION_DAYS_DEFAULT = 30
 export const MAX_BODY_BYTES = 2 * 1024 * 1024
@@ -15,7 +15,6 @@ export function appConfig(env = {}) {
     appOrigin: String(env.APP_ORIGIN || '').replace(/\/+$/, ''),
     hasPassword: !!env.APP_PASSWORD,
     hasAuthSecret: !!env.AUTH_SECRET,
-    hasTavily: !!env.TAVILY_API_KEY,
     hasD1: !!env.DB,
   }
 }

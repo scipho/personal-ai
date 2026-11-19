@@ -4,9 +4,9 @@ import assert from 'node:assert/strict'
 import { createSession, verifySession, passwordMatches } from '../src/auth.js'
 import {
   chatCompletionsUrl,
+  isBlockedHost,
   modelsUrl,
   normalizeBaseUrl,
-  providerFromBody,
 } from '../src/providers.js'
 import { calculate } from '../src/tools/calc.js'
 import { searchDocuments } from '../src/tools/docs.js'
@@ -70,23 +70,20 @@ test('provider hostnames beginning with fc/fd are not treated as IPv6', () => {
   assert.equal(normalizeBaseUrl('https://fd.example.com/v1'), 'https://fd.example.com/v1')
 })
 
-test('providerFromBody requires a key and base URL', () => {
-  assert.throws(() => providerFromBody({}), /供應商/)
-  assert.throws(() => providerFromBody({ provider: { baseUrl: 'https://api.example.com/v1', apiKey: 'short' } }), /API Key/)
-  const p = providerFromBody({ provider: { baseUrl: 'https://api.example.com/v1', apiKey: 'sk-12345678', model: 'm' } })
-  assert.equal(p.model, 'm')
+test('SSRF guard blocks mapped, metadata and reserved addresses', () => {
+  for (const host of ['[::ffff:7f00:1]', '[::ffff:127.0.0.1]', '[::ffff:a9fe:a9fe]', '169.254.169.254', 'metadata.google.internal', '192.0.0.1', '198.18.0.1', '0.1.2.3', '[fd12::1]', '[ff02::1]', 'localhost.', '2130706433']) {
+    let hostname = host
+    try { hostname = new URL(`https://${host}/`).hostname } catch {}
+    assert.equal(isBlockedHost(hostname), true, host)
+  }
+  for (const host of ['api.openai.com', '8.8.8.8', '[2606:4700::1111]', 'fc-api.example.com']) {
+    assert.equal(isBlockedHost(new URL(`https://${host}/`).hostname), false, host)
+  }
 })
 
-test('providerFromBody falls back to server Groq only when no provider is given', () => {
-  const p = providerFromBody({}, { GROQ_API_KEY: 'gsk_12345678', GROQ_MODEL: 'llama-test' })
-  assert.equal(p.baseUrl, 'https://api.groq.com/openai/v1')
-  assert.equal(p.apiKey, 'gsk_12345678')
-  assert.equal(p.model, 'llama-test')
-
-  assert.throws(
-    () => providerFromBody({ provider: { baseUrl: 'https://api.example.com/v1', apiKey: 'bad' } }, { GROQ_API_KEY: 'gsk_12345678' }),
-    /API Key/,
-  )
+test('provider URL handles /openai and /v1beta style bases', () => {
+  assert.equal(chatCompletionsUrl('https://generativelanguage.googleapis.com/v1beta/openai'), 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions')
+  assert.equal(modelsUrl('https://api.example.com/v1/chat/completions'), 'https://api.example.com/v1/models')
 })
 
 test('calculator handles precedence, parentheses, unary and errors', () => {
