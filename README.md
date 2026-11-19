@@ -12,6 +12,7 @@
 - Tavily 低 token 網頁搜尋（`search_depth=basic`、5 筆、10 分鐘快取）
 - Pollinations 免費圖片生成，經 Worker 代理以處理 429／逾時
 - 工具介面預留 MCP 擴充點；v1 不啟用 MCP
+- Agent 工具呼叫循環：模型可自行呼叫 `web_search`、`fetch_url`、`calculate`、`current_time`、`document_search`，最多 6 步後強制作答；供應商不支援 tools 時自動退回純串流聊天（回應標頭 `X-Agent` / `X-Agent-Fallback`）
 - 無 Google Fonts、無追蹤腳本、`robots.txt` 全面禁止索引
 
 ## 部署方式一：Cloudflare Dashboard（Workers Builds）

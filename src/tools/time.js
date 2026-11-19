@@ -6,11 +6,12 @@ export function currentTime(timeZone = 'Asia/Taipei', locale = 'zh-TW') {
     zone = 'UTC'
   }
   const now = new Date()
-  const formatted = new Intl.DateTimeFormat(locale, {
-    timeZone: zone,
-    dateStyle: 'full',
-    timeStyle: 'long',
-  }).format(now)
+  let formatted
+  try {
+    formatted = new Intl.DateTimeFormat(locale || 'zh-TW', { timeZone: zone, dateStyle: 'full', timeStyle: 'long' }).format(now)
+  } catch {
+    formatted = new Intl.DateTimeFormat('zh-TW', { timeZone: zone, dateStyle: 'full', timeStyle: 'long' }).format(now)
+  }
   return {
     now: now.toISOString(),
     timeZone: zone,
