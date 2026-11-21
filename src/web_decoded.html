@@ -1193,6 +1193,20 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   .proj-tabs { width: 100%; justify-content: space-between; }
   .proj-tab { flex: 1; }
 }
+
+/* ---- skills / MCP / tools menu ---- */
+.tools-menu-wrap { position: relative; display: inline-flex; }
+.tools-menu { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 40; width: 300px; max-height: 60vh; overflow-y: auto; background: var(--elev); border: 1px solid var(--line-2); border-radius: 12px; padding: 8px 10px; box-shadow: 0 12px 32px rgba(0,0,0,.28); display: flex; flex-direction: column; gap: 2px; }
+.tools-menu[hidden] { display: none; }
+.tools-menu-title { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: .05em; margin: 6px 0 2px; }
+.tools-menu .toggle-row { font-size: 0.82rem; padding: 4px 0; }
+.skill-suggest { position: absolute; bottom: calc(100% + 6px); left: 8px; right: 8px; z-index: 41; background: var(--elev); border: 1px solid var(--line-2); border-radius: 10px; padding: 4px; display: flex; flex-direction: column; box-shadow: 0 10px 28px rgba(0,0,0,.25); }
+.skill-suggest[hidden] { display: none; }
+.skill-suggest-item { display: flex; gap: 8px; align-items: baseline; text-align: left; background: none; border: 0; color: var(--text); font: inherit; font-size: 0.82rem; padding: 6px 8px; border-radius: 8px; cursor: pointer; }
+.skill-suggest-item:hover, .skill-suggest-item:focus { background: var(--hover, rgba(127,127,127,.1)); }
+.skill-suggest-item span { color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mcp-card { padding: 8px; margin-bottom: 8px; }
+.mcp-tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0 12px; padding: 4px 8px 0; font-size: 0.8rem; }
 </style>
 </head>
 <body>
@@ -1292,6 +1306,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           <span id="attached-name">documento.txt</span>
           <button id="remove-file-btn" type="button" style="background:none;border:none;color:var(--dim);cursor:pointer">✕</button>
         </div>
+        <div class="skill-suggest" id="skill-suggest" role="listbox" aria-label="技能" hidden></div>
         <textarea id="prompt-input" class="prompt-textarea" rows="1" placeholder="Pregunta lo que quieras…" data-i18n="askPh" data-i18n-attr="placeholder"></textarea>
         <div class="dock-controls">
           <div class="dock-plus" id="dock-plus">
@@ -1303,6 +1318,10 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
                           </div>
           </div>
           <div class="control-pills">
+            <div class="tools-menu-wrap" id="tools-menu-wrap">
+              <button id="tools-pill" class="dock-pill" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tools-menu">工具</button>
+              <div class="tools-menu" id="tools-menu" role="dialog" aria-label="工具、技能與 MCP" hidden></div>
+            </div>
             <button id="web-search-pill" class="dock-pill" type="button" data-i18n="searchWeb">Buscar</button>
             <button id="image-gen-pill" class="dock-pill" type="button" data-i18n="image">Imagen</button>
             <div class="length-segmented-pill" style="display:none;" title="長度"><button class="length-opt-btn active" data-len="normal" id="len-btn-normal" type="button" data-i18n="normal">Normal</button></div>
@@ -1394,6 +1413,8 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
         <button type="button" class="settings-nav-btn" data-pane="pane-behavior" data-i18n="tabBehavior">行為</button>
         <button type="button" class="settings-nav-btn" data-pane="pane-customize" data-i18n="tabCustomize">個人化</button>
         <button type="button" class="settings-nav-btn" data-pane="pane-memory">記憶</button>
+        <button type="button" class="settings-nav-btn" data-pane="pane-skills">技能</button>
+        <button type="button" class="settings-nav-btn" data-pane="pane-mcp">MCP 伺服器</button>
         <div class="settings-nav-label">資料</div>
         <button type="button" class="settings-nav-btn" data-pane="pane-account">密碼與登入</button>
         <button type="button" class="settings-nav-btn" data-pane="pane-data" data-i18n="tabData">資料控制</button>
@@ -1555,6 +1576,60 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           </div>
           <div id="memory-list" class="settings-card memory-list"></div>
           <p id="memory-status" class="settings-hint" role="status"></p>
+        </div>
+
+        <div id="pane-skills" class="settings-pane">
+          <div class="settings-section-title">技能</div>
+          <p class="settings-section-desc">可重複使用的說明。系統提示只放技能的名稱與用途，模型需要時用 load_skill 載入全文；在輸入框打 <code>/名稱</code> 可強制使用。可匯入／匯出 SKILL.md（frontmatter：name、description、allowed-tools）。</p>
+          <div id="skill-list" class="provider-list"></div>
+          <div class="settings-actions" style="display:flex;gap:6px;flex-wrap:wrap">
+            <button type="button" id="skill-new-btn" class="topbar-action-btn">新增技能</button>
+            <button type="button" id="skill-import-btn" class="topbar-action-btn">匯入 SKILL.md</button>
+            <input type="file" id="skill-import-file" accept=".md,text/markdown,text/plain" hidden>
+          </div>
+          <div class="settings-card" id="skill-form" hidden>
+            <div class="settings-block-title" id="skill-form-title" style="margin-top:0">新增技能</div>
+            <label class="form-label" for="skill-name">名稱（小寫英數與 -，用於 /名稱）</label>
+            <input id="skill-name" class="form-input" maxlength="40" placeholder="weekly-report">
+            <label class="form-label" for="skill-desc">何時使用（會放進系統提示）</label>
+            <input id="skill-desc" class="form-input" maxlength="1000" placeholder="寫週報時使用：依固定格式整理本週進度">
+            <label class="form-label" for="skill-instr">完整說明</label>
+            <textarea id="skill-instr" class="form-textarea" rows="8" maxlength="50000"></textarea>
+            <label class="form-label" for="skill-tools">允許的工具（逗號分隔，留空代表不限；用 /名稱 時只開放這些工具）</label>
+            <input id="skill-tools" class="form-input" placeholder="read_file, write_file">
+            <label class="toggle-row"><span>啟用</span><input type="checkbox" id="skill-enabled" checked></label>
+            <div class="form-label">參考檔（文字，每個最多 100,000 字）</div>
+            <div id="skill-files" class="memory-list"></div>
+            <input type="file" id="skill-file-input" multiple hidden accept=".md,.txt,.json,.csv,.yaml,.yml,text/*">
+            <div class="settings-actions" style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" id="skill-file-add" class="topbar-action-btn">加入參考檔</button>
+              <button type="button" id="skill-save-btn" class="topbar-action-btn primary">儲存</button>
+              <button type="button" id="skill-cancel-btn" class="topbar-action-btn">取消</button>
+            </div>
+          </div>
+          <p id="skill-status" class="settings-hint" role="status"></p>
+        </div>
+
+        <div id="pane-mcp" class="settings-pane">
+          <div class="settings-section-title">MCP 伺服器</div>
+          <p class="settings-section-desc">只支援遠端 Streamable HTTP（不支援 stdio 與舊版 HTTP+SSE，尚不支援 OAuth）。最多 5 個伺服器、合計 40 個啟用工具。「測試連線」會初始化並快取工具清單；對話中不會重新列出。工具名稱為 <code>mcp__伺服器__工具</code>。</p>
+          <div id="mcp-list" class="provider-list"></div>
+          <div class="settings-card" id="mcp-form">
+            <div class="settings-block-title" id="mcp-form-title" style="margin-top:0">新增 MCP 伺服器</div>
+            <label class="form-label" for="mcp-name">名稱（小寫英數、_、-，最多 20 字）</label>
+            <input id="mcp-name" class="form-input" maxlength="20" placeholder="github">
+            <label class="form-label" for="mcp-url">URL（HTTPS）</label>
+            <input id="mcp-url" class="form-input" type="url" placeholder="https://example.com/mcp">
+            <label class="form-label" for="mcp-auth">驗證方式</label>
+            <select id="mcp-auth" class="form-input"><option value="none">無</option><option value="bearer">Bearer token</option><option value="header">自訂標頭</option></select>
+            <input id="mcp-header" class="form-input" placeholder="標頭名稱，例如 X-API-Key" hidden>
+            <input id="mcp-token" class="form-input" type="password" autocomplete="off" placeholder="金鑰（加密存在 D1）">
+            <div class="settings-actions" style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" id="mcp-save-btn" class="topbar-action-btn primary">儲存</button>
+              <button type="button" id="mcp-new-btn" class="topbar-action-btn">新增另一個</button>
+            </div>
+          </div>
+          <p id="mcp-status" class="settings-hint" role="status"></p>
         </div>
 
         <div id="pane-params" class="settings-pane">
@@ -2831,6 +2906,11 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       if (m && m.content) {
         try {
           var refs = addMessageToDOM(m.role, m.content, m.sources, m.at, i, m.feedback, m.image);
+          if (m.role !== 'user' && refs && refs.contentCol && m.steps && m.steps.length) {
+            var stepBox = document.createElement('div');
+            stepBox.innerHTML = stepsHtml(m.steps);
+            if (stepBox.firstChild) refs.contentCol.insertBefore(stepBox.firstChild, refs.contentCol.firstChild);
+          }
           if (m.role !== 'user' && refs && refs.contentCol) {
             var hArt = extractArtifact(m.content);
             if (hArt) appendArtifactChip(refs.contentCol, hArt);
@@ -3471,7 +3551,8 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           search_web: isWebSearch && !pendingImage,
           length_mode: currentLength,
           locale: (window.TA && TA.lang) ? TA.lang() : 'zh-TW',
-          timezone: resolvedTz
+          timezone: resolvedTz,
+          tools_off: (chats[currentChatId] && chats[currentChatId].toolsOff) || []
         };
       if (pendingImage) payload.image = { dataUrl: pendingImage };
       var response = await fetch('/api/chat', {
@@ -3494,17 +3575,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       var toolSteps = [];
       var notices = [];
       var streamError = null;
-      var TOOL_NAMES_UI = { web_search: '搜尋網頁', fetch_url: '讀取網頁', calculate: '計算', current_time: '查詢時間', document_search: '搜尋文件', remember: '記住', forget: '忘記', recall: '回想記憶' };
-      function toolHtml() {
-        if (!toolSteps.length) return '';
-        return '<div class="tool-steps" style="font-size:0.78rem;color:var(--dim);margin-bottom:8px;display:flex;flex-direction:column;gap:2px">' +
-          toolSteps.map(function(st) {
-            var mark = st.status === 'running' ? '…' : (st.status === 'error' ? '✕' : '✓');
-            var label = (TOOL_NAMES_UI[st.name] || st.name) + (st.label ? '：' + st.label : '');
-            var err = st.status === 'error' && st.error ? '（' + st.error + '）' : '';
-            return '<div>' + mark + ' ' + escapeHtml(label) + escapeHtml(err) + '</div>';
-          }).join('') + '</div>';
-      }
+      function toolHtml() { return stepsHtml(toolSteps); }
       function paint(done) {
         if (!textContainer) return;
         textContainer.innerHTML = toolHtml() + renderMarkdown(fullText) +
@@ -3527,8 +3598,8 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
         if (p.tool && p.tool.id) {
           var found = null;
           for (var k = 0; k < toolSteps.length; k++) if (toolSteps[k].id === p.tool.id) found = toolSteps[k];
-          if (found) { found.status = p.tool.status; found.error = p.tool.error; if (p.tool.label) found.label = p.tool.label; }
-          else toolSteps.push({ id: p.tool.id, name: p.tool.name, label: p.tool.label, status: p.tool.status, error: p.tool.error });
+          if (found) Object.assign(found, p.tool);
+          else toolSteps.push(Object.assign({}, p.tool));
           paint(false);
         }
         var delta = p.content;
@@ -3573,7 +3644,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           '</div>';
         contentCol.appendChild(srcBox);
       }
-      chats[currentChatId].messages.push({ role: 'ai', content: fullText, sources: sources, at: Date.now() });
+      chats[currentChatId].messages.push({ role: 'ai', content: fullText, sources: sources, at: Date.now(), steps: toolSteps.length ? toolSteps.map(function(st) { return { name: st.name, label: st.label, status: st.status, error: st.error, args: st.args ? String(st.args).slice(0, 600) : undefined, result: st.result ? String(st.result).slice(0, 1500) : undefined }; }) : undefined });
       saveChats();
       if (window.TAP && fullText && promptText) { try { TAP.recordSent(promptText); } catch (eTap2) {} }
       var art = extractArtifact(fullText);
@@ -4549,6 +4620,330 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     document.addEventListener('visibilitychange', function() { if (!document.hidden && proj.current) pollProject(); });
   }
 
+  // ---- Skills & MCP (settings panes, tools menu, /name) ----------------------------
+  server.skills = [];
+  server.mcp = [];
+  function loadExtensions() {
+    return Promise.all([
+      apiJson('/api/skills').then(function(d) { server.skills = d.skills || []; }).catch(function() {}),
+      apiJson('/api/mcp').then(function(d) { server.mcp = d.servers || []; }).catch(function() {}),
+    ]).then(function() { renderSkillList(); renderMcpList(); });
+  }
+  function setPaneStatus(id, text, bad) {
+    var el2 = document.getElementById(id);
+    if (el2) { el2.textContent = text || ''; el2.style.color = bad ? 'var(--red)' : 'var(--green)'; }
+  }
+  // Skills pane
+  var editingSkill = null;
+  function renderSkillList() {
+    var box = document.getElementById('skill-list');
+    if (!box) return;
+    box.innerHTML = '';
+    if (!server.skills.length) { box.appendChild(el('p', { className: 'settings-hint', text: '還沒有技能。' })); return; }
+    server.skills.forEach(function(sk) {
+      var main = el('button', { type: 'button', className: 'provider-row-main' }, [
+        el('strong', { text: '/' + sk.name + (sk.enabled ? '' : '（停用）') }),
+        el('span', { className: 'settings-hint', text: sk.description + (sk.files.length ? ' · ' + sk.files.length + ' 個參考檔' : '') }),
+      ]);
+      main.onclick = function() { openSkillForm(sk.id); };
+      var exp = el('a', { className: 'topbar-action-btn', href: '/api/skills/' + encodeURIComponent(sk.id) + '/export', download: sk.name + '.SKILL.md', text: '匯出' });
+      var del = el('button', { type: 'button', className: 'topbar-action-btn btn-danger', text: '刪除', onclick: function() {
+        if (!confirm('刪除技能 /' + sk.name + '？')) return;
+        apiJson('/api/skills/' + encodeURIComponent(sk.id), { method: 'DELETE' }).then(loadExtensions).catch(function(e) { setPaneStatus('skill-status', e.message, true); });
+      } });
+      box.appendChild(el('div', { className: 'provider-row' }, [main, exp, del]));
+    });
+  }
+  function renderSkillFiles() {
+    var box = document.getElementById('skill-files');
+    if (!box || !editingSkill) return;
+    box.innerHTML = '';
+    if (!editingSkill.files.length) box.appendChild(el('p', { className: 'settings-hint', text: '沒有參考檔' }));
+    editingSkill.files.forEach(function(f, i) {
+      box.appendChild(el('div', { className: 'memory-row' }, [
+        el('div', { className: 'memory-text', text: f.name + '（' + String(f.content || '').length + ' 字）' }),
+        el('button', { type: 'button', className: 'mini-x', text: '✕', 'aria-label': '移除 ' + f.name, onclick: function() { editingSkill.files.splice(i, 1); renderSkillFiles(); } }),
+      ]));
+    });
+  }
+  function openSkillForm(id) {
+    var form = document.getElementById('skill-form');
+    var fill = function(sk) {
+      editingSkill = { id: sk ? sk.id : '', files: sk ? sk.files.slice() : [] };
+      document.getElementById('skill-form-title').textContent = sk ? '編輯 /' + sk.name : '新增技能';
+      document.getElementById('skill-name').value = sk ? sk.name : '';
+      document.getElementById('skill-desc').value = sk ? sk.description : '';
+      document.getElementById('skill-instr').value = sk ? (sk.instructions || '') : '';
+      document.getElementById('skill-tools').value = sk ? (sk.allowed_tools || []).join(', ') : '';
+      document.getElementById('skill-enabled').checked = sk ? !!sk.enabled : true;
+      renderSkillFiles();
+      form.hidden = false;
+    };
+    if (!id) return fill(null);
+    apiJson('/api/skills/' + encodeURIComponent(id)).then(function(d) { fill(d.skill); }).catch(function(e) { setPaneStatus('skill-status', e.message, true); });
+  }
+  function saveSkillForm() {
+    if (!editingSkill) return;
+    var body = {
+      name: document.getElementById('skill-name').value.trim(),
+      description: document.getElementById('skill-desc').value.trim(),
+      instructions: document.getElementById('skill-instr').value,
+      allowed_tools: document.getElementById('skill-tools').value,
+      enabled: document.getElementById('skill-enabled').checked,
+      files: editingSkill.files,
+    };
+    var req = editingSkill.id ? apiJson('/api/skills/' + encodeURIComponent(editingSkill.id), { method: 'PUT', body: body }) : apiJson('/api/skills', { method: 'POST', body: body });
+    req.then(function() { document.getElementById('skill-form').hidden = true; editingSkill = null; setPaneStatus('skill-status', '已儲存'); return loadExtensions(); })
+      .catch(function(e) { setPaneStatus('skill-status', e.message, true); });
+  }
+  function readTextFiles(files) {
+    return Promise.all(Array.prototype.slice.call(files || []).map(function(f) {
+      if (f.size > 400000) return Promise.resolve(null);
+      return f.text().then(function(text) { return { name: f.name, content: text }; });
+    })).then(function(list) { return list.filter(Boolean); });
+  }
+  function initSkillsPane() {
+    var bind = function(id, ev, fn) { var n = document.getElementById(id); if (n) n.addEventListener(ev, fn); };
+    bind('skill-new-btn', 'click', function() { openSkillForm(''); });
+    bind('skill-cancel-btn', 'click', function() { document.getElementById('skill-form').hidden = true; editingSkill = null; });
+    bind('skill-save-btn', 'click', saveSkillForm);
+    bind('skill-file-add', 'click', function() { document.getElementById('skill-file-input').click(); });
+    bind('skill-file-input', 'change', function(e) {
+      readTextFiles(e.target.files).then(function(list) {
+        list.forEach(function(f) { if (editingSkill && editingSkill.files.length < 10) editingSkill.files.push(f); });
+        e.target.value = '';
+        renderSkillFiles();
+      });
+    });
+    bind('skill-import-btn', 'click', function() { document.getElementById('skill-import-file').click(); });
+    bind('skill-import-file', 'change', function(e) {
+      readTextFiles(e.target.files).then(function(list) {
+        e.target.value = '';
+        return Promise.all(list.map(function(f) { return apiJson('/api/skills/import', { method: 'POST', body: { markdown: f.content } }); }));
+      }).then(function(res) { setPaneStatus('skill-status', '已匯入 ' + res.length + ' 個技能'); return loadExtensions(); })
+        .catch(function(err) { setPaneStatus('skill-status', err.message, true); });
+    });
+  }
+  // MCP pane
+  var editingMcp = '';
+  function renderMcpList() {
+    var box = document.getElementById('mcp-list');
+    if (!box) return;
+    box.innerHTML = '';
+    if (!server.mcp.length) { box.appendChild(el('p', { className: 'settings-hint', text: '還沒有 MCP 伺服器。' })); return; }
+    server.mcp.forEach(function(m) {
+      var card = el('div', { className: 'settings-card mcp-card' });
+      var head = el('div', { className: 'provider-row' }, [
+        el('button', { type: 'button', className: 'provider-row-main', onclick: function() { loadMcpForm(m); } }, [
+          el('strong', { text: m.name + (m.enabled ? '' : '（停用）') }),
+          el('span', { className: 'settings-hint', text: m.url + ' · ' + (m.auth_type === 'none' ? '無驗證' : (m.token.set ? '金鑰 ' + m.token.preview : '未設定金鑰')) + (m.last_error ? ' · 錯誤：' + m.last_error : (m.last_tested_at ? ' · ' + m.tools.length + ' 個工具' : ' · 尚未測試')) }),
+        ]),
+        el('button', { type: 'button', className: 'topbar-action-btn', text: '測試連線', onclick: function() {
+          setPaneStatus('mcp-status', '連線中…');
+          apiJson('/api/mcp/' + encodeURIComponent(m.id) + '/test', { method: 'POST', body: {} }).then(function(d) {
+            server.mcp = d.servers || server.mcp; renderMcpList();
+            setPaneStatus('mcp-status', '連線成功' + (d.server_info ? '：' + d.server_info.name + ' ' + d.server_info.version : '') + '，' + d.tools + ' 個工具' + (d.disabled ? '（' + d.disabled + ' 個因超過 40 個上限而停用）' : ''));
+          }).catch(function(e) { setPaneStatus('mcp-status', e.message, true); loadExtensions(); });
+        } }),
+        el('button', { type: 'button', className: 'topbar-action-btn', text: m.enabled ? '停用' : '啟用', onclick: function() {
+          apiJson('/api/mcp/' + encodeURIComponent(m.id), { method: 'PUT', body: { enabled: !m.enabled } }).then(function(d) { server.mcp = d.servers; renderMcpList(); }).catch(function(e) { setPaneStatus('mcp-status', e.message, true); });
+        } }),
+        el('button', { type: 'button', className: 'topbar-action-btn btn-danger', text: '刪除', onclick: function() {
+          if (!confirm('刪除 MCP 伺服器 ' + m.name + '？')) return;
+          apiJson('/api/mcp/' + encodeURIComponent(m.id), { method: 'DELETE' }).then(function(d) { server.mcp = d.servers; renderMcpList(); }).catch(function(e) { setPaneStatus('mcp-status', e.message, true); });
+        } }),
+      ]);
+      card.appendChild(head);
+      if (m.tools.length) {
+        var tl = el('div', { className: 'mcp-tools' });
+        m.tools.forEach(function(tool) {
+          var cb = el('input', { type: 'checkbox' });
+          cb.checked = tool.enabled;
+          cb.onchange = function() {
+            var disabled = m.tools.filter(function(x) { return x.name === tool.name ? !cb.checked : !x.enabled; }).map(function(x) { return x.name; });
+            apiJson('/api/mcp/' + encodeURIComponent(m.id) + '/tools', { method: 'PUT', body: { disabled_tools: disabled } })
+              .then(function(d) { server.mcp = d.servers; renderMcpList(); })
+              .catch(function(e) { cb.checked = !cb.checked; setPaneStatus('mcp-status', e.message, true); });
+          };
+          tl.appendChild(el('label', { className: 'toggle-row', title: tool.description || '' }, [el('span', { text: tool.name }), cb]));
+        });
+        card.appendChild(tl);
+      }
+      box.appendChild(card);
+    });
+  }
+  function loadMcpForm(m) {
+    editingMcp = m ? m.id : '';
+    document.getElementById('mcp-form-title').textContent = m ? '編輯 ' + m.name : '新增 MCP 伺服器';
+    document.getElementById('mcp-name').value = m ? m.name : '';
+    document.getElementById('mcp-url').value = m ? m.url : '';
+    document.getElementById('mcp-auth').value = m ? m.auth_type : 'none';
+    document.getElementById('mcp-header').value = m ? m.header_name : '';
+    document.getElementById('mcp-header').hidden = !(m && m.auth_type === 'header');
+    var tok = document.getElementById('mcp-token');
+    tok.value = '';
+    tok.placeholder = m && m.token.set ? '已儲存 ' + m.token.preview + '（留空保留）' : '金鑰（加密存在 D1）';
+  }
+  function initMcpPane() {
+    var auth = document.getElementById('mcp-auth');
+    if (auth) auth.addEventListener('change', function() { document.getElementById('mcp-header').hidden = auth.value !== 'header'; });
+    var nb = document.getElementById('mcp-new-btn');
+    if (nb) nb.addEventListener('click', function() { loadMcpForm(null); });
+    var sb = document.getElementById('mcp-save-btn');
+    if (sb) sb.addEventListener('click', function() {
+      var body = {
+        name: document.getElementById('mcp-name').value.trim().toLowerCase(),
+        url: document.getElementById('mcp-url').value.trim(),
+        auth_type: document.getElementById('mcp-auth').value,
+        header_name: document.getElementById('mcp-header').value.trim(),
+      };
+      var tok = document.getElementById('mcp-token').value.trim();
+      if (tok) body.token = tok;
+      var req = editingMcp ? apiJson('/api/mcp/' + encodeURIComponent(editingMcp), { method: 'PUT', body: body }) : apiJson('/api/mcp', { method: 'POST', body: body });
+      req.then(function(d) { server.mcp = d.servers; renderMcpList(); loadMcpForm(null); setPaneStatus('mcp-status', '已儲存，請按「測試連線」載入工具清單'); })
+        .catch(function(e) { setPaneStatus('mcp-status', e.message, true); });
+    });
+  }
+  // Composer 工具 menu: per chat (main) or saved to the project (project).
+  var MAIN_TOOL_GROUPS = [['web', '網頁搜尋與讀取'], ['memory', '記憶'], ['utility', '計算與時間'], ['docs', '文件搜尋']];
+  function currentOff() {
+    if (proj.current) {
+      var st = proj.current.settings || {};
+      return {
+        groups: st.tools_disabled || [],
+        skills: st.skills_disabled || [],
+        mcp: st.mcp_disabled || [],
+      };
+    }
+    var chat = chats[currentChatId];
+    var off = (chat && chat.toolsOff) || [];
+    return {
+      groups: off.filter(function(x) { return x.indexOf(':') === -1 && x !== 'skills'; }),
+      skills: off.indexOf('skills') !== -1 ? server.skills.map(function(s) { return s.name; }) : [],
+      mcp: off.filter(function(x) { return x.indexOf('mcp:') === 0; }).map(function(x) { return x.slice(4); }),
+    };
+  }
+  function saveOff(next) {
+    if (proj.current) {
+      var settings = { tools_disabled: next.groups, skills_disabled: next.skills, mcp_disabled: next.mcp };
+      return apiJson('/api/projects/' + encodeURIComponent(proj.current.id), { method: 'PUT', body: { settings: settings } })
+        .then(function(d) { proj.current = d.project; }).catch(function(e) { projToast(e.message, true); });
+    }
+    var chat = chats[currentChatId];
+    if (!chat) { chats[currentChatId] = chat = { title: t('newChat'), messages: [] }; }
+    chat.toolsOff = next.groups.concat(next.skills.length && next.skills.length >= server.skills.length ? ['skills'] : []).concat(next.mcp.map(function(n) { return 'mcp:' + n; }));
+    saveChats();
+    return Promise.resolve();
+  }
+  function renderToolsMenu() {
+    var menu = document.getElementById('tools-menu');
+    if (!menu) return;
+    var off = currentOff();
+    menu.innerHTML = '';
+    menu.appendChild(el('div', { className: 'tools-menu-title', text: proj.current ? '這個專案的工具（會儲存到專案設定）' : '這段對話的工具' }));
+    var groups = proj.current ? PROJ_TOOL_GROUPS : MAIN_TOOL_GROUPS;
+    var addRow = function(label, checked, onchange, hint) {
+      var cb = el('input', { type: 'checkbox' });
+      cb.checked = checked;
+      cb.onchange = function() { onchange(cb.checked); };
+      menu.appendChild(el('label', { className: 'toggle-row', title: hint || '' }, [el('span', { text: label }), cb]));
+    };
+    groups.forEach(function(g) {
+      addRow(g[1], off.groups.indexOf(g[0]) === -1, function(on) {
+        var next = currentOff();
+        next.groups = on ? next.groups.filter(function(x) { return x !== g[0]; }) : next.groups.concat([g[0]]);
+        saveOff(next);
+      });
+    });
+    if (server.skills.length) {
+      menu.appendChild(el('div', { className: 'tools-menu-title', text: '技能' }));
+      var enabledSkills = server.skills.filter(function(s) { return s.enabled; });
+      if (proj.current) {
+        enabledSkills.forEach(function(sk) {
+          addRow('/' + sk.name, off.skills.indexOf(sk.name) === -1, function(on) {
+            var next = currentOff();
+            next.skills = on ? next.skills.filter(function(x) { return x !== sk.name; }) : next.skills.concat([sk.name]);
+            saveOff(next);
+          }, sk.description);
+        });
+      } else {
+        addRow('技能（' + enabledSkills.length + ' 個）', !off.skills.length, function(on) {
+          var next = currentOff();
+          next.skills = on ? [] : server.skills.map(function(s) { return s.name; });
+          saveOff(next);
+        });
+      }
+    }
+    var servers = server.mcp.filter(function(m) { return m.enabled && m.tools.length; });
+    if (servers.length) {
+      menu.appendChild(el('div', { className: 'tools-menu-title', text: 'MCP 伺服器' }));
+      servers.forEach(function(m) {
+        addRow(m.name + '（' + m.tools.filter(function(x) { return x.enabled; }).length + ' 個工具）', off.mcp.indexOf(m.name) === -1, function(on) {
+          var next = currentOff();
+          next.mcp = on ? next.mcp.filter(function(x) { return x !== m.name; }) : next.mcp.concat([m.name]);
+          saveOff(next);
+        });
+      });
+    }
+    menu.appendChild(el('button', { type: 'button', className: 'hist-bar-btn', text: '管理技能與 MCP…', onclick: function() { toggleToolsMenu(false); openSettingsModal('pane-skills'); } }));
+  }
+  function toggleToolsMenu(open) {
+    var menu = document.getElementById('tools-menu');
+    var btn = document.getElementById('tools-pill');
+    if (!menu || !btn) return;
+    var show = open === undefined ? menu.hidden : open;
+    if (show) renderToolsMenu();
+    menu.hidden = !show;
+    btn.setAttribute('aria-expanded', show ? 'true' : 'false');
+  }
+  // "/" suggestions for skills
+  function renderSkillSuggest() {
+    var box = document.getElementById('skill-suggest');
+    var input = document.getElementById('prompt-input');
+    if (!box || !input) return;
+    var m = input.value.match(/^\/([a-z0-9-]*)$/);
+    var list = m ? server.skills.filter(function(s) { return s.enabled && s.name.indexOf(m[1]) === 0; }).slice(0, 8) : [];
+    box.innerHTML = '';
+    box.hidden = !list.length;
+    list.forEach(function(sk) {
+      var b = el('button', { type: 'button', className: 'skill-suggest-item', role: 'option' }, [el('strong', { text: '/' + sk.name }), el('span', { text: sk.description })]);
+      b.onclick = function() { input.value = '/' + sk.name + ' '; box.hidden = true; input.focus(); };
+      box.appendChild(b);
+    });
+  }
+  window.PAI_projectSettingsExtra = function(body, s) {
+    if (!server.skills.length && !server.mcp.length) return;
+    body.appendChild(el('div', { className: 'settings-block-title', text: '技能與 MCP' }));
+    server.skills.forEach(function(sk) {
+      var cb = el('input', { type: 'checkbox', 'data-skill': sk.name });
+      cb.checked = (s.skills_disabled || []).indexOf(sk.name) === -1;
+      body.appendChild(el('label', { className: 'toggle-row' }, [el('span', { text: '技能 /' + sk.name }), cb]));
+    });
+    server.mcp.forEach(function(m) {
+      var cb = el('input', { type: 'checkbox', 'data-mcp': m.name });
+      cb.checked = (s.mcp_disabled || []).indexOf(m.name) === -1;
+      body.appendChild(el('label', { className: 'toggle-row' }, [el('span', { text: 'MCP ' + m.name }), cb]));
+    });
+  };
+  window.PAI_projectSettingsCollect = function(body) {
+    var pick = function(attr) { return Array.prototype.slice.call(body.querySelectorAll('input[' + attr + ']')).filter(function(c) { return !c.checked; }).map(function(c) { return c.getAttribute(attr); }); };
+    return { skills_disabled: pick('data-skill'), mcp_disabled: pick('data-mcp') };
+  };
+  function initExtensions() {
+    initSkillsPane();
+    initMcpPane();
+    var pill = document.getElementById('tools-pill');
+    if (pill) pill.addEventListener('click', function(e) { e.stopPropagation(); toggleToolsMenu(); });
+    document.addEventListener('click', function(e) {
+      var wrap = document.getElementById('tools-menu-wrap');
+      if (wrap && !wrap.contains(e.target)) toggleToolsMenu(false);
+      var sug = document.getElementById('skill-suggest');
+      if (sug && !sug.hidden && !sug.contains(e.target) && e.target.id !== 'prompt-input') sug.hidden = true;
+    });
+    var input = document.getElementById('prompt-input');
+    if (input) input.addEventListener('input', renderSkillSuggest);
+  }
+
   function renderDocsList(list, filterText) {
     var head = document.createElement('button');
     head.type = 'button';
@@ -4849,7 +5244,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
     fillParamsPane();
     fillSearchPane();
     renderMemoryPane();
-    if (server.loaded) loadMemories();
+    if (server.loaded) { loadMemories(); loadExtensions(); }
     if (window.PAI_onSettingsOpen) try { window.PAI_onSettingsOpen(); } catch (e) {}
     showSettingsPane(tab || 'pane-general');
     openModal('modal-settings');
@@ -5003,6 +5398,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
       initMemoryPane();
       initSearchPane();
       initProjects();
+      initExtensions();
       fetch('/api/me', { credentials: 'same-origin' })
         .then(function(r) {
           if (r.status === 401) { location.href = '/login'; return null; }
@@ -5019,6 +5415,7 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
           setArtifactDest(artifactDest, false);
           loadServerState().then(function() {
             updateUserUI();
+            loadExtensions();
             return loadProjectList();
           }).then(function() {
             var openId = localStorage.getItem('ta_project_open');

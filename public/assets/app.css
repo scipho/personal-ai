@@ -1189,3 +1189,17 @@ body:has(.art-panel.open) .tap-builder-pill { width: 32px; padding: 0; justify-c
   .proj-tabs { width: 100%; justify-content: space-between; }
   .proj-tab { flex: 1; }
 }
+
+/* ---- skills / MCP / tools menu ---- */
+.tools-menu-wrap { position: relative; display: inline-flex; }
+.tools-menu { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 40; width: 300px; max-height: 60vh; overflow-y: auto; background: var(--elev); border: 1px solid var(--line-2); border-radius: 12px; padding: 8px 10px; box-shadow: 0 12px 32px rgba(0,0,0,.28); display: flex; flex-direction: column; gap: 2px; }
+.tools-menu[hidden] { display: none; }
+.tools-menu-title { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: .05em; margin: 6px 0 2px; }
+.tools-menu .toggle-row { font-size: 0.82rem; padding: 4px 0; }
+.skill-suggest { position: absolute; bottom: calc(100% + 6px); left: 8px; right: 8px; z-index: 41; background: var(--elev); border: 1px solid var(--line-2); border-radius: 10px; padding: 4px; display: flex; flex-direction: column; box-shadow: 0 10px 28px rgba(0,0,0,.25); }
+.skill-suggest[hidden] { display: none; }
+.skill-suggest-item { display: flex; gap: 8px; align-items: baseline; text-align: left; background: none; border: 0; color: var(--text); font: inherit; font-size: 0.82rem; padding: 6px 8px; border-radius: 8px; cursor: pointer; }
+.skill-suggest-item:hover, .skill-suggest-item:focus { background: var(--hover, rgba(127,127,127,.1)); }
+.skill-suggest-item span { color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mcp-card { padding: 8px; margin-bottom: 8px; }
+.mcp-tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0 12px; padding: 4px 8px 0; font-size: 0.8rem; }

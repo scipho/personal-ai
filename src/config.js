@@ -1,5 +1,5 @@
 export const APP_NAME = 'Personal AI'
-export const APP_VERSION = '2.1.0'
+export const APP_VERSION = '2.2.0'
 
 export const SESSION_DAYS_DEFAULT = 30
 export const MAX_BODY_BYTES = 2 * 1024 * 1024
