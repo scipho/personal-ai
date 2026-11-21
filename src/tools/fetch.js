@@ -102,3 +102,43 @@ export async function fetchPage(input, { maxChars = 12_000, budget = null } = {}
     text: (isHtml ? textFromHtml(raw) : raw.trim()).slice(0, maxChars),
   }
 }
+// Jina Reader returns cleaner Markdown for JS-heavy pages. The target URL
+// passes the same SSRF validation as a direct fetch.
+export async function fetchPageViaJina(input, key, { maxChars = 12_000, budget = null } = {}) {
+  const url = validateFetchUrl(input)
+  if (budget) budget.fetch(1)
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort('timeout'), 25_000)
+  try {
+    const res = await fetch(`https://r.jina.ai/${url.toString()}`, {
+      headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${key}`, 'X-Return-Format': 'markdown' },
+      signal: controller.signal,
+    })
+    if (!res.ok) throw new Error(`Jina Reader 回傳 HTTP ${res.status}`)
+    const raw = await res.text()
+    if (raw.length > 1_000_000) throw new Error('Jina Reader 回應過大')
+    let data = {}
+    try { data = JSON.parse(raw) } catch {}
+    const d = data && data.data ? data.data : {}
+    const text = String(d.content || d.text || '').trim()
+    if (!text) throw new Error('Jina Reader 沒有回傳內容')
+    return { url: url.toString(), title: String(d.title || '').slice(0, 200), text: text.slice(0, maxChars), via: 'jina' }
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+// fetch_url entry point: Jina Reader when a key is configured, falling back
+// to the built-in fetcher on any Reader failure.
+export async function readPage(input, { maxChars = 12_000, jinaKey = '', budget = null } = {}) {
+  if (jinaKey) {
+    try {
+      return await fetchPageViaJina(input, jinaKey, { maxChars, budget })
+    } catch (err) {
+      if (err && err.name === 'BudgetError') throw err
+      // Invalid/blocked URLs must not fall through to the direct fetcher.
+      if (/URL|HTTPS|主機|帳號/.test(String(err && err.message))) throw err
+    }
+  }
+  return fetchPage(input, { maxChars, budget })
+}

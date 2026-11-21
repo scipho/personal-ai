@@ -31,7 +31,7 @@ import { SecretUnavailableError } from './secret_box.js'
 const USER_SECRETS = new Set(['search:tavily', 'search:jina'])
 
 // Tables wiped by "清除所有資料". Later PRs append their tables.
-export const DATA_TABLES = ['sync_items_v2', 'sync_items', 'secrets', 'providers', 'memories']
+export const DATA_TABLES = ['sync_items_v2', 'sync_items', 'secrets', 'providers', 'memories', 'project_messages', 'files', 'projects']
 
 async function body(request) {
   try {

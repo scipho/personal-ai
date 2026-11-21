@@ -1,5 +1,5 @@
 import { searchWeb } from './search.js'
-import { fetchPage } from './fetch.js'
+import { readPage } from './fetch.js'
 import { calculate } from './calc.js'
 import { currentTime } from './time.js'
 import { searchDocuments } from './docs.js'
@@ -64,7 +64,10 @@ export const TOOLS = [
     needs: 'memory',
     parameters: {
       type: 'object',
-      properties: { fact: { type: 'string', description: '一句簡短事實' } },
+      properties: {
+        fact: { type: 'string', description: '一句簡短事實' },
+        scope: { type: 'string', enum: ['project', 'global'], description: '在專案中預設存為專案記憶；global 代表所有對話共用' },
+      },
       required: ['fact'],
     },
   },
@@ -112,15 +115,17 @@ export async function runTool(name, args, context = {}) {
   const input = args && typeof args === 'object' ? args : {}
   switch (name) {
     case 'web_search': {
-      const tavilyKey = context.getSecret ? await context.getSecret('search:tavily') : ''
-      const result = await searchWeb(input.query, { maxResults: input.maxResults, tavilyKey, budget: context.budget })
-      if (result.error === 'no_key') return { ok: false, error: '尚未在設定中填寫 Tavily API Key' }
-      if (result.error) return { ok: false, error: `搜尋失敗：${result.error}` }
-      return { ok: true, results: result.results }
+      const get = context.getSecret || (async () => '')
+      const config = { provider: (context.search && context.search.provider) || 'auto', tavilyKey: await get('search:tavily'), jinaKey: await get('search:jina') }
+      const result = await searchWeb(input.query, { maxResults: input.maxResults, config, budget: context.budget })
+      if (result.error) return { ok: false, error: `搜尋失敗（${result.backend || 'search'}）：${result.error}`, backend: result.backend }
+      return { ok: true, backend: result.backend, results: result.results }
     }
     case 'fetch_url': {
       try {
-        const page = await fetchPage(input.url, { maxChars: context.fetchMaxChars || 12_000, budget: context.budget })
+        const useJina = !context.search || context.search.jina_reader !== false
+        const jinaKey = useJina && context.getSecret ? await context.getSecret('search:jina') : ''
+        const page = await readPage(input.url, { maxChars: context.fetchMaxChars || 12_000, budget: context.budget, jinaKey })
         return { ok: true, ...page }
       } catch (err) {
         if (err && err.name === 'BudgetError') throw err

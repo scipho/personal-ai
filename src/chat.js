@@ -27,6 +27,7 @@ import {
   tryOpenSecretRow,
 } from './store.js'
 import { SecretUnavailableError } from './secret_box.js'
+import { handleProjectChat } from './projects.js'
 
 export { parseCompletion }
 
@@ -390,6 +391,7 @@ export async function handleChat(request, env, execCtx) {
   } catch (err) {
     return errorJson(bodyErrorMessage(err), err.message === 'PAYLOAD_TOO_LARGE' ? 413 : 400, 'invalid_json')
   }
+  if (body.project_id) return handleProjectChat(request, env, execCtx, body)
   const budget = new Budget()
   const db = await openDb(env, budget)
   if (!db) return dbMissingResponse()
@@ -414,8 +416,8 @@ export async function handleChat(request, env, execCtx) {
   const memoryOn = settings.memory.enabled
   const memories = memoryOn ? base.memories : []
   const getSecret = secretGetter(env, base)
-  const hasTavily = base.secretRows.has('search:tavily')
-  const capabilities = { search: hasTavily, docs: docs.length > 0, memory: memoryOn }
+  // web_search always works: Tavily -> Jina -> DuckDuckGo (no key) fallback.
+  const capabilities = { search: true, docs: docs.length > 0, memory: memoryOn }
   const sysOpts = { docs, capabilities, prefs: settings.prefs, memories }
   const params = settings.params
 
@@ -432,7 +434,7 @@ export async function handleChat(request, env, execCtx) {
 
   const memoryEvents = []
   const toolContext = {
-    db, budget, getSecret, documents: docs,
+    db, budget, getSecret, documents: docs, search: settings.search,
     timeZone: clampText(body.timezone, 64) || undefined,
     locale: clampText(body.locale, 32) || undefined,
     memoryScopes: ['global'], writeScope: 'global',
