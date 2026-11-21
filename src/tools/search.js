@@ -16,19 +16,17 @@ function clean(text, max = MAX_SNIPPET) {
     .slice(0, max)
 }
 
-export function tavilyConfigured(env) {
-  return !!env.TAVILY_API_KEY
-}
-
-export async function searchWeb(query, env, { maxResults = 5 } = {}) {
+// `tavilyKey` comes from the encrypted D1 secret `search:tavily`.
+export async function searchWeb(query, { maxResults = 5, tavilyKey = '', budget = null } = {}) {
   const q = String(query || '').trim()
   if (!q) return { results: [], error: 'empty_query' }
-  if (!env.TAVILY_API_KEY) return { results: [], error: 'no_key' }
+  if (!tavilyKey) return { results: [], error: 'no_key' }
 
   const key = q.toLowerCase().slice(0, 200)
   const hit = cache.get(key)
   if (hit && Date.now() - hit.at < CACHE_TTL) return { results: hit.results, cached: true }
 
+  if (budget) budget.fetch(1)
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort('timeout'), 15_000)
   try {
@@ -36,7 +34,7 @@ export async function searchWeb(query, env, { maxResults = 5 } = {}) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${env.TAVILY_API_KEY}`,
+        'Authorization': `Bearer ${tavilyKey}`,
       },
       body: JSON.stringify({
         query: q.slice(0, 400),

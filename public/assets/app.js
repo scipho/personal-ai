@@ -1,6 +1,6 @@
 (function() {
   var _root = document.getElementById('app');
-  if (_root) _root.innerHTML = "<div class=\"ta-app\">\n<div class=\"ta-app\">\n  <div class=\"sidebar-overlay\" id=\"sidebar-overlay\"></div>\n  <aside class=\"ta-sidebar\" id=\"sidebar\">\n    <div class=\"sb-head\">\n      <a href=\"/\" class=\"brand-logo\">\n        <img src=\"/avatar.png\" alt=\"\" class=\"brand-avatar\">\n        <span class=\"brand-title\">Personal AI</span>\n      </a>\n      <button id=\"sidebar-close-btn\" class=\"icon-btn\" title=\"Cerrar\" style=\"display:none\">✕</button>\n    </div>\n    <button id=\"new-chat-btn\" class=\"new-chat-btn\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6\"/><path d=\"M18.4 2.6a2 2 0 0 1 2.9 2.9L12 14.8 8 16l1.2-4z\"/></svg><span data-i18n=\"newChat\">Nueva conversación</span></span>\n      <kbd class=\"hint\">Ctrl K</kbd>\n    </button>\n    <button id=\"temp-chat-btn\" class=\"new-chat-btn ghost\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\" stroke-dasharray=\"3 3\"/><path d=\"M12 7v5l3 2\"/></svg><span data-i18n=\"tempChat\">Chat temporal</span></span>\n      <kbd class=\"hint\">Ctrl ⇧ N</kbd>\n    </button>\n    <div class=\"history-search-box\">\n      <input type=\"search\" id=\"history-search\" class=\"history-search-input\" placeholder=\"Buscar…\" autocomplete=\"off\" data-i18n=\"searchPh\" data-i18n-attr=\"placeholder\">\n    </div>\n    <div class=\"sb-tabs\">\n      <button type=\"button\" class=\"sb-tab active\" data-view=\"chats\" id=\"tab-chats\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/></svg><span data-i18n=\"chats\">Chats</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"projects\" id=\"tab-projects\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span data-i18n=\"projects\">Proyectos</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"docs\" id=\"tab-docs\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 13h6M9 17h4\"/></svg><span data-i18n=\"docs\">Documentos</span></button>\n      \n      <button type=\"button\" class=\"sb-tab\" data-view=\"prompts\" id=\"tab-prompts\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M4 6h16M4 12h10M4 18h7\"/><path d=\"m17 15 3 3-3 3\"/></svg><span>Prompts</span></button>\n    </div>\n    <div class=\"history-list\" id=\"history-list\"></div>\n    <div class=\"sb-foot\">\n                  <button type=\"button\" id=\"open-settings-btn\" class=\"sb-link\" data-open-settings=\"pane-general\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg><span data-i18n=\"settings\">Ajustes</span></button>\n      \n      <div class=\"sb-account\">\n      <button type=\"button\" class=\"user-pill\" id=\"user-profile-pill\" data-open-settings=\"pane-account\">\n        <div style=\"display:flex;align-items:center;gap:8px;min-width:0\">\n          <div class=\"avatar-letter\" id=\"user-letter\">T</div>\n          <div style=\"min-width:0\">\n            <div class=\"user-info-name\" id=\"user-display-name\">Invitado</div>\n            <div class=\"user-info-tier\" id=\"user-display-tier\">50K tokens / día</div>\n          </div>\n        </div>\n      </button>\n      <div id=\"lang-select\" class=\"lang-picker\" aria-label=\"Language\"></div>\n      </div>\n    </div>\n  </aside>\n\n  <main class=\"ta-main\">\n    <header class=\"ta-topbar\">\n      <div class=\"topbar-left\">\n        <button id=\"sidebar-toggle-btn\" class=\"icon-btn menu-toggle-btn\" type=\"button\" title=\"Menú\" aria-label=\"Menú\">\n          <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><line x1=\"3\" y1=\"12\" x2=\"21\" y2=\"12\"/><line x1=\"3\" y1=\"6\" x2=\"21\" y2=\"6\"/><line x1=\"3\" y1=\"18\" x2=\"21\" y2=\"18\"/></svg>\n        </button>\n        <div class=\"model-picker\" id=\"model-picker\">\n          <button type=\"button\" class=\"model-picker-btn\" id=\"model-picker-btn\" aria-haspopup=\"listbox\" aria-expanded=\"false\">\n            <span class=\"model-picker-label\" id=\"model-picker-label\">GPT OSS 120B</span>\n            <svg class=\"model-picker-caret\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M6 9l6 6 6-6\"/></svg>\n          </button>\n          <div class=\"model-menu\" id=\"model-menu\" role=\"listbox\"></div>\n        </div>\n      </div>\n      <div class=\"topbar-right\">\n        <span id=\"temp-badge\" class=\"temp-badge\" data-i18n=\"tempOn\">Temporal</span>\n        <button id=\"cmd-open-btn\" class=\"topbar-icon-btn\" type=\"button\" title=\"Ctrl+P\" data-i18n=\"commandPalette\" data-i18n-attr=\"title\" aria-label=\"Comandos\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>\n        </button>\n        <button id=\"export-chat-btn\" class=\"topbar-icon-btn\" type=\"button\" data-i18n=\"exportChat\" data-i18n-attr=\"title\" aria-label=\"Exportar\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v12\"/><path d=\"M8 11l4 4 4-4\"/><path d=\"M5 21h14\"/></svg>\n        </button>\n        <button id=\"topbar-auth-btn\" class=\"topbar-action-btn primary\" type=\"button\" data-open-settings=\"pane-general\">\n          <span class=\"avatar-letter\" id=\"topbar-letter\" hidden>T</span>\n          <span id=\"topbar-auth-text\">設定</span>\n        </button>\n      </div>\n    </header>\n    <div class=\"ta-chat-scroll\" id=\"chat-scroll\">\n      <div class=\"ta-chat-wrap\" id=\"chat-container\"></div>\n    </div>\n    <footer class=\"ta-input-dock\">\n      <div class=\"capsule-box\">\n        <div id=\"attached-badge\" class=\"file-badge-preview\">\n          <img id=\"attached-thumb\" alt=\"\" hidden>\n          <span id=\"attached-kind\">Documento</span>\n          <span id=\"attached-name\">documento.txt</span>\n          <button id=\"remove-file-btn\" type=\"button\" style=\"background:none;border:none;color:var(--dim);cursor:pointer\">✕</button>\n        </div>\n        <textarea id=\"prompt-input\" class=\"prompt-textarea\" rows=\"1\" placeholder=\"Pregunta lo que quieras…\" data-i18n=\"askPh\" data-i18n-attr=\"placeholder\"></textarea>\n        <div class=\"dock-controls\">\n          <div class=\"dock-plus\" id=\"dock-plus\">\n            <button type=\"button\" class=\"dock-btn dock-plus-btn\" id=\"dock-plus-btn\" aria-haspopup=\"menu\" aria-expanded=\"false\" aria-controls=\"dock-plus-menu\" aria-label=\"Más opciones\" title=\"Más opciones\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></button>\n            <div class=\"dock-plus-menu\" id=\"dock-plus-menu\" role=\"menu\" hidden>\n              <button type=\"button\" role=\"menuitem\" class=\"dpm-item\" data-dpm=\"attach\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg><span class=\"dpm-label\">Adjuntar archivo</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"web\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/></svg><span class=\"dpm-label\">Buscar en la web</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"image\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><circle cx=\"9\" cy=\"10\" r=\"2\"/><path d=\"m21 16-5-5-9 9\"/></svg><span class=\"dpm-label\">Crear imagen</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n                          </div>\n          </div>\n          <div class=\"control-pills\">\n            <button id=\"web-search-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"searchWeb\">Buscar</button>\n            <button id=\"image-gen-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"image\">Imagen</button>\n            <div class=\"length-segmented-pill\" style=\"display:none;\" title=\"Longitud\"><button class=\"length-opt-btn active\" data-len=\"normal\" id=\"len-btn-normal\" type=\"button\" data-i18n=\"normal\">Normal</button></div>\n          </div>\n          <div class=\"dock-action-buttons\">\n            <input type=\"file\" id=\"file-uploader\" style=\"display:none\" accept=\"image/jpeg,image/png,image/webp,image/gif,.txt,.md,.json,.js,.ts,.py,.csv,.log,.html,.css\">\n            <button id=\"attach-file-btn\" class=\"dock-btn\" type=\"button\" title=\"Adjuntar archivo o imagen\" aria-label=\"Adjuntar\" data-i18n=\"attach\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg>\n            </button>\n            <button id=\"mic-btn\" class=\"dock-btn\" type=\"button\" title=\"Grabar voz\" aria-label=\"Grabar voz\" data-i18n=\"dictate\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"12\" rx=\"3\"/><path d=\"M5 11a7 7 0 0 0 14 0\"/><path d=\"M12 18v4\"/><path d=\"M8 22h8\"/></svg>\n            </button>\n            <button id=\"speak-last-btn\" class=\"dock-btn\" type=\"button\" title=\"Leer respuesta\" aria-label=\"Leer\" data-i18n=\"speakLast\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M11 5L6 9H3v6h3l5 4V5z\"/><path d=\"M15.5 8.5a5 5 0 0 1 0 7\"/><path d=\"M18.5 6a8.5 8.5 0 0 1 0 12\"/></svg>\n            </button>\n            <button id=\"send-btn\" class=\"send-submit-btn\" type=\"button\" title=\"Enviar\">\n              <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\"><path d=\"M12 19V5M5 12l7-7 7 7\"/></svg>\n            </button>\n          </div>\n        </div>\n      </div>\n      <p class=\"disclaimer\"><span data-i18n=\"disclaimer\">Personal AI puede equivocarse.</span></p>\n    </footer>\n  </main>\n\n  <aside class=\"art-panel\" id=\"art-panel\" aria-label=\"Artefacto\">\n    <div class=\"art-head\">\n      <div class=\"art-head-top\">\n        <div class=\"art-title-wrap\">\n          <textarea class=\"art-title-input\" id=\"art-title\" maxlength=\"72\" rows=\"2\" placeholder=\"Título corto (máx. 72)\" aria-label=\"Título\">Artifact</textarea>\n          <div class=\"art-title-count\" id=\"art-title-count\">0/72</div>\n        </div>\n        <button type=\"button\" class=\"icon-btn\" id=\"art-close-btn\" title=\"Cerrar\" aria-label=\"Cerrar\">✕</button>\n      </div>\n      <div class=\"art-toolbar\">\n        <select id=\"art-format\" class=\"art-format\" title=\"Formato\" aria-label=\"Formato del artifact\"></select>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-copy-btn\" data-art-i18n=\"copy\">Copiar</button>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-save-btn\">Guardar</button>\n      </div>\n      <div class=\"art-viewbar\">\n        <div class=\"art-view\" role=\"tablist\" aria-label=\"Vista\">\n          <button type=\"button\" class=\"art-view-btn active\" role=\"tab\" aria-selected=\"true\" data-view=\"preview\" id=\"art-view-preview\" data-art-i18n=\"preview\">Vista previa</button>\n          <button type=\"button\" class=\"art-view-btn\" role=\"tab\" aria-selected=\"false\" data-view=\"code\" id=\"art-view-code\" data-art-i18n=\"code\">Código</button>\n        </div>\n        <select id=\"art-version\" class=\"art-format art-version\" aria-label=\"Versión\" hidden></select>\n        <span class=\"art-viewbar-spacer\"></span>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-download-btn\" data-art-i18n-title=\"download\" title=\"Descargar\" aria-label=\"Descargar\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v11\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M5 20h14\"/></svg></button>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-fs-btn\" data-art-i18n-title=\"fullscreen\" title=\"Pantalla completa\" aria-label=\"Pantalla completa\" aria-pressed=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9V4h5\"/><path d=\"M20 9V4h-5\"/><path d=\"M4 15v5h5\"/><path d=\"M20 15v5h-5\"/></svg></button>\n      </div>\n      \n    </div>\n    <div class=\"art-extras\">\n      <button type=\"button\" class=\"art-extras-toggle\" id=\"art-extras-toggle\">Fuentes, recursos y widgets</button>\n      <div class=\"art-extras-body\" id=\"art-extras-body\" hidden>\n        <label for=\"art-sources\">Fuentes propias (una por línea: Título | https://…)</label>\n        <textarea id=\"art-sources\" placeholder=\"SEC 10-K | https://www.sec.gov/…\"></textarea>\n        <label for=\"art-resources\">Recursos (una por línea)</label>\n        <textarea id=\"art-resources\" placeholder=\"Modelo Excel | https://…\"></textarea>\n        <label for=\"art-widgets\">Widgets (quote:MSFT · note:texto · https://…)</label>\n        <textarea id=\"art-widgets\" placeholder=\"quote:MSFT&#10;note:Riesgo: múltiplo elevado&#10;https://www.tradingview.com/symbols/MSFT/\"></textarea>\n      </div>\n    </div>\n    <div class=\"art-split\" id=\"art-split\">\n      <textarea class=\"art-editor\" id=\"art-editor\" spellcheck=\"false\" placeholder=\"Escribe aquí el contenido. La IA genera una base; tú la editas.\" aria-label=\"Editor del artifact\"></textarea>\n      <iframe class=\"art-preview\" id=\"art-preview\" hidden sandbox=\"allow-scripts allow-forms allow-modals allow-popups\" referrerpolicy=\"no-referrer\" title=\"Vista del artifact\"></iframe>\n    </div>\n  </aside>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-settings\">\n  <div class=\"modal-card settings-wide\">\n    <div class=\"modal-header\"><div class=\"modal-title\" data-i18n=\"settings\">Ajustes</div><button class=\"modal-close-btn\" data-modal=\"modal-settings\" type=\"button\" aria-label=\"Cerrar\" data-i18n=\"close\" data-i18n-attr=\"aria-label\">✕</button></div>\n    <div class=\"settings-layout\">\n      <nav class=\"settings-nav\" aria-label=\"設定\">\n        <div class=\"settings-nav-label\">應用程式</div>\n        <button type=\"button\" class=\"settings-nav-btn active\" data-pane=\"pane-general\" data-i18n=\"tabGeneral\">一般</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-providers\">供應商</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-appearance\" data-i18n=\"tabAppearance\">外觀</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-behavior\" data-i18n=\"tabBehavior\">行為</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-customize\" data-i18n=\"tabCustomize\">個人化</button>\n        <div class=\"settings-nav-label\">資料</div>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-data\" data-i18n=\"tabData\">資料控制</button>\n      </nav>\n      <div class=\"settings-main\">\n        <div id=\"pane-general\" class=\"settings-pane active\">\n          <div class=\"settings-section-title\" data-i18n=\"tabGeneral\">General</div>\n          <p class=\"settings-section-desc\" data-i18n=\"generalDesc\">Idioma, modelo por defecto y longitud de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"language\">Idioma</label>\n            <div id=\"set-lang\" class=\"lang-picker open-down\"></div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultModel\">Modelo por defecto</label>\n            <select id=\"set-default-model\" class=\"form-input\"></select>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultLength\">Longitud por defecto</label>\n            <div class=\"choice-row\" id=\"set-default-length\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"corto\" data-i18n=\"short\">Corto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"normal\" data-i18n=\"normal\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"extendido\" data-i18n=\"long\">Largo</button>\n            </div>\n          </div>\n          <p class=\"settings-hint\">Personal AI · 2026.2 · ai.personal-ai.workers.dev</p>\n        </div>\n\n        <div id=\"pane-account\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabAccount\">Cuenta</div>\n          <p class=\"settings-section-desc\" data-i18n=\"accountDesc\">Tu perfil, plan, correos y acceso.</p>\n          <div id=\"account-guest\" style=\"display:none;text-align:center;padding:18px 8px;\">\n            <p style=\"font-size:0.84rem;color:var(--muted);margin-bottom:12px\" data-i18n=\"needLogin\">Inicia sesión para sincronizar la cuenta.</p>\n            <a href=\"/login\" class=\"topbar-action-btn primary\" style=\"text-decoration:none\" data-i18n=\"signIn\">Acceder</a>\n          </div>\n          <div id=\"account-authed\">\n            <div class=\"settings-card\">\n              <div class=\"settings-kv\">\n                <div class=\"settings-kv-label\" data-i18n=\"displayName\">Nombre</div>\n                <div class=\"settings-kv-control\">\n                  <input type=\"text\" id=\"set-display-name\" class=\"form-input\" maxlength=\"80\" autocomplete=\"name\">\n                </div>\n              </div>\n              <div class=\"settings-kv\">\n                <div class=\"settings-kv-label\" data-i18n=\"emailLabel\">Correo</div>\n                <div class=\"settings-kv-value\" id=\"account-email-display\"></div>\n              </div>\n              <div class=\"settings-kv\">\n                <div class=\"settings-kv-label\" data-i18n=\"tabPlan\">Plan y facturación</div>\n                <span class=\"plan-badge\" id=\"account-plan-badge\">FREE</span>\n              </div>\n            </div>\n\n            <div class=\"settings-block-title\" data-i18n=\"emailPrefs\">Correos</div>\n            <p class=\"settings-hint\" data-i18n=\"emailsHint\">Elige qué correos quieres recibir en tu bandeja.</p>\n            <div class=\"settings-card\">\n              <label class=\"toggle-row\"><span data-i18n=\"notifyProduct\">Novedades de producto</span><input type=\"checkbox\" id=\"set-notify-product\" checked></label>\n              <label class=\"toggle-row\"><span data-i18n=\"notifySecurity\">Alertas de seguridad</span><input type=\"checkbox\" id=\"set-notify-security\" checked></label>\n              <label class=\"toggle-row\"><span data-i18n=\"notifyDigest\">Resumen ocasional</span><input type=\"checkbox\" id=\"set-notify-digest\"></label>\n              <div class=\"settings-actions\">\n                <button type=\"button\" id=\"test-email-btn\" class=\"topbar-action-btn\" data-i18n=\"testEmail\">Enviar correo de prueba</button>\n              </div>\n            </div>\n\n            <p id=\"oauth-pass-hint\" class=\"settings-hint\" style=\"display:none;margin-top:16px\"></p>\n            <div id=\"password-fields\">\n              <div class=\"settings-block-title\" data-i18n=\"passwordSection\">Contraseña</div>\n              <div class=\"settings-card\">\n                <div class=\"form-group\">\n                  <label class=\"form-label\" data-i18n=\"currentPassword\">Contraseña actual</label>\n                  <input type=\"password\" id=\"set-cur-pass\" class=\"form-input\" autocomplete=\"current-password\">\n                </div>\n                <div class=\"form-group\">\n                  <label class=\"form-label\" data-i18n=\"newPassword\">Nueva contraseña</label>\n                  <input type=\"password\" id=\"set-new-pass\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"6\">\n                </div>\n                <div class=\"settings-actions\">\n                  <button type=\"button\" id=\"change-pass-btn\" class=\"topbar-action-btn primary\" data-i18n=\"changePassword\">Cambiar contraseña</button>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"settings-block-title\" data-i18n=\"sessionTitle\">Sesión</div>\n            <div class=\"settings-card\" style=\"padding:16px\">\n              <div class=\"settings-kv-label\" data-i18n=\"logout\">Cerrar sesión</div>\n              <p class=\"settings-kv-sub\" data-i18n=\"sessionHint\">Cierra la sesión en este navegador. El historial local se queda.</p>\n              <button type=\"button\" id=\"settings-logout-btn-legacy\" class=\"logout-big-btn\" data-i18n=\"logout\">Cerrar sesión</button>\n            </div>\n          </div>\n        </div>\n\n        <div id=\"pane-appearance\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabAppearance\">Apariencia</div>\n          <p class=\"settings-section-desc\" data-i18n=\"appearanceDesc\">Tema, tamaño de letra y densidad de la interfaz.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"appearanceTheme\">Tema</label>\n            <div class=\"theme-grid\">\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dark\"><span class=\"theme-swatch\" data-swatch=\"dark\"></span><span data-i18n=\"themeDark\">Oscuro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"gray\"><span class=\"theme-swatch\" data-swatch=\"gray\"></span><span data-i18n=\"themeGray\">Gris</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dim\"><span class=\"theme-swatch\" data-swatch=\"dim\"></span><span data-i18n=\"themeDim\">Carbón</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"navy\"><span class=\"theme-swatch\" data-swatch=\"navy\"></span><span data-i18n=\"themeNavy\">Marino</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"light\"><span class=\"theme-swatch\" data-swatch=\"light\"></span><span data-i18n=\"themeLight\">Claro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"paper\"><span class=\"theme-swatch\" data-swatch=\"paper\"></span><span data-i18n=\"themePaper\">Papel</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"hacker\"><span class=\"theme-swatch\" data-swatch=\"hacker\"></span><span>Hacker</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"cyberpunk\"><span class=\"theme-swatch\" data-swatch=\"cyberpunk\"></span><span>Cyberpunk</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"sunset\"><span class=\"theme-swatch\" data-swatch=\"sunset\"></span><span>Sunset</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"ocean\"><span class=\"theme-swatch\" data-swatch=\"ocean\"></span><span>Ocean</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"forest\"><span class=\"theme-swatch\" data-swatch=\"forest\"></span><span>Forest</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"rose\"><span class=\"theme-swatch\" data-swatch=\"rose\"></span><span>Rose</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"lavender\"><span class=\"theme-swatch\" data-swatch=\"lavender\"></span><span>Lavender</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"system\"><span class=\"theme-swatch\" data-swatch=\"system\"></span><span data-i18n=\"themeSystem\">Sistema</span></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"accentLabel\">Acento</label>\n            <div class=\"accent-row\">\n              <button type=\"button\" class=\"accent-dot accent-auto\" data-pref=\"ta_accent\" data-value=\"auto\" title=\"Neutro\" aria-label=\"Neutro\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#38bdf8\" style=\"background:#38bdf8\" title=\"Cielo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a1a1aa\" style=\"background:#a1a1aa\" title=\"Gris\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#34d399\" style=\"background:#34d399\" title=\"Menta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#2dd4bf\" style=\"background:#2dd4bf\" title=\"Teal\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#818cf8\" style=\"background:#818cf8\" title=\"Índigo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a78bfa\" style=\"background:#a78bfa\" title=\"Violeta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#f59e0b\" style=\"background:#f59e0b\" title=\"Ámbar\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#fb7185\" style=\"background:#fb7185\" title=\"Rosa\"></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"fontSize\">Tamaño de letra</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"sm\" data-i18n=\"fontSm\">Compacto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"md\" data-i18n=\"fontMd\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"lg\" data-i18n=\"fontLg\">Grande</button>\n            </div>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"compactSidebar\">Barra lateral compacta</span><input type=\"checkbox\" id=\"set-compact-sb\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"reduceMotion\">Reducir movimiento</span><input type=\"checkbox\" id=\"set-reduce-motion\"></label>\n          </div>\n        </div>\n\n        <div id=\"pane-behavior\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabBehavior\">Comportamiento</div>\n          <p class=\"settings-section-desc\" data-i18n=\"behaviorDesc\">Cómo envía, busca y confirma el workspace.</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"enterToSend\">Enter envía el mensaje</span><input type=\"checkbox\" id=\"set-enter-send\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoSearch\">Buscar en la web por defecto</span><input type=\"checkbox\" id=\"set-auto-search\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"showTimestamps\">Mostrar hora en los mensajes</span><input type=\"checkbox\" id=\"set-show-time\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"confirmDeleteChat\">Confirmar al borrar un chat</span><input type=\"checkbox\" id=\"set-confirm-del\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoRead\">Leer en voz alta las respuestas</span><input type=\"checkbox\" id=\"set-auto-read\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"autoReadHint\">Al terminar cada respuesta, el navegador la lee. También puedes pulsar el altavoz del compositor o «Escuchar» en cada mensaje.</p>\n        </div>\n\n        <div id=\"pane-customize\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabCustomize\">Personalizar</div>\n          <p class=\"settings-section-desc\" data-i18n=\"customizeDesc\">Instrucciones propias y tono de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"toneLabel\">Tono</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"auto\" data-i18n=\"toneAuto\">Auto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"direct\" data-i18n=\"toneDirect\">Directo</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"technical\" data-i18n=\"toneTechnical\">Técnico</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"concise\" data-i18n=\"toneConcise\">Conciso</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"systemPrompt\">Instrucción de sistema</label>\n            <textarea id=\"custom-system-prompt\" class=\"form-textarea\" placeholder=\"Cómo debe responder Personal AI…\"></textarea>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"useDocsContext\">Usar documentos como memoria</span><input type=\"checkbox\" id=\"set-use-docs\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"adaptOn\">Adaptarse a mí</span><input type=\"checkbox\" id=\"set-adapt\" checked></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"adaptHint\">Personal recuerda cómo te llamas, lo que le pides que no olvide y los temas que sueles tratar. Dile «recuerda que…» o «olvida eso».</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"adaptSummary\">Lo que sé de ti</label>\n            <div id=\"adapt-summary\" class=\"settings-hint\">—</div>\n          </div>\n          <div id=\"adapt-notes\" class=\"settings-card\"></div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"adaptAdd\">Añadir un hecho</label>\n            <div style=\"display:flex;gap:6px\">\n              <input type=\"text\" id=\"adapt-note-input\" class=\"form-input\" style=\"flex:1\" data-i18n=\"adaptAddPh\" data-i18n-attr=\"placeholder\" placeholder=\"Recuerda que…\">\n              <button type=\"button\" id=\"adapt-note-btn\" class=\"topbar-action-btn primary\" data-i18n=\"save\">Guardar</button>\n            </div>\n          </div>\n          <button type=\"button\" id=\"adapt-forget-btn\" class=\"topbar-action-btn\" data-i18n=\"adaptForget\">Olvidar mi perfil</button>\n        </div>\n\n        \n        <div id=\"pane-providers\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">供應商</div>\n          <p class=\"settings-section-desc\">連線到任何 OpenAI 相容的 <code>/chat/completions</code> 服務。金鑰只保存在這個瀏覽器，不會同步到 D1。</p>\n          <p class=\"settings-hint\" id=\"server-default-hint\">若部署設定了 <code>GROQ_API_KEY</code>，未新增供應商時會使用伺服器預設 Groq。</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\">使用中的供應商</label>\n            <div style=\"display:flex;gap:6px\">\n              <select id=\"provider-active-select\" class=\"form-input\" style=\"flex:1\"></select>\n              <button type=\"button\" id=\"provider-new-btn\" class=\"topbar-action-btn\">新增</button>\n            </div>\n          </div>\n          <div class=\"settings-card\">\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">名稱</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-name\" class=\"form-input\" type=\"text\" maxlength=\"60\" placeholder=\"Groq\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Base URL</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-base\" class=\"form-input\" type=\"url\" placeholder=\"https://api.groq.com/openai/v1\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">API Key</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-key\" class=\"form-input\" type=\"password\" placeholder=\"sk-…\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">模型</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-model\" class=\"form-input\" type=\"text\" list=\"provider-model-list\" placeholder=\"openai/gpt-oss-120b\" autocomplete=\"off\"><datalist id=\"provider-model-list\"></datalist></div>\n            </div>\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"provider-test-btn\" class=\"topbar-action-btn\">測試連線</button>\n              <button type=\"button\" id=\"provider-models-btn\" class=\"topbar-action-btn\">抓取模型</button>\n              <button type=\"button\" id=\"provider-save-btn\" class=\"topbar-action-btn primary\">儲存</button>\n              <button type=\"button\" id=\"provider-delete-btn\" class=\"topbar-action-btn btn-danger\">刪除</button>\n            </div>\n            <p id=\"provider-status\" class=\"settings-hint\" style=\"min-height:18px\"></p>\n          </div>\n          <p class=\"settings-hint\">只允許公開 HTTPS 位址。localhost、私有 IP、<code>.local</code>、<code>.internal</code> 會被拒絕。</p>\n        </div>\n\n        <div id=\"pane-plan\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabPlan\">Plan y facturación</div>\n          <p class=\"settings-section-desc\" data-i18n=\"planDesc\">Tu plan actual. El cobro con tarjeta llegará cuando se active Stripe.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"currentPlan\">Plan actual</label>\n            <div><span class=\"plan-badge\" id=\"plan-current-badge\">FREE</span></div>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"planHint\">Free: 50.000 tokens/día. Enterprise: sin tope (cuentas propias). BYOK: clave Groq en el navegador, sin cuota.</p>\n          <a class=\"topbar-action-btn\" href=\"mailto:owner@personal-ai.workers.dev?subject=Personal%20AI%20Enterprise\" style=\"text-decoration:none;width:fit-content\" data-i18n=\"planContact\">Contactar para Enterprise</a>\n        </div>\n\n        <div id=\"pane-usage\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabUsage\">Uso</div>\n          <p class=\"settings-section-desc\" data-i18n=\"usageDesc\">Consumo diario y cuándo se reinicia el cupo.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"usageUsed\">Tokens de hoy</label>\n            <div id=\"usage-used\" style=\"font-weight:650\">—</div>\n            <div class=\"usage-bar\"><span id=\"usage-bar-fill\"></span></div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"usageReset\">Reinicio disponible</label>\n            <div id=\"usage-reset\">00:00 UTC</div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"opsToday\">Actividad de hoy (servicio)</label>\n            <div class=\"ops-grid\">\n              <div class=\"ops-stat\"><b id=\"ops-chats\">—</b><span data-i18n=\"opsChats\">Chats</span></div>\n              <div class=\"ops-stat\"><b id=\"ops-images\">—</b><span data-i18n=\"opsImages\">Imágenes</span></div>\n              <div class=\"ops-stat\"><b id=\"ops-voice\">—</b><span data-i18n=\"opsVoice\">Voz</span></div>\n              <div class=\"ops-stat\"><b id=\"ops-ideas\">—</b><span data-i18n=\"opsIdeas\">Ideas</span></div>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"byok\">Clave Groq (BYOK)</label>\n            <input type=\"password\" id=\"user-groq-key\" class=\"form-input\" placeholder=\"gsk_…\" autocomplete=\"off\">\n            <span class=\"settings-hint\" data-i18n=\"byokHint\">Solo se guarda en este navegador.</span>\n          </div>\n        </div>\n\n        <div id=\"pane-ideas\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"ideas\">Qué quieres añadir</div>\n          <p class=\"settings-section-desc\" data-i18n=\"ideasDesc\">Cuéntale a Owner qué función, corrección o mejora quieres. Llega a owner@personal-ai.workers.dev y entra en el informe diario.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"ideaCat\">Tipo</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill active\" data-idea-cat=\"feat\" data-i18n=\"ideaCatFeat\">Función</button>\n              <button type=\"button\" class=\"choice-pill\" data-idea-cat=\"fix\" data-i18n=\"ideaCatFix\">Corrección</button>\n              <button type=\"button\" class=\"choice-pill\" data-idea-cat=\"other\" data-i18n=\"ideaCatOther\">Otro</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"ideas\">Idea</label>\n            <textarea id=\"idea-text\" class=\"form-input\" rows=\"5\" data-i18n=\"ideasPh\" data-i18n-attr=\"placeholder\" placeholder=\"Quiero que la IA…\"></textarea>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"ideasEmail\">Tu email (opcional)</label>\n            <input type=\"email\" id=\"idea-email\" class=\"form-input\" autocomplete=\"email\">\n          </div>\n          <input type=\"text\" class=\"hp-field\" id=\"idea-website\" name=\"website\" tabindex=\"-1\" autocomplete=\"off\" aria-hidden=\"true\">\n          <div class=\"settings-actions\">\n            <button type=\"button\" id=\"idea-send-btn\" class=\"topbar-action-btn primary\" data-i18n=\"ideasSend\">Enviar a Owner</button>\n          </div>\n          <p class=\"settings-hint\" id=\"idea-status\"></p>\n        </div>\n\n        <div id=\"pane-data\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabData\">Controles de datos</div>\n          <p class=\"settings-section-desc\" data-i18n=\"dataDesc\">Exportar, vaciar o no persistir el workspace en este navegador.</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"sessionOnly\">No guardar chats al cerrar</span><input type=\"checkbox\" id=\"set-ephemeral\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"sessionOnlyHint\">Si está activo, el historial no se escribe en localStorage.</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-actions\">\n              <button type=\"button\" id=\"btn-export-all\" class=\"topbar-action-btn\" data-i18n=\"exportAll\">Exportar chats y documentos</button>\n            </div>\n            <div class=\"settings-actions\">\n              <button type=\"button\" id=\"btn-clear-chats\" class=\"topbar-action-btn\" data-i18n=\"clearChats\">Vaciar historial de chats</button>\n            </div>\n            <div class=\"settings-actions\">\n              <button type=\"button\" id=\"btn-clear-docs\" class=\"topbar-action-btn\" data-i18n=\"empty\">Vaciar documentos</button>\n            </div>\n          </div>\n          <div class=\"settings-card\">\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"sync-now-btn\" class=\"topbar-action-btn\">立即同步</button>\n              <button type=\"button\" id=\"settings-logout-btn\" class=\"topbar-action-btn\">登出</button>\n            </div>\n            <p id=\"sync-status\" class=\"settings-hint\" style=\"min-height:18px\">同步尚未啟動</p>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <span id=\"settings-status\" class=\"settings-status\"></span>\n      <button class=\"settings-foot-btn\" data-modal=\"modal-settings\" type=\"button\" data-i18n=\"cancel\">Cancelar</button>\n      <button id=\"save-settings-btn\" class=\"settings-foot-btn primary\" type=\"button\" data-i18n=\"save\">Guardar</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-profile\">\n  <div class=\"modal-card\">\n    <div class=\"modal-header\"><div class=\"modal-title\">Cuenta</div><button class=\"modal-close-btn\" data-modal=\"modal-profile\" type=\"button\">✕</button></div>\n    <div class=\"modal-body\" id=\"profile-modal-body\"></div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-knowledge\">\n  <div class=\"modal-card\">\n    <div class=\"modal-header\"><div class=\"modal-title\">Nuevo documento</div><button class=\"modal-close-btn\" data-modal=\"modal-knowledge\" type=\"button\">✕</button></div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">Título</label>\n        <input type=\"text\" id=\"train-title\" class=\"form-input\" placeholder=\"Especificación, notas, reglas…\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Contenido</label>\n        <textarea id=\"train-content\" class=\"form-textarea\" placeholder=\"Pega el texto…\"></textarea>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;align-items:center\">\n        <input type=\"file\" id=\"import-rag-file\" style=\"display:none\" multiple accept=\".txt,.md,.json\">\n        <button type=\"button\" id=\"import-docs-btn\" class=\"topbar-action-btn\">Importar archivos</button>\n        <button id=\"save-knowledge-btn\" class=\"topbar-action-btn primary\" type=\"button\">Guardar</button>\n      </div>\n      <div>\n        <div style=\"display:flex;justify-content:space-between;margin-bottom:8px\">\n          <span class=\"form-label\">Activos (<span id=\"knowledge-count\">0</span>/20)</span>\n          <button id=\"clear-rag-btn\" type=\"button\" style=\"background:none;border:none;color:var(--red);font-size:0.72rem;cursor:pointer\">Vaciar</button>\n        </div>\n        <div id=\"knowledge-list-box\"></div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class=\"cmd-overlay\" id=\"cmd-overlay\" role=\"dialog\" aria-label=\"Paleta de comandos\">\n  <div class=\"cmd-box\">\n    <input id=\"cmd-input\" type=\"search\" autocomplete=\"off\" placeholder=\"Ir a un comando…\" data-i18n=\"palettePh\" data-i18n-attr=\"placeholder\">\n    <div id=\"cmd-list\"></div>\n  </div>\n</div>\n\n</div>";
+  if (_root) _root.innerHTML = "<div class=\"ta-app\">\n<div class=\"ta-app\">\n  <div class=\"sidebar-overlay\" id=\"sidebar-overlay\"></div>\n  <aside class=\"ta-sidebar\" id=\"sidebar\">\n    <div class=\"sb-head\">\n      <a href=\"/\" class=\"brand-logo\">\n        <img src=\"/avatar.png\" alt=\"\" class=\"brand-avatar\">\n        <span class=\"brand-title\">Personal AI</span>\n      </a>\n      <button id=\"sidebar-close-btn\" class=\"icon-btn\" title=\"關閉\" style=\"display:none\">✕</button>\n    </div>\n    <button id=\"new-chat-btn\" class=\"new-chat-btn\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6\"/><path d=\"M18.4 2.6a2 2 0 0 1 2.9 2.9L12 14.8 8 16l1.2-4z\"/></svg><span data-i18n=\"newChat\">Nueva conversación</span></span>\n      <kbd class=\"hint\">Ctrl K</kbd>\n    </button>\n    <button id=\"temp-chat-btn\" class=\"new-chat-btn ghost\" type=\"button\">\n      <span class=\"nc-main\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\" stroke-dasharray=\"3 3\"/><path d=\"M12 7v5l3 2\"/></svg><span data-i18n=\"tempChat\">Chat temporal</span></span>\n      <kbd class=\"hint\">Ctrl ⇧ N</kbd>\n    </button>\n    <div class=\"history-search-box\">\n      <input type=\"search\" id=\"history-search\" class=\"history-search-input\" placeholder=\"Buscar…\" autocomplete=\"off\" data-i18n=\"searchPh\" data-i18n-attr=\"placeholder\">\n    </div>\n    <div class=\"sb-tabs\">\n      <button type=\"button\" class=\"sb-tab active\" data-view=\"chats\" id=\"tab-chats\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/></svg><span data-i18n=\"chats\">Chats</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"projects\" id=\"tab-projects\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span data-i18n=\"projects\">Proyectos</span></button>\n      <button type=\"button\" class=\"sb-tab\" data-view=\"docs\" id=\"tab-docs\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 13h6M9 17h4\"/></svg><span data-i18n=\"docs\">Documentos</span></button>\n      \n      <button type=\"button\" class=\"sb-tab\" data-view=\"prompts\" id=\"tab-prompts\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M4 6h16M4 12h10M4 18h7\"/><path d=\"m17 15 3 3-3 3\"/></svg><span>Prompts</span></button>\n    </div>\n    <div class=\"history-list\" id=\"history-list\"></div>\n    <div class=\"sb-foot\">\n                  <button type=\"button\" id=\"open-settings-btn\" class=\"sb-link\" data-open-settings=\"pane-general\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg><span data-i18n=\"settings\">Ajustes</span></button>\n      \n      <div class=\"sb-account\">\n      <button type=\"button\" class=\"user-pill\" id=\"user-profile-pill\" data-open-settings=\"pane-account\">\n        <div style=\"display:flex;align-items:center;gap:8px;min-width:0\">\n          <div class=\"avatar-letter\" id=\"user-letter\">T</div>\n          <div style=\"min-width:0\">\n            <div class=\"user-info-name\" id=\"user-display-name\">Invitado</div>\n            <div class=\"user-info-tier\" id=\"user-display-tier\">50K tokens / día</div>\n          </div>\n        </div>\n      </button>\n      <div id=\"lang-select\" class=\"lang-picker\" aria-label=\"Language\"></div>\n      </div>\n    </div>\n  </aside>\n\n  <main class=\"ta-main\">\n    <header class=\"ta-topbar\">\n      <div class=\"topbar-left\">\n        <button id=\"sidebar-toggle-btn\" class=\"icon-btn menu-toggle-btn\" type=\"button\" title=\"選單\" aria-label=\"選單\">\n          <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><line x1=\"3\" y1=\"12\" x2=\"21\" y2=\"12\"/><line x1=\"3\" y1=\"6\" x2=\"21\" y2=\"6\"/><line x1=\"3\" y1=\"18\" x2=\"21\" y2=\"18\"/></svg>\n        </button>\n        <div class=\"model-picker\" id=\"model-picker\">\n          <button type=\"button\" class=\"model-picker-btn\" id=\"model-picker-btn\" aria-haspopup=\"listbox\" aria-expanded=\"false\">\n            <span class=\"model-picker-label\" id=\"model-picker-label\">GPT OSS 120B</span>\n            <svg class=\"model-picker-caret\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M6 9l6 6 6-6\"/></svg>\n          </button>\n          <div class=\"model-menu\" id=\"model-menu\" role=\"listbox\"></div>\n        </div>\n      </div>\n      <div class=\"topbar-right\">\n        <span id=\"temp-badge\" class=\"temp-badge\" data-i18n=\"tempOn\">Temporal</span>\n        <button id=\"cmd-open-btn\" class=\"topbar-icon-btn\" type=\"button\" title=\"Ctrl+P\" data-i18n=\"commandPalette\" data-i18n-attr=\"title\" aria-label=\"命令\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>\n        </button>\n        <button id=\"topbar-auth-btn\" class=\"topbar-action-btn primary\" type=\"button\" data-open-settings=\"pane-general\">\n          <span class=\"avatar-letter\" id=\"topbar-letter\" hidden>T</span>\n          <span id=\"topbar-auth-text\">設定</span>\n        </button>\n      </div>\n    </header>\n    <div class=\"setup-banner\" id=\"setup-banner\" role=\"status\" hidden></div>\n    <div class=\"ta-chat-scroll\" id=\"chat-scroll\">\n      <div class=\"ta-chat-wrap\" id=\"chat-container\"></div>\n    </div>\n    <footer class=\"ta-input-dock\">\n      <div class=\"capsule-box\">\n        <div id=\"attached-badge\" class=\"file-badge-preview\">\n          <img id=\"attached-thumb\" alt=\"\" hidden>\n          <span id=\"attached-kind\">Documento</span>\n          <span id=\"attached-name\">documento.txt</span>\n          <button id=\"remove-file-btn\" type=\"button\" style=\"background:none;border:none;color:var(--dim);cursor:pointer\">✕</button>\n        </div>\n        <textarea id=\"prompt-input\" class=\"prompt-textarea\" rows=\"1\" placeholder=\"Pregunta lo que quieras…\" data-i18n=\"askPh\" data-i18n-attr=\"placeholder\"></textarea>\n        <div class=\"dock-controls\">\n          <div class=\"dock-plus\" id=\"dock-plus\">\n            <button type=\"button\" class=\"dock-btn dock-plus-btn\" id=\"dock-plus-btn\" aria-haspopup=\"menu\" aria-expanded=\"false\" aria-controls=\"dock-plus-menu\" aria-label=\"更多選項\" title=\"更多選項\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></button>\n            <div class=\"dock-plus-menu\" id=\"dock-plus-menu\" role=\"menu\" hidden>\n              <button type=\"button\" role=\"menuitem\" class=\"dpm-item\" data-dpm=\"attach\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg><span class=\"dpm-label\">附加檔案</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"web\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/></svg><span class=\"dpm-label\">網頁搜尋</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n              <button type=\"button\" role=\"menuitemcheckbox\" aria-checked=\"false\" class=\"dpm-item\" data-dpm=\"image\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" class=\"sb-ico\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><circle cx=\"9\" cy=\"10\" r=\"2\"/><path d=\"m21 16-5-5-9 9\"/></svg><span class=\"dpm-label\">產生圖片</span><span class=\"dpm-check\" aria-hidden=\"true\">✓</span></button>\n                          </div>\n          </div>\n          <div class=\"control-pills\">\n            <button id=\"web-search-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"searchWeb\">Buscar</button>\n            <button id=\"image-gen-pill\" class=\"dock-pill\" type=\"button\" data-i18n=\"image\">Imagen</button>\n            <div class=\"length-segmented-pill\" style=\"display:none;\" title=\"長度\"><button class=\"length-opt-btn active\" data-len=\"normal\" id=\"len-btn-normal\" type=\"button\" data-i18n=\"normal\">Normal</button></div>\n          </div>\n          <div class=\"dock-action-buttons\">\n            <input type=\"file\" id=\"file-uploader\" style=\"display:none\" accept=\"image/jpeg,image/png,image/webp,image/gif,.txt,.md,.json,.js,.ts,.py,.csv,.log,.html,.css\">\n            <button id=\"attach-file-btn\" class=\"dock-btn\" type=\"button\" title=\"附加檔案\" aria-label=\"附加檔案\" data-i18n=\"attach\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48\"/></svg>\n            </button>\n            <button id=\"mic-btn\" class=\"dock-btn\" type=\"button\" title=\"語音輸入\" aria-label=\"語音輸入\" data-i18n=\"dictate\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"12\" rx=\"3\"/><path d=\"M5 11a7 7 0 0 0 14 0\"/><path d=\"M12 18v4\"/><path d=\"M8 22h8\"/></svg>\n            </button>\n            <button id=\"speak-last-btn\" class=\"dock-btn\" type=\"button\" title=\"朗讀回覆\" aria-label=\"朗讀回覆\" data-i18n=\"speakLast\" data-i18n-attr=\"title\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M11 5L6 9H3v6h3l5 4V5z\"/><path d=\"M15.5 8.5a5 5 0 0 1 0 7\"/><path d=\"M18.5 6a8.5 8.5 0 0 1 0 12\"/></svg>\n            </button>\n            <button id=\"send-btn\" class=\"send-submit-btn\" type=\"button\" title=\"送出\">\n              <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\"><path d=\"M12 19V5M5 12l7-7 7 7\"/></svg>\n            </button>\n          </div>\n        </div>\n      </div>\n      <p class=\"disclaimer\"><span data-i18n=\"disclaimer\">Personal AI puede equivocarse.</span></p>\n    </footer>\n  </main>\n\n  <aside class=\"art-panel\" id=\"art-panel\" aria-label=\"Artifact\">\n    <div class=\"art-head\">\n      <div class=\"art-head-top\">\n        <div class=\"art-title-wrap\">\n          <textarea class=\"art-title-input\" id=\"art-title\" maxlength=\"72\" rows=\"2\" placeholder=\"簡短標題（最多 72 字）\" aria-label=\"標題\">Artifact</textarea>\n          <div class=\"art-title-count\" id=\"art-title-count\">0/72</div>\n        </div>\n        <button type=\"button\" class=\"icon-btn\" id=\"art-close-btn\" title=\"關閉\" aria-label=\"關閉\">✕</button>\n      </div>\n      <div class=\"art-toolbar\">\n        <select id=\"art-format\" class=\"art-format\" title=\"格式\" aria-label=\"Artifact 格式\"></select>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-copy-btn\" data-art-i18n=\"copy\">Copiar</button>\n        <button type=\"button\" class=\"topbar-action-btn\" id=\"art-save-btn\">儲存</button>\n      </div>\n      <div class=\"art-viewbar\">\n        <div class=\"art-view\" role=\"tablist\" aria-label=\"檢視\">\n          <button type=\"button\" class=\"art-view-btn active\" role=\"tab\" aria-selected=\"true\" data-view=\"preview\" id=\"art-view-preview\" data-art-i18n=\"preview\">Vista previa</button>\n          <button type=\"button\" class=\"art-view-btn\" role=\"tab\" aria-selected=\"false\" data-view=\"code\" id=\"art-view-code\" data-art-i18n=\"code\">Código</button>\n        </div>\n        <select id=\"art-version\" class=\"art-format art-version\" aria-label=\"版本\" hidden></select>\n        <span class=\"art-viewbar-spacer\"></span>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-download-btn\" data-art-i18n-title=\"download\" title=\"下載\" aria-label=\"下載\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v11\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M5 20h14\"/></svg></button>\n        <button type=\"button\" class=\"icon-btn art-icon-btn\" id=\"art-fs-btn\" data-art-i18n-title=\"fullscreen\" title=\"全螢幕\" aria-label=\"全螢幕\" aria-pressed=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9V4h5\"/><path d=\"M20 9V4h-5\"/><path d=\"M4 15v5h5\"/><path d=\"M20 15v5h-5\"/></svg></button>\n      </div>\n      \n    </div>\n    <div class=\"art-extras\">\n      <button type=\"button\" class=\"art-extras-toggle\" id=\"art-extras-toggle\">來源、資源與小工具</button>\n      <div class=\"art-extras-body\" id=\"art-extras-body\" hidden>\n        <label for=\"art-sources\">自訂來源（每行一筆：標題 | https://…）</label>\n        <textarea id=\"art-sources\" placeholder=\"SEC 10-K | https://www.sec.gov/…\"></textarea>\n        <label for=\"art-resources\">資源（每行一筆）</label>\n        <textarea id=\"art-resources\" placeholder=\"Modelo Excel | https://…\"></textarea>\n        <label for=\"art-widgets\">Widgets (quote:MSFT · note:texto · https://…)</label>\n        <textarea id=\"art-widgets\" placeholder=\"quote:MSFT&#10;note:Riesgo: múltiplo elevado&#10;https://www.tradingview.com/symbols/MSFT/\"></textarea>\n      </div>\n    </div>\n    <div class=\"art-split\" id=\"art-split\">\n      <textarea class=\"art-editor\" id=\"art-editor\" spellcheck=\"false\" placeholder=\"在這裡編輯內容。\" aria-label=\"Artifact 編輯器\"></textarea>\n      <iframe class=\"art-preview\" id=\"art-preview\" hidden sandbox=\"allow-scripts allow-forms allow-modals allow-popups\" referrerpolicy=\"no-referrer\" title=\"Vista del artifact\"></iframe>\n    </div>\n  </aside>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-settings\">\n  <div class=\"modal-card settings-wide\">\n    <div class=\"modal-header\"><div class=\"modal-title\" data-i18n=\"settings\">Ajustes</div><button class=\"modal-close-btn\" data-modal=\"modal-settings\" type=\"button\" aria-label=\"關閉\" data-i18n=\"close\" data-i18n-attr=\"aria-label\">✕</button></div>\n    <div class=\"settings-layout\">\n      <nav class=\"settings-nav\" aria-label=\"設定\">\n        <div class=\"settings-nav-label\">應用程式</div>\n        <button type=\"button\" class=\"settings-nav-btn active\" data-pane=\"pane-general\" data-i18n=\"tabGeneral\">一般</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-providers\">供應商與模型</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-params\">模型參數</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-search\">搜尋與網頁</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-appearance\" data-i18n=\"tabAppearance\">外觀</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-behavior\" data-i18n=\"tabBehavior\">行為</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-customize\" data-i18n=\"tabCustomize\">個人化</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-memory\">記憶</button>\n        <div class=\"settings-nav-label\">資料</div>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-account\">密碼與登入</button>\n        <button type=\"button\" class=\"settings-nav-btn\" data-pane=\"pane-data\" data-i18n=\"tabData\">資料控制</button>\n      </nav>\n      <div class=\"settings-main\">\n        <div id=\"pane-general\" class=\"settings-pane active\">\n          <div class=\"settings-section-title\" data-i18n=\"tabGeneral\">General</div>\n          <p class=\"settings-section-desc\" data-i18n=\"generalDesc\">Idioma, modelo por defecto y longitud de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"language\">Idioma</label>\n            <div id=\"set-lang\" class=\"lang-picker open-down\"></div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultModel\">Modelo por defecto</label>\n            <select id=\"set-default-model\" class=\"form-input\"></select>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"setDefaultLength\">Longitud por defecto</label>\n            <div class=\"choice-row\" id=\"set-default-length\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"corto\" data-i18n=\"short\">Corto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"normal\" data-i18n=\"normal\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_len_mode\" data-value=\"extendido\" data-i18n=\"long\">Largo</button>\n            </div>\n          </div>\n          <p class=\"settings-hint\" id=\"app-version-hint\">Personal AI</p>\n        </div>\n\n        <div id=\"pane-account\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">密碼與登入</div>\n          <p class=\"settings-section-desc\">單一擁有者登入。在這裡變更密碼後，新密碼以 PBKDF2 雜湊存在 D1，取代 APP_PASSWORD。</p>\n          <div class=\"settings-card\">\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-cur-pass\">目前密碼</label>\n              <input type=\"password\" id=\"set-cur-pass\" class=\"form-input\" autocomplete=\"current-password\">\n            </div>\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-new-pass\">新密碼（至少 8 個字元）</label>\n              <input type=\"password\" id=\"set-new-pass\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"8\">\n            </div>\n            <div class=\"form-group\">\n              <label class=\"form-label\" for=\"set-new-pass2\">再輸入一次新密碼</label>\n              <input type=\"password\" id=\"set-new-pass2\" class=\"form-input\" autocomplete=\"new-password\" minlength=\"8\">\n            </div>\n            <div class=\"settings-actions\">\n              <button type=\"button\" id=\"change-pass-btn\" class=\"topbar-action-btn primary\">變更密碼</button>\n            </div>\n            <p id=\"pass-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\"></p>\n          </div>\n          <p class=\"settings-hint\">忘記新密碼時，可在 D1 主控台執行 <code>DELETE FROM settings WHERE k = 'auth.password'</code> 改回 APP_PASSWORD。已登入的其他裝置在工作階段到期前仍保持登入。</p>\n          <div class=\"settings-block-title\">工作階段</div>\n          <div class=\"settings-card\" style=\"padding:16px\">\n            <p class=\"settings-kv-sub\">登出這個瀏覽器。本機聊天紀錄會保留。</p>\n            <button type=\"button\" id=\"settings-logout-btn\" class=\"logout-big-btn\">登出</button>\n          </div>\n        </div>\n\n        <div id=\"pane-appearance\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabAppearance\">Apariencia</div>\n          <p class=\"settings-section-desc\" data-i18n=\"appearanceDesc\">Tema, tamaño de letra y densidad de la interfaz.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"appearanceTheme\">Tema</label>\n            <div class=\"theme-grid\">\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dark\"><span class=\"theme-swatch\" data-swatch=\"dark\"></span><span data-i18n=\"themeDark\">Oscuro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"gray\"><span class=\"theme-swatch\" data-swatch=\"gray\"></span><span data-i18n=\"themeGray\">Gris</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"dim\"><span class=\"theme-swatch\" data-swatch=\"dim\"></span><span data-i18n=\"themeDim\">Carbón</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"navy\"><span class=\"theme-swatch\" data-swatch=\"navy\"></span><span data-i18n=\"themeNavy\">Marino</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"light\"><span class=\"theme-swatch\" data-swatch=\"light\"></span><span data-i18n=\"themeLight\">Claro</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"paper\"><span class=\"theme-swatch\" data-swatch=\"paper\"></span><span data-i18n=\"themePaper\">Papel</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"hacker\"><span class=\"theme-swatch\" data-swatch=\"hacker\"></span><span>Hacker</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"cyberpunk\"><span class=\"theme-swatch\" data-swatch=\"cyberpunk\"></span><span>Cyberpunk</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"sunset\"><span class=\"theme-swatch\" data-swatch=\"sunset\"></span><span>Sunset</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"ocean\"><span class=\"theme-swatch\" data-swatch=\"ocean\"></span><span>Ocean</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"forest\"><span class=\"theme-swatch\" data-swatch=\"forest\"></span><span>Forest</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"rose\"><span class=\"theme-swatch\" data-swatch=\"rose\"></span><span>Rose</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"lavender\"><span class=\"theme-swatch\" data-swatch=\"lavender\"></span><span>Lavender</span></button>\n              <button type=\"button\" class=\"theme-card\" data-pref=\"ta_theme\" data-value=\"system\"><span class=\"theme-swatch\" data-swatch=\"system\"></span><span data-i18n=\"themeSystem\">Sistema</span></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"accentLabel\">Acento</label>\n            <div class=\"accent-row\">\n              <button type=\"button\" class=\"accent-dot accent-auto\" data-pref=\"ta_accent\" data-value=\"auto\" title=\"Neutro\" aria-label=\"Neutro\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#38bdf8\" style=\"background:#38bdf8\" title=\"Cielo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a1a1aa\" style=\"background:#a1a1aa\" title=\"Gris\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#34d399\" style=\"background:#34d399\" title=\"Menta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#2dd4bf\" style=\"background:#2dd4bf\" title=\"Teal\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#818cf8\" style=\"background:#818cf8\" title=\"Índigo\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#a78bfa\" style=\"background:#a78bfa\" title=\"Violeta\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#f59e0b\" style=\"background:#f59e0b\" title=\"Ámbar\"></button>\n              <button type=\"button\" class=\"accent-dot\" data-pref=\"ta_accent\" data-value=\"#fb7185\" style=\"background:#fb7185\" title=\"Rosa\"></button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"fontSize\">Tamaño de letra</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"sm\" data-i18n=\"fontSm\">Compacto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"md\" data-i18n=\"fontMd\">Normal</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_font\" data-value=\"lg\" data-i18n=\"fontLg\">Grande</button>\n            </div>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"compactSidebar\">Barra lateral compacta</span><input type=\"checkbox\" id=\"set-compact-sb\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"reduceMotion\">Reducir movimiento</span><input type=\"checkbox\" id=\"set-reduce-motion\"></label>\n          </div>\n        </div>\n\n        <div id=\"pane-behavior\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabBehavior\">Comportamiento</div>\n          <p class=\"settings-section-desc\" data-i18n=\"behaviorDesc\">Cómo envía, busca y confirma el workspace.</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"enterToSend\">Enter envía el mensaje</span><input type=\"checkbox\" id=\"set-enter-send\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoSearch\">Buscar en la web por defecto</span><input type=\"checkbox\" id=\"set-auto-search\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"showTimestamps\">Mostrar hora en los mensajes</span><input type=\"checkbox\" id=\"set-show-time\"></label>\n            <label class=\"toggle-row\"><span data-i18n=\"confirmDeleteChat\">Confirmar al borrar un chat</span><input type=\"checkbox\" id=\"set-confirm-del\" checked></label>\n            <label class=\"toggle-row\"><span data-i18n=\"autoRead\">Leer en voz alta las respuestas</span><input type=\"checkbox\" id=\"set-auto-read\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"autoReadHint\">Al terminar cada respuesta, el navegador la lee. También puedes pulsar el altavoz del compositor o «Escuchar» en cada mensaje.</p>\n        </div>\n\n        <div id=\"pane-customize\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabCustomize\">Personalizar</div>\n          <p class=\"settings-section-desc\" data-i18n=\"customizeDesc\">Instrucciones propias y tono de respuesta.</p>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"toneLabel\">Tono</label>\n            <div class=\"choice-row\">\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"auto\" data-i18n=\"toneAuto\">Auto</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"direct\" data-i18n=\"toneDirect\">Directo</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"technical\" data-i18n=\"toneTechnical\">Técnico</button>\n              <button type=\"button\" class=\"choice-pill\" data-pref=\"ta_tone\" data-value=\"concise\" data-i18n=\"toneConcise\">Conciso</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" data-i18n=\"systemPrompt\">Instrucción de sistema</label>\n            <textarea id=\"custom-system-prompt\" class=\"form-textarea\" placeholder=\"Cómo debe responder Personal AI…\"></textarea>\n          </div>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"useDocsContext\">Usar documentos como memoria</span><input type=\"checkbox\" id=\"set-use-docs\" checked></label>\n          </div>\n          <p class=\"settings-hint\">語氣與自訂指示存在 D1，所有裝置共用。</p>\n        </div>\n\n        <div id=\"pane-memory\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">長期記憶</div>\n          <p class=\"settings-section-desc\">模型可用 remember / forget / recall 工具管理記憶；你也可以在這裡新增、編輯或刪除。全域記憶會帶入每個對話，專案記憶只在該專案使用。</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span>啟用長期記憶</span><input type=\"checkbox\" id=\"set-memory-enabled\" checked></label>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" for=\"memory-new-input\">新增一則記憶</label>\n            <div style=\"display:flex;gap:6px\">\n              <input type=\"text\" id=\"memory-new-input\" class=\"form-input\" style=\"flex:1\" maxlength=\"500\" placeholder=\"例如：偏好用 TypeScript 回答程式問題\">\n              <select id=\"memory-new-scope\" class=\"form-input\" style=\"max-width:160px\"><option value=\"global\">全域</option></select>\n              <button type=\"button\" id=\"memory-add-btn\" class=\"topbar-action-btn primary\">新增</button>\n            </div>\n          </div>\n          <div class=\"form-group\">\n            <label class=\"form-label\" for=\"memory-filter\">顯示</label>\n            <select id=\"memory-filter\" class=\"form-input\"><option value=\"\">全部</option><option value=\"global\">全域</option></select>\n          </div>\n          <div id=\"memory-list\" class=\"settings-card memory-list\"></div>\n          <p id=\"memory-status\" class=\"settings-hint\" role=\"status\"></p>\n        </div>\n\n        <div id=\"pane-params\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">模型參數</div>\n          <p class=\"settings-section-desc\">全域預設值，專案可以個別覆寫。留空代表使用供應商預設。供應商不支援某個參數時，系統會自動移除該參數重試一次。</p>\n          <div class=\"settings-card params-grid\">\n            <label class=\"form-label\" for=\"param-temperature\">temperature（0–2）</label>\n            <input type=\"number\" id=\"param-temperature\" class=\"form-input\" min=\"0\" max=\"2\" step=\"0.05\" placeholder=\"供應商預設\">\n            <label class=\"form-label\" for=\"param-top-p\">top_p（0–1）</label>\n            <input type=\"number\" id=\"param-top-p\" class=\"form-input\" min=\"0\" max=\"1\" step=\"0.05\" placeholder=\"供應商預設\">\n            <label class=\"form-label\" for=\"param-max-tokens\">max_tokens</label>\n            <input type=\"number\" id=\"param-max-tokens\" class=\"form-input\" min=\"256\" max=\"65536\" step=\"256\" placeholder=\"8192\">\n            <label class=\"form-label\" for=\"param-reasoning\">reasoning_effort</label>\n            <select id=\"param-reasoning\" class=\"form-input\"><option value=\"\">不指定</option><option value=\"none\">none</option><option value=\"minimal\">minimal</option><option value=\"low\">low</option><option value=\"medium\">medium</option><option value=\"high\">high</option></select>\n            <label class=\"form-label\" for=\"param-max-steps\">最多代理步數（1–20）</label>\n            <input type=\"number\" id=\"param-max-steps\" class=\"form-input\" min=\"1\" max=\"20\" step=\"1\" placeholder=\"8\">\n          </div>\n          <div class=\"settings-actions\"><button type=\"button\" id=\"params-save-btn\" class=\"topbar-action-btn primary\">儲存參數</button></div>\n          <p id=\"params-status\" class=\"settings-hint\" role=\"status\"></p>\n          <p class=\"settings-hint\">每次請求最多 40 次外部連線（每次模型呼叫算 1 次，工具讀網頁時每次轉址都算）與約 40 次資料庫查詢；用完時模型會被要求直接作答。</p>\n        </div>\n\n        <div id=\"pane-search\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">搜尋與網頁</div>\n          <p class=\"settings-section-desc\">金鑰以 AES-GCM 加密存在 D1，畫面上只顯示遮罩後的提示。</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Tavily API Key</div>\n              <div class=\"settings-kv-control\" style=\"display:flex;gap:6px\">\n                <input id=\"secret-tavily\" class=\"form-input\" type=\"password\" autocomplete=\"off\" placeholder=\"tvly-…\" style=\"flex:1\">\n                <button type=\"button\" class=\"topbar-action-btn\" data-secret-save=\"search:tavily\" data-secret-input=\"secret-tavily\">儲存</button>\n                <button type=\"button\" class=\"topbar-action-btn btn-danger\" data-secret-del=\"search:tavily\">刪除</button>\n              </div>\n            </div>\n            <p class=\"settings-hint\" id=\"secret-tavily-status\"></p>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Jina API Key</div>\n              <div class=\"settings-kv-control\" style=\"display:flex;gap:6px\">\n                <input id=\"secret-jina\" class=\"form-input\" type=\"password\" autocomplete=\"off\" placeholder=\"jina_…\" style=\"flex:1\">\n                <button type=\"button\" class=\"topbar-action-btn\" data-secret-save=\"search:jina\" data-secret-input=\"secret-jina\">儲存</button>\n                <button type=\"button\" class=\"topbar-action-btn btn-danger\" data-secret-del=\"search:jina\">刪除</button>\n              </div>\n            </div>\n            <p class=\"settings-hint\" id=\"secret-jina-status\"></p>\n          </div>\n          <p class=\"settings-hint\" id=\"search-backend-hint\">設定 Tavily 金鑰後，模型才能使用 web_search。fetch_url（讀取網頁）不需要金鑰。</p>\n        </div>\n\n        <div id=\"pane-providers\" class=\"settings-pane\">\n          <div class=\"settings-section-title\">供應商與模型</div>\n          <p class=\"settings-section-desc\">連線到任何 OpenAI 相容的 <code>/chat/completions</code> 服務。API Key 加密後存在 D1，所有裝置共用，畫面上只顯示遮罩提示。</p>\n          <div id=\"provider-list\" class=\"provider-list\"></div>\n          <div class=\"settings-card\" id=\"provider-form\">\n            <div class=\"settings-block-title\" id=\"provider-form-title\" style=\"margin-top:0\">新增供應商</div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">名稱</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-name\" class=\"form-input\" type=\"text\" maxlength=\"60\" placeholder=\"例如 Groq、OpenRouter\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">Base URL</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-base\" class=\"form-input\" type=\"url\" placeholder=\"https://api.groq.com/openai/v1\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">API Key</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-key\" class=\"form-input\" type=\"password\" placeholder=\"sk-…\" autocomplete=\"off\"></div>\n            </div>\n            <div class=\"settings-kv\">\n              <div class=\"settings-kv-label\">預設模型</div>\n              <div class=\"settings-kv-control\"><input id=\"provider-model\" class=\"form-input\" type=\"text\" list=\"provider-model-list\" placeholder=\"先按「抓取模型」或直接輸入\" autocomplete=\"off\"><datalist id=\"provider-model-list\"></datalist></div>\n            </div>\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"provider-models-btn\" class=\"topbar-action-btn\">測試連線並抓取模型</button>\n              <button type=\"button\" id=\"provider-save-btn\" class=\"topbar-action-btn primary\">儲存</button>\n              <button type=\"button\" id=\"provider-new-btn\" class=\"topbar-action-btn\">新增另一個</button>\n              <button type=\"button\" id=\"provider-delete-btn\" class=\"topbar-action-btn btn-danger\" hidden>刪除</button>\n            </div>\n            <p id=\"provider-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\"></p>\n          </div>\n          <p class=\"settings-hint\">只允許公開 HTTPS 位址；localhost、私有 IP、<code>.local</code>、<code>.internal</code> 會被拒絕。若出現「請重新輸入」，代表 AUTH_SECRET 已更換、舊金鑰無法解密。</p>\n        </div>\n\n        <div id=\"pane-data\" class=\"settings-pane\">\n          <div class=\"settings-section-title\" data-i18n=\"tabData\">資料控制</div>\n          <p class=\"settings-section-desc\">一般對話存在這個瀏覽器，並透過 D1 在裝置間同步；設定、金鑰、記憶與專案直接存在 D1。</p>\n          <div class=\"settings-card\">\n            <label class=\"toggle-row\"><span data-i18n=\"sessionOnly\">No guardar chats al cerrar</span><input type=\"checkbox\" id=\"set-ephemeral\"></label>\n          </div>\n          <p class=\"settings-hint\" data-i18n=\"sessionOnlyHint\">Si está activo, el historial no se escribe en localStorage.</p>\n          <div class=\"settings-card\">\n            <div class=\"settings-actions\" style=\"display:flex;gap:6px;flex-wrap:wrap\">\n              <button type=\"button\" id=\"btn-clear-chats\" class=\"topbar-action-btn\" data-i18n=\"clearChats\">Vaciar historial de chats</button>\n              <button type=\"button\" id=\"btn-clear-docs\" class=\"topbar-action-btn\" data-i18n=\"empty\">Vaciar documentos</button>\n              <button type=\"button\" id=\"sync-now-btn\" class=\"topbar-action-btn\">立即同步</button>\n            </div>\n            <p id=\"sync-status\" class=\"settings-hint\" style=\"min-height:18px\" role=\"status\">同步尚未啟動</p>\n          </div>\n          <div class=\"settings-block-title\">危險區域</div>\n          <div class=\"settings-card danger-card\">\n            <p class=\"settings-kv-sub\">清除所有資料：刪除 D1 中的對話同步、設定、加密金鑰、供應商、記憶與專案，以及這個瀏覽器的本機資料。變更過的登入密碼會保留。此動作無法復原。</p>\n            <div class=\"settings-actions\"><button type=\"button\" id=\"btn-clear-all\" class=\"topbar-action-btn btn-danger\">清除所有資料…</button></div>\n            <p id=\"clear-all-status\" class=\"settings-hint\" role=\"status\"></p>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <span id=\"settings-status\" class=\"settings-status\"></span>\n      <button class=\"settings-foot-btn\" data-modal=\"modal-settings\" type=\"button\" data-i18n=\"cancel\">Cancelar</button>\n      <button id=\"save-settings-btn\" class=\"settings-foot-btn primary\" type=\"button\" data-i18n=\"save\">Guardar</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-knowledge\">\n  <div class=\"modal-card\">\n    <div class=\"modal-header\"><div class=\"modal-title\">新增文件</div><button class=\"modal-close-btn\" data-modal=\"modal-knowledge\" type=\"button\">✕</button></div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">標題</label>\n        <input type=\"text\" id=\"train-title\" class=\"form-input\" placeholder=\"規格、筆記、規則…\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">內容</label>\n        <textarea id=\"train-content\" class=\"form-textarea\" placeholder=\"貼上文字…\"></textarea>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;align-items:center\">\n        <input type=\"file\" id=\"import-rag-file\" style=\"display:none\" multiple accept=\".txt,.md,.json\">\n        <button type=\"button\" id=\"import-docs-btn\" class=\"topbar-action-btn\">匯入檔案</button>\n        <button id=\"save-knowledge-btn\" class=\"topbar-action-btn primary\" type=\"button\">儲存</button>\n      </div>\n      <div>\n        <div style=\"display:flex;justify-content:space-between;margin-bottom:8px\">\n          <span class=\"form-label\">已啟用（<span id=\"knowledge-count\">0</span>/20）</span>\n          <button id=\"clear-rag-btn\" type=\"button\" style=\"background:none;border:none;color:var(--red);font-size:0.72rem;cursor:pointer\">清空</button>\n        </div>\n        <div id=\"knowledge-list-box\"></div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class=\"cmd-overlay\" id=\"cmd-overlay\" role=\"dialog\" aria-label=\"命令面板\">\n  <div class=\"cmd-box\">\n    <input id=\"cmd-input\" type=\"search\" autocomplete=\"off\" placeholder=\"Ir a un comando…\" data-i18n=\"palettePh\" data-i18n-attr=\"placeholder\">\n    <div id=\"cmd-list\"></div>\n  </div>\n</div>\n\n</div>";
 
 
   var currentChatId = Date.now().toString();
@@ -18,42 +18,12 @@
   var attachedFile = null;
   var currentUser = { name: 'Owner' };
   var authToken = 'cookie';
-  var serverDefaultProvider = null;
-  var serverDefaultModel = '';
-  (function consumeSocialCallback() {
-    try {
-      var params = new URLSearchParams(location.search);
-      var state = params.get('state') || '';
-      if (params.get('auth') !== 'x_callback' && state.indexOf('x_oauth_') !== 0) return;
-      var code = params.get('code');
-      history.replaceState({}, document.title, '/');
-      if (!code) return;
-      fetch('/api/auth/x', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: code, redirectUri: location.origin + '/?auth=x_callback' })
-      }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
-        .then(function (res) {
-          if (!res.ok || !res.d.token) return;
-          localStorage.setItem('personal_ai_token', res.d.token);
-          localStorage.setItem('personal_ai_user', JSON.stringify(res.d.user));
-          location.reload();
-        }).catch(function () {});
-    } catch (e) {}
-  })();
   var knowledge = [];
   try {
     var rawK = localStorage.getItem('ta_knowledge');
     if (rawK) knowledge = JSON.parse(rawK);
     if (!Array.isArray(knowledge)) knowledge = [];
   } catch(e) { knowledge = []; }
-  var customProviders = [];
-  try {
-    var rawC = localStorage.getItem('ta_providers');
-    if (rawC) customProviders = JSON.parse(rawC);
-    if (!Array.isArray(customProviders)) customProviders = [];
-  } catch(e) { customProviders = []; }
-
   var documents = [];
   try {
     var rawD = localStorage.getItem('ta_documents');
@@ -62,7 +32,7 @@
   } catch(e) { documents = []; }
   if (!documents.length && knowledge.length) {
     documents = knowledge.map(function(k, i) {
-      return { id: 'doc_mig_' + i, title: k.title || 'Nota', content: k.content || '', type: 'note', created: Date.now(), projectId: null };
+      return { id: 'doc_mig_' + i, title: k.title || '筆記', content: k.content || '', type: 'note', created: Date.now(), projectId: null };
     });
   }
 
@@ -78,48 +48,137 @@
     if (savedProj && projects.some(function(p) { return p && p.id === savedProj; })) currentProjectId = savedProj;
   } catch(eAp) {}
   var sidebarView = 'chats';
-  var publishedArtifacts = [];
   var abortCtl = null;
-  var selectedModel = localStorage.getItem('ta_model') || 'openai/gpt-oss-120b';
-  if (selectedModel === 'qwen/qwen3.6-27b' || selectedModel === 'qwen/qwen3.6') {
-    selectedModel = 'qwen/qwen3.8-27b';
-    try { localStorage.setItem('ta_model', selectedModel); } catch(e) {}
-  }
-  var MODELS = [
-    { id: 'openai/gpt-oss-120b', name: 'GPT OSS 120B', desc: 'm120' },
-    { id: 'qwen/qwen3.8-27b', name: 'Qwen 3.8 27B', desc: 'm27' },
-    { id: 'openai/gpt-oss-20b', name: 'GPT OSS 20B', desc: 'm20' }
-  ];
-  var PROVIDERS_KEY = 'ta_providers_v1';
-  var PROVIDER_ACTIVE_KEY = 'ta_provider_active';
-  function readProviders() {
-    try {
-      var list = JSON.parse(localStorage.getItem(PROVIDERS_KEY) || '[]');
-      return Array.isArray(list) ? list.filter(function(p) { return p && p.id && p.baseUrl; }) : [];
-    } catch(e) { return []; }
-  }
-  function writeProviders(list) {
-    try { localStorage.setItem(PROVIDERS_KEY, JSON.stringify(list)); } catch(e) {}
+  // ---- Server data layer (D1): providers, models, settings, memory -------------
+  // Everything here is the source of truth in D1. API keys never come back to
+  // the browser; only masked previews do.
+  var server = { loaded: false, d1: null, settings: null, secrets: {}, providers: [], memories: [] };
+  var selectedProviderId = '';
+  var selectedModel = '';
+  var MODELS = [];
+  function apiJson(path, opts) {
+    opts = opts || {};
+    var init = { method: opts.method || 'GET', credentials: 'same-origin', headers: {} };
+    if (opts.body !== undefined) { init.headers['Content-Type'] = 'application/json'; init.body = JSON.stringify(opts.body); }
+    if (opts.signal) init.signal = opts.signal;
+    return fetch(path, init).then(function(r) {
+      if (r.status === 401) { location.href = '/login'; throw new Error('請先登入'); }
+      return r.json().catch(function() { return {}; }).then(function(d) {
+        if (!r.ok || (d && d.ok === false)) {
+          var e = new Error((d && d.error) || ('HTTP ' + r.status));
+          e.code = d && d.code; e.status = r.status;
+          throw e;
+        }
+        return d;
+      });
+    });
   }
   function providerById(id) {
-    var list = readProviders();
-    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    for (var i = 0; i < server.providers.length; i++) if (server.providers[i].id === id) return server.providers[i];
     return null;
   }
   function activeProvider() {
-    var list = readProviders();
-    if (!list.length) return null;
-    var id = localStorage.getItem(PROVIDER_ACTIVE_KEY) || '';
-    return providerById(id) || list[0];
+    return providerById(selectedProviderId) || server.providers[0] || null;
   }
-  function ensureModel(id) {
-    if (!id) return;
-    for (var i = 0; i < MODELS.length; i++) if (MODELS[i].id === id) return;
-    MODELS.push({ id: id, name: id, desc: '' });
+  function modelKey(pid, model) { return pid + '\u0001' + model; }
+  function rebuildModels() {
+    MODELS = [];
+    var seen = {};
+    function add(p, m, desc) {
+      if (!m) return;
+      var key = modelKey(p.id, m);
+      if (seen[key]) return;
+      seen[key] = true;
+      MODELS.push({ id: key, providerId: p.id, model: m, name: m, desc: desc || p.name });
+    }
+    var active = activeProvider();
+    if (active) {
+      add(active, selectedModel, active.name);
+      add(active, active.default_model, active.name);
+      (active.models || []).slice(0, 80).forEach(function(m) { add(active, m, active.name); });
+    }
+    server.providers.forEach(function(p) { if (!active || p.id !== active.id) add(p, p.default_model || (p.models || [])[0], p.name); });
   }
+  function applyActiveFromSettings() {
+    var act = (server.settings && server.settings.active) || {};
+    var p = providerById(act.provider_id) || server.providers[0] || null;
+    selectedProviderId = p ? p.id : '';
+    selectedModel = p ? ((act.provider_id === p.id && act.model) || p.default_model || (p.models || [])[0] || '') : '';
+    rebuildModels();
+    renderModelPicker();
+    updateNoProviderBanner();
+  }
+  function updateNoProviderBanner() {
+    var box = document.getElementById('setup-banner');
+    if (!box) return;
+    var msg = '';
+    if (server.d1 && !server.d1.ok) msg = '資料庫未就緒：' + (server.d1.error || 'D1 未綁定') + '。請依 README 綁定 D1（binding: DB）後重新部署。';
+    else if (server.loaded && !server.providers.length) msg = '尚未設定模型供應商。';
+    box.hidden = !msg;
+    if (!msg) { box.innerHTML = ''; return; }
+    box.innerHTML = '<span>' + escapeHtml(msg) + '</span>' + (server.d1 && !server.d1.ok ? '' : ' <button type="button" class="topbar-action-btn primary" data-open-settings="pane-providers">前往設定</button>');
+  }
+  function persistActive() {
+    if (!server.loaded) return Promise.resolve();
+    return apiJson('/api/settings', { method: 'PUT', body: { active: { provider_id: selectedProviderId, model: selectedModel } } })
+      .then(function(d) { server.settings = d.settings; })
+      .catch(function(e) { console.warn('save active model failed', e); });
+  }
+  function loadServerState() {
+    return Promise.all([apiJson('/api/settings'), apiJson('/api/providers')]).then(function(res) {
+      server.settings = res[0].settings;
+      server.secrets = res[0].secrets || {};
+      server.providers = res[1].providers || [];
+      server.loaded = true;
+      applyActiveFromSettings();
+      renderProviderList();
+      if (window.PAI_onServerState) try { window.PAI_onServerState(); } catch (e) {}
+      return migrateLocalData();
+    }).catch(function(e) {
+      setProviderStatus(e.message || '讀取設定失敗', true);
+      updateNoProviderBanner();
+    });
+  }
+  // One-time move of data the old version kept in this browser into D1.
+  function migrateLocalData() {
+    var jobs = [];
+    var oldProviders = [];
+    try { oldProviders = JSON.parse(localStorage.getItem('ta_providers_v1') || '[]') || []; } catch (e) {}
+    if (Array.isArray(oldProviders) && oldProviders.length) {
+      oldProviders.filter(function(p) { return p && p.baseUrl && p.apiKey; }).slice(0, 10).forEach(function(p) {
+        var dup = server.providers.some(function(sp) { return sp.base_url === String(p.baseUrl).replace(/\/+$/, ''); });
+        if (dup) return;
+        jobs.push(apiJson('/api/providers', { method: 'POST', body: { name: p.name || '供應商', base_url: p.baseUrl, api_key: p.apiKey, default_model: p.model || '' } }).catch(function() {}));
+      });
+    }
+    var profile = null;
+    try { profile = JSON.parse(localStorage.getItem('ta_profile') || 'null'); } catch (e) {}
+    var notes = profile && Array.isArray(profile.notes) ? profile.notes.map(function(n) { return n && (n.fact || n.text); }).filter(Boolean) : [];
+    if (notes.length) jobs.push(apiJson('/api/memory', { method: 'POST', body: { items: notes.slice(-20).map(function(n) { return { scope: 'global', content: String(n).slice(0, 500) }; }) } }).catch(function() {}));
+    var oldPrompt = localStorage.getItem('ta_custom_prompt') || '';
+    var oldTone = localStorage.getItem('ta_tone') || '';
+    var prefs = (server.settings && server.settings.prefs) || {};
+    if ((oldPrompt || oldTone) && !prefs.custom_prompt && !prefs.tone) {
+      jobs.push(apiJson('/api/settings', { method: 'PUT', body: { prefs: { custom_prompt: oldPrompt, tone: oldTone } } }).then(function(d) { server.settings = d.settings; }).catch(function() {}));
+    }
+    if (!jobs.length) return Promise.resolve();
+    return Promise.all(jobs).then(function() {
+      try {
+        localStorage.removeItem('ta_providers_v1');
+        localStorage.removeItem('ta_provider_active');
+        localStorage.removeItem('ta_profile');
+        localStorage.removeItem('ta_custom_prompt');
+        localStorage.removeItem('ta_tone');
+      } catch (e) {}
+      return apiJson('/api/providers').then(function(d) { server.providers = d.providers || []; applyActiveFromSettings(); renderProviderList(); });
+    });
+  }
+
+  // ---- Provider settings pane ----
+  var editingProviderId = '';
   function providerFormValues() {
     var get = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
-    return { name: get('provider-name'), baseUrl: get('provider-base'), apiKey: get('provider-key'), model: get('provider-model') };
+    return { name: get('provider-name'), base_url: get('provider-base'), api_key: get('provider-key'), default_model: get('provider-model') };
   }
   function setProviderStatus(text, bad) {
     var el = document.getElementById('provider-status');
@@ -127,98 +186,136 @@
     el.textContent = text || '';
     el.style.color = bad ? 'var(--red)' : 'var(--green)';
   }
+  function fillModelDatalist(models) {
+    var list = document.getElementById('provider-model-list');
+    if (!list) return;
+    list.innerHTML = '';
+    (models || []).slice(0, 500).forEach(function(m) { var o = document.createElement('option'); o.value = m; list.appendChild(o); });
+  }
   function loadProviderForm(id) {
     var p = id ? providerById(id) : null;
+    editingProviderId = p ? p.id : '';
     var set = function(elId, value) { var el = document.getElementById(elId); if (el) el.value = value || ''; };
     set('provider-name', p ? p.name : '');
-    set('provider-base', p ? p.baseUrl : '');
-    set('provider-key', p ? p.apiKey : '');
-    set('provider-model', p ? p.model : '');
-    setProviderStatus(p ? ('使用中：' + (p.name || p.baseUrl)) : '尚未新增供應商', false);
+    set('provider-base', p ? p.base_url : '');
+    set('provider-key', '');
+    set('provider-model', p ? p.default_model : '');
+    var keyEl = document.getElementById('provider-key');
+    if (keyEl) keyEl.placeholder = p && p.key && p.key.set ? ('已儲存 ' + p.key.preview + '（留空保留）') : 'sk-…';
+    fillModelDatalist(p ? p.models : []);
+    var title = document.getElementById('provider-form-title');
+    if (title) title.textContent = p ? ('編輯：' + p.name) : '新增供應商';
+    var del = document.getElementById('provider-delete-btn');
+    if (del) del.hidden = !p;
+    setProviderStatus('', false);
   }
-  function refreshProviderSelect() {
-    var sel = document.getElementById('provider-active-select');
-    if (!sel) return;
-    var list = readProviders();
-    var active = localStorage.getItem(PROVIDER_ACTIVE_KEY) || (list[0] && list[0].id) || '';
-    sel.innerHTML = list.map(function(p) {
-      return '<option value="' + escapeHtml(p.id) + '">' + escapeHtml(p.name || p.baseUrl) + '</option>';
-    }).join('') + '<option value="__new">＋ 新增供應商</option>';
-    sel.value = list.some(function(p) { return p.id === active; }) ? active : (list[0] ? list[0].id : '__new');
-    loadProviderForm(sel.value === '__new' ? '' : sel.value);
+  function renderProviderList() {
+    var box = document.getElementById('provider-list');
+    if (!box) return;
+    box.innerHTML = '';
+    if (!server.providers.length) {
+      var empty = document.createElement('p');
+      empty.className = 'settings-hint';
+      empty.textContent = '尚未新增供應商。新增後即可開始對話。';
+      box.appendChild(empty);
+    }
+    server.providers.forEach(function(p) {
+      var row = document.createElement('div');
+      row.className = 'provider-row' + (p.id === selectedProviderId ? ' active' : '') + (p.id === editingProviderId ? ' editing' : '');
+      var main = document.createElement('button');
+      main.type = 'button';
+      main.className = 'provider-row-main';
+      var name = document.createElement('strong'); name.textContent = p.name;
+      var meta = document.createElement('span'); meta.className = 'settings-hint';
+      meta.textContent = p.base_url + ' · ' + (p.default_model || '未選模型') + ' · ' + (p.key && p.key.set ? ('金鑰 ' + p.key.preview) : '未設定金鑰');
+      main.appendChild(name); main.appendChild(meta);
+      main.onclick = function() { loadProviderForm(p.id); renderProviderList(); };
+      var use = document.createElement('button');
+      use.type = 'button';
+      use.className = 'topbar-action-btn' + (p.id === selectedProviderId ? ' primary' : '');
+      use.textContent = p.id === selectedProviderId ? '使用中' : '設為使用中';
+      use.onclick = function() { selectedProviderId = p.id; selectedModel = p.default_model || (p.models || [])[0] || ''; rebuildModels(); renderModelPicker(); persistActive(); renderProviderList(); };
+      row.appendChild(main); row.appendChild(use);
+      box.appendChild(row);
+    });
   }
   function saveProvider() {
     var v = providerFormValues();
     if (!v.name) v.name = '供應商';
-    if (!/^https:\/\//i.test(v.baseUrl)) { setProviderStatus('Base URL 必須是 HTTPS', true); return; }
-    try { new URL(v.baseUrl); } catch(e) { setProviderStatus('Base URL 格式不正確', true); return; }
-    if (!v.apiKey || v.apiKey.length < 8) { setProviderStatus('請填寫有效的 API Key', true); return; }
-    if (!v.model) { setProviderStatus('請填寫模型 ID', true); return; }
-    var list = readProviders();
-    var sel = document.getElementById('provider-active-select');
-    var currentId = sel && sel.value !== '__new' ? sel.value : '';
-    var existing = currentId ? providerById(currentId) : null;
-    var item = { id: existing ? existing.id : ('p' + Date.now()), name: v.name, baseUrl: v.baseUrl.replace(/\/+$/, ''), apiKey: v.apiKey, model: v.model };
-    if (existing) {
-      for (var i = 0; i < list.length; i++) if (list[i].id === existing.id) list[i] = item;
-    } else list.push(item);
-    writeProviders(list);
-    localStorage.setItem(PROVIDER_ACTIVE_KEY, item.id);
-    ensureModel(item.model);
-    if (sel) sel.value = item.id;
-    setModel(item.model);
-    setProviderStatus('已儲存：' + item.name, false);
+    if (!/^https:\/\//i.test(v.base_url)) { setProviderStatus('Base URL 必須是 HTTPS', true); return; }
+    if (!editingProviderId && v.api_key.length < 8) { setProviderStatus('請填寫有效的 API Key', true); return; }
+    if (!v.default_model) { setProviderStatus('請填寫或抓取模型 ID', true); return; }
+    var body = { name: v.name, base_url: v.base_url, default_model: v.default_model };
+    if (v.api_key) body.api_key = v.api_key;
+    setProviderStatus('儲存中…', false);
+    var req = editingProviderId
+      ? apiJson('/api/providers/' + encodeURIComponent(editingProviderId), { method: 'PUT', body: body })
+      : apiJson('/api/providers', { method: 'POST', body: body });
+    req.then(function(d) {
+      server.providers = d.providers || [];
+      var wasEmpty = !selectedProviderId;
+      editingProviderId = d.id || editingProviderId;
+      if (wasEmpty || editingProviderId === selectedProviderId) {
+        selectedProviderId = editingProviderId;
+        selectedModel = v.default_model;
+        persistActive();
+      }
+      rebuildModels(); renderModelPicker(); renderProviderList(); updateNoProviderBanner();
+      loadProviderForm(editingProviderId);
+      setProviderStatus('已儲存：' + v.name, false);
+    }).catch(function(e) { setProviderStatus(e.message || '儲存失敗', true); });
   }
   function deleteProvider() {
-    var sel = document.getElementById('provider-active-select');
-    var id = sel ? sel.value : '';
-    if (!id || id === '__new') { setProviderStatus('目前沒有可刪除的供應商', true); return; }
-    if (!confirm('刪除這個供應商設定？')) return;
-    var list = readProviders().filter(function(p) { return p.id !== id; });
-    writeProviders(list);
-    localStorage.setItem(PROVIDER_ACTIVE_KEY, list[0] ? list[0].id : '');
-    refreshProviderSelect();
-    setProviderStatus('已刪除', false);
+    if (!editingProviderId) return;
+    var p = providerById(editingProviderId);
+    if (!confirm('刪除供應商「' + (p ? p.name : '') + '」與它的加密金鑰？')) return;
+    apiJson('/api/providers/' + encodeURIComponent(editingProviderId), { method: 'DELETE' }).then(function(d) {
+      server.providers = d.providers || [];
+      if (selectedProviderId === editingProviderId) { selectedProviderId = ''; applyActiveFromSettings(); persistActive(); }
+      loadProviderForm('');
+      rebuildModels(); renderModelPicker(); renderProviderList(); updateNoProviderBanner();
+      setProviderStatus('已刪除', false);
+    }).catch(function(e) { setProviderStatus(e.message || '刪除失敗', true); });
   }
-  async function fetchProviderModels(apply) {
+  function fetchProviderModels() {
     var v = providerFormValues();
-    if (!v.baseUrl || !v.apiKey) { setProviderStatus('請先填寫 Base URL 與 API Key', true); return; }
+    var body = editingProviderId ? { id: editingProviderId } : {};
+    if (v.base_url) body.base_url = v.base_url;
+    if (v.api_key) body.api_key = v.api_key;
+    if (!editingProviderId && (!v.base_url || !v.api_key)) { setProviderStatus('請先填寫 Base URL 與 API Key', true); return; }
     setProviderStatus('正在連線…', false);
-    try {
-      var res = await fetch('/api/models', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ baseUrl: v.baseUrl, apiKey: v.apiKey }) });
-      var data = await res.json().catch(function() { return {}; });
-      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
-      var models = Array.isArray(data.models) ? data.models : [];
-      var list = document.getElementById('provider-model-list');
-      if (list) list.innerHTML = models.map(function(m) { return '<option value="' + escapeHtml(m) + '"></option>'; }).join('');
-      if (apply && models.length) {
-        var input = document.getElementById('provider-model');
-        if (input) input.value = models[0];
-      }
+    apiJson('/api/providers/models', { method: 'POST', body: body }).then(function(d) {
+      var models = Array.isArray(d.models) ? d.models : [];
+      fillModelDatalist(models);
+      var input = document.getElementById('provider-model');
+      if (input && !input.value && models.length) input.value = models[0];
+      var p = providerById(editingProviderId);
+      if (p) { p.models = models; rebuildModels(); renderModelPicker(); }
       setProviderStatus('連線成功，取得 ' + models.length + ' 個模型', false);
-    } catch(e) {
-      setProviderStatus(e && e.message ? e.message : '連線失敗', true);
-    }
+    }).catch(function(e) {
+      setProviderStatus(e.code === 'secret_undecryptable' ? '舊金鑰無法解密（AUTH_SECRET 已更換），請重新輸入 API Key' : (e.message || '連線失敗'), true);
+    });
   }
   function initProviderUI() {
-    refreshProviderSelect();
-    var sel = document.getElementById('provider-active-select');
-    if (sel) sel.addEventListener('change', function() { loadProviderForm(this.value === '__new' ? '' : this.value); });
     var bind = function(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
-    bind('provider-new-btn', function() { var sel = document.getElementById('provider-active-select'); if (sel) sel.value = '__new'; loadProviderForm(''); });
+    bind('provider-new-btn', function() { loadProviderForm(''); renderProviderList(); });
     bind('provider-save-btn', saveProvider);
     bind('provider-delete-btn', deleteProvider);
-    bind('provider-test-btn', function() { fetchProviderModels(false); });
-    bind('provider-models-btn', function() { fetchProviderModels(true); });
-    var active = activeProvider();
-    if (active) { ensureModel(active.model); if (active.model) setModel(active.model); }
+    bind('provider-models-btn', fetchProviderModels);
+    loadProviderForm('');
   }
-  var SYNC_META_KEY = 'ta_sync_meta_v1';
-  var syncMeta = { enabled: false, lastCursor: 0, known: { chat: [], doc: [], project: [] }, sent: {}, values: {}, timer: 0, applying: false, busy: false };
+  // ---- Cross-device sync for main chats, documents and UI prefs ----------------
+  // The cursor is the server's sequence number (never this device's clock), so
+  // a device whose clock is behind is not skipped. Pushes go in small chunks
+  // to stay inside the Worker's per-request D1 and body limits.
+  var SYNC_META_KEY = 'ta_sync_meta_v2';
+  var SYNC_SETTINGS = [['prompt','favs','ta_prompt_favs'],['prompt','recent','ta_prompt_recent'],['setting','len_mode','ta_len_mode'],['setting','auto_search','ta_auto_search'],['setting','use_docs','ta_use_docs']];
+  var syncMeta = { enabled: false, cursor: 0, known: { chat: [], doc: [], project: [] }, sent: {}, values: {}, timer: 0, applying: false, busy: false };
   try {
+    localStorage.removeItem('ta_sync_meta_v1');
     var savedSync = JSON.parse(localStorage.getItem(SYNC_META_KEY) || '{}');
     if (savedSync && typeof savedSync === 'object') {
-      syncMeta.lastCursor = Number(savedSync.lastCursor) || 0;
+      syncMeta.cursor = Number(savedSync.cursor) || 0;
       syncMeta.sent = savedSync.sent && typeof savedSync.sent === 'object' ? savedSync.sent : {};
       syncMeta.values = savedSync.values && typeof savedSync.values === 'object' ? savedSync.values : {};
       if (savedSync.known && typeof savedSync.known === 'object') {
@@ -227,7 +324,7 @@
     }
   } catch(eSync) {}
   function saveSyncMeta() {
-    try { localStorage.setItem(SYNC_META_KEY, JSON.stringify({ lastCursor: syncMeta.lastCursor, known: syncMeta.known, sent: syncMeta.sent, values: syncMeta.values })); } catch(e) {}
+    try { localStorage.setItem(SYNC_META_KEY, JSON.stringify({ cursor: syncMeta.cursor, known: syncMeta.known, sent: syncMeta.sent, values: syncMeta.values })); } catch(e) {}
   }
   function setSyncStatus(text, bad) {
     var el = document.getElementById('sync-status');
@@ -238,34 +335,31 @@
   function syncJson(value) {
     try { return JSON.stringify(value); } catch(e) { return ''; }
   }
-  function addSyncChange(changes, key, value, updatedAt, force) {
-    if (!force && syncMeta.sent[key] && Number(syncMeta.sent[key]) >= updatedAt) return;
-    changes.push({ key: key, value: value, updatedAt: updatedAt, deleted: false });
-  }
   function collectSyncChanges(force) {
     var changes = [];
     var present = { chat: {}, doc: {}, project: {} };
     var now = Date.now();
+    function add(key, value, at) {
+      if (!force && syncMeta.sent[key] && Number(syncMeta.sent[key]) >= at) return;
+      changes.push({ key: key, value: value, updatedAt: at, deleted: false });
+    }
     Object.keys(chats).forEach(function(id) {
       var c = chats[id];
-      if (!c || c.ephemeral) return;
+      if (!c || c.ephemeral || !/^[A-Za-z0-9_-]{1,100}$/.test(id)) return;
       present.chat[id] = true;
-      var at = Number(c.updatedAt || c.at || now) || now;
-      addSyncChange(changes, 'chat:' + id, syncJson(c), at, force);
+      add('chat:' + id, syncJson(c), Number(c.updatedAt || c.at || id) || now);
     });
     documents.forEach(function(d) {
-      if (!d || !d.id) return;
+      if (!d || !d.id || !/^[A-Za-z0-9_-]{1,100}$/.test(d.id)) return;
       present.doc[d.id] = true;
-      var at = Number(d.updatedAt || now) || now;
-      addSyncChange(changes, 'doc:' + d.id, syncJson(d), at, force);
+      add('doc:' + d.id, syncJson(d), Number(d.updatedAt || d.created || now) || now);
     });
     projects.forEach(function(pr) {
-      if (!pr || !pr.id) return;
+      if (!pr || !pr.id || !/^[A-Za-z0-9_-]{1,100}$/.test(pr.id)) return;
       present.project[pr.id] = true;
-      var at = Number(pr.updatedAt || now) || now;
-      addSyncChange(changes, 'project:' + pr.id, syncJson(pr), at, force);
+      add('project:' + pr.id, syncJson(pr), Number(pr.updatedAt || now) || now);
     });
-    [['prompt','favs','ta_prompt_favs'],['prompt','recent','ta_prompt_recent'],['setting','custom_prompt','ta_custom_prompt'],['setting','tone','ta_tone'],['setting','len_mode','ta_len_mode'],['setting','auto_search','ta_auto_search'],['setting','use_docs','ta_use_docs']].forEach(function(row) {
+    SYNC_SETTINGS.forEach(function(row) {
       var key = row[0] + ':' + row[1];
       var value = '';
       try { value = localStorage.getItem(row[2]) || ''; } catch(e) {}
@@ -280,60 +374,68 @@
     });
     return changes;
   }
+  function applySyncItem(item, touched) {
+    var key = String(item.key || '');
+    var cut = key.indexOf(':');
+    var type = key.slice(0, cut), id = key.slice(cut + 1);
+    if (!id) return;
+    if (item.deleted) {
+      if (type === 'chat' && chats[id]) { delete chats[id]; touched.chats = true; }
+      if (type === 'doc') { var nd = documents.filter(function(d) { return d.id !== id; }); if (nd.length !== documents.length) { documents = nd; touched.docs = true; } }
+      if (type === 'project') { var np = projects.filter(function(pr) { return pr.id !== id; }); if (np.length !== projects.length) { projects = np; touched.projects = true; } }
+    } else if (type === 'project') {
+      try {
+        var proj = JSON.parse(item.value);
+        if (!proj || typeof proj !== 'object') return;
+        var pfound = false;
+        for (var j = 0; j < projects.length; j++) if (projects[j].id === id) { pfound = true; if (Number(item.updatedAt) >= Number(projects[j].updatedAt || 0)) { projects[j] = proj; touched.projects = true; } break; }
+        if (!pfound) { projects.push(proj); touched.projects = true; }
+      } catch(e) {}
+    } else if (type === 'chat') {
+      try {
+        var chat = JSON.parse(item.value);
+        if (chat && typeof chat === 'object' && (!chats[id] || Number(item.updatedAt) >= Number(chats[id].updatedAt || 0))) { chats[id] = chat; touched.chats = true; }
+      } catch(e) {}
+    } else if (type === 'doc') {
+      try {
+        var doc = JSON.parse(item.value);
+        if (!doc || typeof doc !== 'object') return;
+        var found = false;
+        for (var i = 0; i < documents.length; i++) if (documents[i].id === id) { found = true; if (Number(item.updatedAt) >= Number(documents[i].updatedAt || 0)) { documents[i] = doc; touched.docs = true; } break; }
+        if (!found) { documents.push(doc); touched.docs = true; }
+      } catch(e) {}
+    } else if (type === 'prompt') {
+      var pkey = id === 'favs' ? 'ta_prompt_favs' : id === 'recent' ? 'ta_prompt_recent' : '';
+      if (pkey) { try { localStorage.setItem(pkey, item.value || '[]'); } catch(e) {} }
+    } else if (type === 'setting') {
+      var skey = { len_mode: 'ta_len_mode', auto_search: 'ta_auto_search', use_docs: 'ta_use_docs' }[id];
+      if (skey) { try { localStorage.setItem(skey, item.value || ''); syncMeta.values[key] = item.value || ''; } catch(e) {} }
+    }
+    syncMeta.sent[key] = Number(item.updatedAt) || 0;
+  }
   async function pullSync() {
     if (!syncMeta.enabled || syncMeta.busy) return false;
     syncMeta.busy = true;
+    var total = 0;
+    var touched = { chats: false, docs: false, projects: false };
     try {
-      var res = await fetch('/api/sync?since=' + encodeURIComponent(String(syncMeta.lastCursor || 0)) + '&limit=1000', { credentials: 'same-origin' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      var data = await res.json();
-      var items = Array.isArray(data.items) ? data.items : [];
-      if (!items.length) { setSyncStatus('已同步', false); return true; }
+      for (var page = 0; page < 20; page++) {
+        var data = await apiJson('/api/sync?since=' + encodeURIComponent(String(syncMeta.cursor || 0)) + '&limit=200');
+        var items = Array.isArray(data.items) ? data.items : [];
+        syncMeta.applying = true;
+        items.forEach(function(item) { applySyncItem(item, touched); });
+        syncMeta.applying = false;
+        total += items.length;
+        syncMeta.cursor = Math.max(syncMeta.cursor || 0, Number(data.cursor) || 0);
+        if (!data.more) break;
+      }
       syncMeta.applying = true;
-      var touchedChats = false, touchedDocs = false, touchedProjects = false;
-      items.forEach(function(item) {
-        var key = String(item.key || '');
-        var parts = key.split(':');
-        var type = parts[0], id = parts.slice(1).join(':');
-        if (!id) return;
-        if (item.deleted) {
-          if (type === 'chat' && chats[id]) { delete chats[id]; touchedChats = true; }
-          if (type === 'doc') { var nd = documents.filter(function(d) { return d.id !== id; }); if (nd.length !== documents.length) { documents = nd; touchedDocs = true; } }
-          if (type === 'project') { var np = projects.filter(function(pr) { return pr.id !== id; }); if (np.length !== projects.length) { projects = np; touchedProjects = true; } }
-        } else if (type === 'chat') {
-          try {
-            var chat = JSON.parse(item.value);
-            if (!chats[id] || Number(item.updatedAt) >= Number(chats[id].updatedAt || 0)) { chats[id] = chat; touchedChats = true; }
-          } catch(e) {}
-        } else if (type === 'doc') {
-          try {
-            var doc = JSON.parse(item.value);
-            var found = false;
-            for (var i = 0; i < documents.length; i++) if (documents[i].id === id) { found = true; if (Number(item.updatedAt) >= Number(documents[i].updatedAt || 0)) documents[i] = doc; break; }
-            if (!found) { documents.push(doc); touchedDocs = true; }
-          } catch(e) {}
-        } else if (type === 'project') {
-          try {
-            var proj = JSON.parse(item.value);
-            var pfound = false;
-            for (var j = 0; j < projects.length; j++) if (projects[j].id === id) { pfound = true; if (Number(item.updatedAt) >= Number(projects[j].updatedAt || 0)) projects[j] = proj; break; }
-            if (!pfound) { projects.push(proj); touchedProjects = true; }
-          } catch(e) {}
-        } else if (type === 'prompt') {
-          var pkey = id === 'favs' ? 'ta_prompt_favs' : id === 'recent' ? 'ta_prompt_recent' : '';
-          if (pkey) { try { localStorage.setItem(pkey, item.value || '[]'); } catch(e) {} }
-        } else if (type === 'setting') {
-          var skey = { custom_prompt: 'ta_custom_prompt', tone: 'ta_tone', len_mode: 'ta_len_mode', auto_search: 'ta_auto_search', use_docs: 'ta_use_docs' }[id];
-          if (skey) { try { localStorage.setItem(skey, item.value || ''); } catch(e) {} }
-        }
-        syncMeta.sent[key] = Number(item.updatedAt) || 0;
-        syncMeta.lastCursor = Math.max(syncMeta.lastCursor || 0, Number(item.updatedAt) || 0);
-      });
-      if (touchedChats) { saveChats(); renderSidebar(); if (chats[currentChatId]) loadChatView(); }
-      if (touchedDocs) { saveDocuments(); renderSidebar(); }
-      if (touchedProjects) { saveProjects(); renderSidebar(); }
+      if (touched.chats) { saveChats(); renderSidebar(); if (chats[currentChatId]) loadChatView(); }
+      if (touched.docs) { saveDocuments(); renderSidebar(); }
+      if (touched.projects) { saveProjects(); renderSidebar(); }
+      syncMeta.applying = false;
       saveSyncMeta();
-      setSyncStatus('已同步 ' + items.length + ' 項', false);
+      setSyncStatus(total ? ('已同步 ' + total + ' 項') : '已同步', false);
       return true;
     } catch(e) {
       setSyncStatus('同步失敗：' + (e && e.message ? e.message : '網路錯誤'), true);
@@ -349,20 +451,25 @@
     if (!changes.length) { setSyncStatus('已同步', false); return true; }
     syncMeta.busy = true;
     try {
-      var res = await fetch('/api/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ changes: changes }) });
-      var data = await res.json().catch(function() { return {}; });
-      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
-      changes.forEach(function(ch) {
-        if (!ch.deleted) {
-          syncMeta.sent[ch.key] = ch.updatedAt;
-          syncMeta.values[ch.key] = ch.value;
-        }
-      });
-      var present = { chat: {}, doc: {}, project: {} };
-      Object.keys(chats).forEach(function(id) { present.chat[id] = true; });
-      documents.forEach(function(d) { if (d && d.id) present.doc[d.id] = true; });
-      projects.forEach(function(pr) { if (pr && pr.id) present.project[pr.id] = true; });
-      syncMeta.known = { chat: Object.keys(present.chat), doc: Object.keys(present.doc), project: Object.keys(present.project) };
+      // Chunks of at most 40 items and ~1.5 MB per request.
+      var chunk = [], size = 0;
+      var flush = async function() {
+        if (!chunk.length) return;
+        await apiJson('/api/sync', { method: 'POST', body: { changes: chunk } });
+        chunk.forEach(function(ch) {
+          if (!ch.deleted) { syncMeta.sent[ch.key] = ch.updatedAt; syncMeta.values[ch.key] = ch.value; }
+        });
+        chunk = []; size = 0;
+      };
+      for (var i = 0; i < changes.length; i++) {
+        var len = (changes[i].value || '').length;
+        if (len > 900000) continue;
+        if (chunk.length >= 40 || size + len > 1500000) await flush();
+        chunk.push(changes[i]); size += len;
+      }
+      await flush();
+      var present = { chat: Object.keys(chats).filter(function(id) { return chats[id] && !chats[id].ephemeral; }), doc: documents.filter(function(d) { return d && d.id; }).map(function(d) { return d.id; }), project: projects.filter(function(p) { return p && p.id; }).map(function(p) { return p.id; }) };
+      syncMeta.known = present;
       saveSyncMeta();
       setSyncStatus('已同步 ' + changes.length + ' 項', false);
       return true;
@@ -379,22 +486,16 @@
     syncMeta.timer = setTimeout(function() { pushSync(false); }, 1800);
   }
   async function syncBootstrap() {
-    if (!syncMeta.enabled) { setSyncStatus('此部署未啟用 D1 同步', false); return; }
+    if (!syncMeta.enabled) { setSyncStatus('D1 未就緒，同步停用', true); return; }
     await pullSync();
     await pushSync(false);
   }
   function syncNow() {
-    if (!syncMeta.enabled) { setSyncStatus('此部署未啟用 D1 同步', true); return; }
+    if (!syncMeta.enabled) { setSyncStatus('D1 未就緒，同步停用', true); return; }
     setSyncStatus('同步中…', false);
     pullSync().then(function() { return pushSync(true); });
   }
 
-  var TONES = {
-    auto: '',
-    direct: '回答要直接，不繞圈子。',
-    technical: '優先技術精確度，給出 API 名稱與程式碼。',
-    concise: '用最少但足夠的字回答。'
-  };
   function t(k) { return (window.TA && TA.t) ? TA.t(k) : k; }
   var THEME_COLORS = { dark: '#000000', gray: '#18181b', dim: '#0d1117', navy: '#0b1220', light: '#f4f4f5', paper: '#f4efe6', hacker: '#000000', cyberpunk: '#0d021a', sunset: '#1f101d', ocean: '#061325', forest: '#07130e', rose: '#fff1f2', lavender: '#f8f6fc' };
   var ACCENT_OK = { 'auto': 1, '#38bdf8': 1, '#a1a1aa': 1, '#34d399': 1, '#2dd4bf': 1, '#818cf8': 1, '#a78bfa': 1, '#f59e0b': 1, '#fb7185': 1 };
@@ -443,7 +544,7 @@
       var placeholder = '§§CODEBLOCK_' + codeBlocks.length + '§§';
       var safeLang = lang.trim() || 'code';
       var html = '<div class="code-block-box"><div class="code-block-header"><span>' + escapeHtml(safeLang) + '</span>' +
-        '<button class="code-copy-btn" data-code="' + encodeURIComponent(code) + '">Copiar</button></div>' +
+        '<button class="code-copy-btn" data-code="' + encodeURIComponent(code) + '">複製</button></div>' +
         '<pre class="code-block-pre"><code>' + escapeHtml(code) + '</code></pre></div>';
       codeBlocks.push(html);
       return placeholder;
@@ -452,7 +553,7 @@
     text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function(match, alt, url) {
       return '<div class="ai-image-card"><img src="' + url + '" alt="' + alt + '" class="ai-image-img" data-img-url="' + url + '" loading="lazy">' +
         '<div class="ai-image-footer"><span style="font-size:0.75rem;font-weight:600">' + alt + '</span>' +
-        '<a href="' + url + '" target="_blank" download="personal-ai-visual.jpg" class="topbar-action-btn" style="text-decoration:none;padding:3px 8px;font-size:0.7rem">Descargar</a></div></div>';
+        '<a href="' + url + '" target="_blank" download="personal-ai-visual.jpg" class="topbar-action-btn" style="text-decoration:none;padding:3px 8px;font-size:0.7rem">下載</a></div></div>';
     });
     text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none">$1</a>');
     var lines = text.split(/\r?\n/);
@@ -578,13 +679,13 @@
           var safeLang = (lang || 'code').trim();
           var rawCode = code.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'");
           return '<div class="code-block-box"><div class="code-block-header"><span>' + escapeHtml(safeLang) + '</span>' +
-            '<button class="code-copy-btn" data-code="' + encodeURIComponent(rawCode) + '">Copiar</button></div>' +
+            '<button class="code-copy-btn" data-code="' + encodeURIComponent(rawCode) + '">複製</button></div>' +
             '<pre class="code-block-pre"><code>' + code + '</code></pre></div>';
         });
         rawHtml = rawHtml.replace(/<img\s+src="([^"]*)"\s+alt="([^"]*)"[^>]*>/g, function(match, src, alt) {
           return '<div class="ai-image-card"><img src="' + src + '" alt="' + alt + '" class="ai-image-img" data-img-url="' + src + '" loading="lazy">' +
             '<div class="ai-image-footer"><span style="font-size:0.75rem;font-weight:600">' + alt + '</span>' +
-            '<a href="' + src + '" target="_blank" download="personal-ai-visual.jpg" class="topbar-action-btn" style="text-decoration:none;padding:3px 8px;font-size:0.7rem">Descargar</a></div></div>';
+            '<a href="' + src + '" target="_blank" download="personal-ai-visual.jpg" class="topbar-action-btn" style="text-decoration:none;padding:3px 8px;font-size:0.7rem">下載</a></div></div>';
         });
         return sanitizeHtml(rawHtml);
       } catch(e) {}
@@ -768,70 +869,148 @@
     } catch(e) {}
     scheduleSync();
   }
-  function emptyLocalProfile() {
-    return { enabled: true, name: '', notes: [], topics: {}, summary: '', turns: 0 };
+  // ---- Memory pane (D1) ----
+  function setMemoryStatus(text, bad) {
+    var el = document.getElementById('memory-status');
+    if (el) { el.textContent = text || ''; el.style.color = bad ? 'var(--red)' : 'var(--muted)'; }
   }
-  function loadLocalProfile() {
-    try {
-      var raw = localStorage.getItem('ta_profile');
-      if (!raw) return emptyLocalProfile();
-      var p = JSON.parse(raw);
-      return p && typeof p === 'object' ? p : emptyLocalProfile();
-    } catch (e) { return emptyLocalProfile(); }
+  function memoryScopeLabel(scope) {
+    if (!scope || scope === 'global') return '全域';
+    var p = (window.PAI_projectName && window.PAI_projectName(scope)) || '';
+    return p ? ('專案：' + p) : '專案';
   }
-  function saveLocalProfile(p) {
-    try { localStorage.setItem('ta_profile', JSON.stringify(p || emptyLocalProfile())); } catch (e) {}
+  function loadMemories() {
+    return apiJson('/api/memory').then(function(d) {
+      server.memories = d.memories || [];
+      renderMemoryPane();
+    }).catch(function(e) { setMemoryStatus(e.message || '讀取記憶失敗', true); });
   }
-  function adaptEnabled() { return localStorage.getItem('ta_adapt') !== '0'; }
-  function renderAdaptPane() {
-    var p = loadLocalProfile();
-    var sum = document.getElementById('adapt-summary');
-    var box = document.getElementById('adapt-notes');
-    var toggle = document.getElementById('set-adapt');
-    if (toggle) toggle.checked = adaptEnabled();
-    if (sum) {
-      var bits = [];
-      if (p.name) bits.push(p.name);
-      if (p.summary) bits.push(p.summary);
-      else if (p.notes && p.notes.length) bits.push((p.notes.length) + ' ' + t('adaptAdd').toLowerCase());
-      sum.textContent = bits.join(' · ') || t('adaptEmpty');
-    }
+  function renderMemoryPane() {
+    var toggle = document.getElementById('set-memory-enabled');
+    if (toggle && server.settings) toggle.checked = !!(server.settings.memory && server.settings.memory.enabled);
+    var box = document.getElementById('memory-list');
     if (!box) return;
+    var filterEl = document.getElementById('memory-filter');
+    var filter = filterEl ? filterEl.value : '';
+    var rows = server.memories.filter(function(m) { return !filter || m.scope === filter; });
     box.innerHTML = '';
-    (p.notes || []).slice().reverse().forEach(function(n) {
+    if (!rows.length) {
+      var empty = document.createElement('p');
+      empty.className = 'settings-hint';
+      empty.textContent = '還沒有記憶。對模型說「記住…」或在上方新增。';
+      box.appendChild(empty);
+      return;
+    }
+    rows.forEach(function(m) {
       var row = document.createElement('div');
-      row.className = 'settings-kv';
-      var meta = [n.category, n.expiresAt ? ('至 ' + new Date(n.expiresAt).toISOString().slice(0, 10)) : '']
-        .filter(Boolean).join(' · ');
-      row.innerHTML = '<div><div class="settings-kv-sub" style="color:var(--text)">' + escapeHtml(n.fact || n.text || '') + '</div>' +
-        (meta ? '<div class="settings-hint">' + escapeHtml(meta) + '</div>' : '') + '</div>' +
-        '<button type="button" class="mini-x" data-del-note="' + escapeHtml(n.id || '') + '">✕</button>';
+      row.className = 'memory-row';
+      var text = document.createElement('div');
+      text.className = 'memory-text';
+      text.textContent = m.content;
+      var meta = document.createElement('div');
+      meta.className = 'settings-hint';
+      meta.textContent = memoryScopeLabel(m.scope) + ' · ' + new Date(Number(m.updated_at) || Date.now()).toLocaleString();
+      var body = document.createElement('div');
+      body.style.flex = '1';
+      body.style.minWidth = '0';
+      body.appendChild(text); body.appendChild(meta);
+      var edit = document.createElement('button');
+      edit.type = 'button'; edit.className = 'mini-x'; edit.textContent = '編輯'; edit.title = '編輯';
+      edit.onclick = function() {
+        var next = prompt('編輯記憶', m.content);
+        if (next === null) return;
+        next = next.trim();
+        if (!next) return;
+        apiJson('/api/memory/' + encodeURIComponent(m.id), { method: 'PUT', body: { content: next } })
+          .then(loadMemories).catch(function(e) { setMemoryStatus(e.message, true); });
+      };
+      var del = document.createElement('button');
+      del.type = 'button'; del.className = 'mini-x'; del.textContent = '✕'; del.title = '刪除';
+      del.setAttribute('aria-label', '刪除記憶');
+      del.onclick = function() {
+        apiJson('/api/memory/' + encodeURIComponent(m.id), { method: 'DELETE' })
+          .then(loadMemories).catch(function(e) { setMemoryStatus(e.message, true); });
+      };
+      row.appendChild(body); row.appendChild(edit); row.appendChild(del);
       box.appendChild(row);
     });
   }
-  function postProfile(body) {
-    // Personal AI stores the adaptation profile only in this browser. It is
-    // optional context for chat, not account data and not a server profile.
-    var p = loadLocalProfile();
-    body = body && typeof body === 'object' ? body : {};
-    if (body.enabled === false) p.enabled = false;
-    else if (body.enabled === true) p.enabled = true;
-    if (body.forgetAll) p = emptyLocalProfile();
-    if (body.note) {
-      p.notes = Array.isArray(p.notes) ? p.notes : [];
-      p.notes.push({ id: String(Date.now()), text: String(body.note), fact: String(body.note) });
-      if (p.notes.length > 50) p.notes = p.notes.slice(-50);
-    }
-    if (body.deleteNoteId && Array.isArray(p.notes)) {
-      p.notes = p.notes.filter(function(n) { return n && n.id !== body.deleteNoteId; });
-    }
-    saveLocalProfile(p);
-    renderAdaptPane();
-    return Promise.resolve({ profile: p });
+  function addMemoryFromPane() {
+    var inp = document.getElementById('memory-new-input');
+    var scopeEl = document.getElementById('memory-new-scope');
+    var text = inp ? inp.value.trim() : '';
+    if (!text) return;
+    apiJson('/api/memory', { method: 'POST', body: { scope: (scopeEl && scopeEl.value) || 'global', content: text } })
+      .then(function() { if (inp) inp.value = ''; setMemoryStatus('已新增', false); return loadMemories(); })
+      .catch(function(e) { setMemoryStatus(e.message, true); });
   }
-  function pullProfile() {
-    renderAdaptPane();
-    return Promise.resolve({ profile: loadLocalProfile() });
+  function initMemoryPane() {
+    var add = document.getElementById('memory-add-btn');
+    if (add) add.addEventListener('click', addMemoryFromPane);
+    var inp = document.getElementById('memory-new-input');
+    if (inp) inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addMemoryFromPane(); } });
+    var filter = document.getElementById('memory-filter');
+    if (filter) filter.addEventListener('change', renderMemoryPane);
+    var toggle = document.getElementById('set-memory-enabled');
+    if (toggle) toggle.addEventListener('change', function() {
+      apiJson('/api/settings', { method: 'PUT', body: { memory: { enabled: toggle.checked } } })
+        .then(function(d) { server.settings = d.settings; setMemoryStatus(toggle.checked ? '記憶已開啟' : '記憶已關閉', false); })
+        .catch(function(e) { setMemoryStatus(e.message, true); });
+    });
+  }
+
+  // ---- Params & search panes ----
+  function fillParamsPane() {
+    var p = (server.settings && server.settings.params) || {};
+    var set = function(id, v) { var el = document.getElementById(id); if (el) el.value = (v === null || v === undefined) ? '' : v; };
+    set('param-temperature', p.temperature);
+    set('param-top-p', p.top_p);
+    set('param-max-tokens', p.max_tokens);
+    set('param-reasoning', p.reasoning_effort || '');
+    set('param-max-steps', p.max_steps);
+  }
+  function readParamsForm(prefix) {
+    var get = function(id) { var el = document.getElementById(prefix + id); return el ? el.value.trim() : ''; };
+    var n = function(v) { return v === '' ? null : Number(v); };
+    return { temperature: n(get('temperature')), top_p: n(get('top-p')), max_tokens: n(get('max-tokens')), reasoning_effort: get('reasoning'), max_steps: n(get('max-steps')) };
+  }
+  function saveParams() {
+    var st = document.getElementById('params-status');
+    apiJson('/api/settings', { method: 'PUT', body: { params: readParamsForm('param-') } }).then(function(d) {
+      server.settings = d.settings; fillParamsPane();
+      if (st) { st.textContent = '已儲存'; st.style.color = 'var(--green)'; }
+    }).catch(function(e) { if (st) { st.textContent = e.message; st.style.color = 'var(--red)'; } });
+  }
+  function fillSearchPane() {
+    [['search:tavily', 'secret-tavily-status'], ['search:jina', 'secret-jina-status']].forEach(function(row) {
+      var el = document.getElementById(row[1]);
+      var s = server.secrets[row[0]] || {};
+      if (el) el.textContent = s.set ? ('已儲存：' + s.preview) : '尚未設定';
+    });
+  }
+  function initSearchPane() {
+    document.querySelectorAll('[data-secret-save]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var name = btn.getAttribute('data-secret-save');
+        var inp = document.getElementById(btn.getAttribute('data-secret-input'));
+        var value = inp ? inp.value.trim() : '';
+        if (value.length < 8) { alert('請輸入完整的金鑰'); return; }
+        apiJson('/api/secrets/' + encodeURIComponent(name), { method: 'PUT', body: { value: value } }).then(function(d) {
+          server.secrets = d.secrets || server.secrets; if (inp) inp.value = ''; fillSearchPane();
+        }).catch(function(e) { alert(e.message); });
+      });
+    });
+    document.querySelectorAll('[data-secret-del]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var name = btn.getAttribute('data-secret-del');
+        if (!confirm('刪除這個金鑰？')) return;
+        apiJson('/api/secrets/' + encodeURIComponent(name), { method: 'DELETE' }).then(function(d) {
+          server.secrets = d.secrets || server.secrets; fillSearchPane();
+        }).catch(function(e) { alert(e.message); });
+      });
+    });
+    var ps = document.getElementById('params-save-btn');
+    if (ps) ps.addEventListener('click', saveParams);
   }
   function isTempChat() {
     return !!(chats[currentChatId] && chats[currentChatId].ephemeral);
@@ -1025,7 +1204,7 @@
       if (image) {
         var im = document.createElement('img');
         im.src = image;
-        im.alt = t('imageAttached') === 'imageAttached' ? 'Imagen' : t('imageAttached');
+        im.alt = t('imageAttached') === 'imageAttached' ? '圖片' : t('imageAttached');
         im.style.cssText = 'max-width:220px;max-height:180px;object-fit:cover;border-radius:10px;margin:0 0 6px;display:block';
         holder.appendChild(im);
       }
@@ -1073,7 +1252,7 @@
         var srcBox = document.createElement('div');
         srcBox.className = 'sources-box';
         srcBox.innerHTML = '<div class="sources-title">' + t('sources') + '</div><div class="sources-list">' +
-          sources.map(function(s) { return '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener" class="source-tag">' + escapeHtml(s.title) + '</a>'; }).join('') +
+          sources.filter(function(s) { return s && /^https?:\/\//i.test(String(s.url || '')); }).map(function(s) { return '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener noreferrer" class="source-tag">' + escapeHtml(s.title || s.url) + '</a>'; }).join('') +
           '</div>';
         contentCol.appendChild(srcBox);
       }
@@ -1475,39 +1654,10 @@
       refreshArtifactPreview();
     }, 220);
   }
-  function requireAccount(action) {
-    if (authToken && currentUser && (currentUser.email || currentUser.id)) return true;
-    alert('Crea una cuenta o inicia sesión para ' + (action || 'publicar') + '. Las publicaciones van a tu @usuario y no se mezclan con las de otros.');
-    if (typeof openSettingsModal === 'function') openSettingsModal('pane-account');
-    return false;
-  }
-  function myHandle() {
-    return (currentUser && currentUser.handle) || '';
-  }
   function setArtifactDest(dest, persist) {
-    artifactDest = dest === 'guide' ? 'guide' : 'artifact';
-    if (persist && currentArtifact) currentArtifact.dest = artifactDest;
-    document.querySelectorAll('.art-dest-btn').forEach(function(btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-dest') === artifactDest);
-    });
-    var hint = document.getElementById('art-dest-hint');
-    var h = myHandle() || 'usuario';
-    if (hint) {
-      hint.textContent = artifactDest === 'guide'
-        ? 'Se publica en Guides: guides.personal-ai.workers.dev/g/slug (URL automática).'
-        : 'Se publica en Library: ai.personal-ai.workers.dev/library/slug (URL automática, sin @usuario).';
-    }
+    artifactDest = 'artifact';
   }
-  function syncArtifactActions() {
-    var openBtn = document.getElementById('art-open-btn');
-    var unBtn = document.getElementById('art-unpublish-btn');
-    var pubBtn = document.getElementById('art-publish-btn');
-    var published = !!(currentArtifact && currentArtifact.url);
-    if (openBtn) { openBtn.hidden = false; openBtn.disabled = !published; }
-    if (unBtn) { unBtn.hidden = false; unBtn.disabled = !published; }
-    if (pubBtn) { pubBtn.hidden = false; pubBtn.textContent = published ? 'Actualizar' : 'Publicar'; }
-    setArtifactDest((currentArtifact && currentArtifact.dest) || artifactDest, false);
-  }
+  function syncArtifactActions() {}
   function openArtifact(art, opts) {
     currentArtifact = art || { title: 'Artifact', content: '', lang: 'markdown', dest: artifactDest };
     if (!currentArtifact.dest) currentArtifact.dest = artifactDest;
@@ -1552,83 +1702,6 @@
       .replace(/^-+|-+$/g, '')
       .slice(0, 48);
   }
-  async function publishArtifact() {
-    readArtifactDraft();
-    if (!currentArtifact) return;
-    if (!requireAccount('publicar')) return;
-    if (!(currentArtifact.content || '').trim()) {
-      alert('Escribe algo en el editor antes de publicar.');
-      return;
-    }
-    var dest = artifactDest === 'guide' ? 'guide' : 'artifact';
-    currentArtifact.dest = dest;
-    currentArtifact.title = clampArtTitle(currentArtifact.title || '');
-    var handle = myHandle() || 'usuario';
-    var btn = document.getElementById('art-publish-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Publicando…'; }
-    try {
-      var res = await fetch('/api/artifact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-        body: JSON.stringify({
-          title: currentArtifact.title,
-          slug: currentArtifact.slug || '',
-          content: currentArtifact.content,
-          lang: currentArtifact.lang || 'markdown',
-          dest: dest,
-          extras: currentArtifact.extras || readArtExtras()
-        })
-      });
-      var data = await res.json().catch(function() { return {}; });
-      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
-      currentArtifact.slug = data.slug || slug;
-      currentArtifact.url = data.url;
-      currentArtifact.dest = data.dest || dest;
-      currentArtifact.handle = data.handle || handle;
-      if (data.user) {
-        currentUser = data.user;
-        try { localStorage.setItem('personal_ai_user', JSON.stringify(currentUser)); } catch (e) {}
-        updateUserUI();
-      }
-      syncArtifactActions();
-      if (data.url && navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(data.url).catch(function() {});
-      }
-      if (data.url) window.open(data.url, '_blank', 'noopener');
-      if (sidebarView === 'artifacts') loadPublishedArtifacts();
-    } catch (err) {
-      alert(err.message || 'No se pudo publicar');
-      if (btn) btn.textContent = 'Publicar';
-    } finally {
-      if (btn) btn.disabled = false;
-      syncArtifactActions();
-    }
-  }
-  async function unpublishArtifact() {
-    if (!currentArtifact || !currentArtifact.slug) return;
-    if (!requireAccount('despublicar')) return;
-    var dest = currentArtifact.dest === 'guide' ? 'guide' : 'artifact';
-    if (!window.confirm('¿Despublicar ' + (currentArtifact.url || currentArtifact.slug) + '?')) return;
-    var btn = document.getElementById('art-unpublish-btn');
-    if (btn) btn.disabled = true;
-    try {
-      var res = await fetch('/api/artifact/' + encodeURIComponent(currentArtifact.slug) + '?dest=' + dest, {
-        method: 'DELETE',
-        headers: { 'Authorization': 'Bearer ' + authToken }
-      });
-      var data = await res.json().catch(function() { return {}; });
-      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
-      currentArtifact.url = '';
-      currentArtifact.slug = '';
-      syncArtifactActions();
-      if (sidebarView === 'artifacts') loadPublishedArtifacts();
-    } catch (err) {
-      alert(err.message || 'No se pudo despublicar');
-    } finally {
-      if (btn) btn.disabled = false;
-    }
-  }
-
   async function handleSend() {
     if (isGenerating || shareReadOnly) return;
     var input = document.getElementById('prompt-input');
@@ -1687,43 +1760,37 @@
         }
         return;
       }
-      var customPrompt = localStorage.getItem('ta_custom_prompt') || '';
+      if (!server.loaded) await loadServerState();
+      if (server.d1 && !server.d1.ok) throw new Error('D1 資料庫未就緒，請依 README 綁定後重新部署');
       var provider = activeProvider();
-      if (!provider && serverDefaultProvider === false) throw new Error('請先在設定中新增供應商，或設定 GROQ_API_KEY');
+      if (!provider) { updateNoProviderBanner(); throw new Error('請先到「設定 → 供應商與模型」新增供應商'); }
       var headers = { 'Content-Type': 'application/json' };
       var snippets = [];
       if (localStorage.getItem('ta_use_docs') !== '0') {
-        // Send every applicable document (project ones first); the server
-        // inlines small sets and exposes larger ones through document_search.
         snippets = documents.filter(function(d) {
           return !currentProjectId || d.projectId === currentProjectId || !d.projectId;
         }).sort(function(x, y) { return (y.projectId === currentProjectId ? 1 : 0) - (x.projectId === currentProjectId ? 1 : 0); }).slice(0, 20).map(function(d) { return { title: d.title, content: String(d.content || '').slice(0, 20000) }; });
       }
-      var langInstr = t('replyLang');
-      var toneInstr = TONES[localStorage.getItem('ta_tone') || 'auto'] || '';
       var tzVal = localStorage.getItem('ta_timezone');
       var resolvedTz = (tzVal && tzVal !== 'auto') ? tzVal : (function() {
         try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei'; } catch(e) { return 'Asia/Taipei'; }
       })();
-      var resolvedModel = provider ? (provider.model || selectedModel) : (serverDefaultModel || selectedModel);
+      // Only ids, recent messages and toggles go up; the server loads the
+      // provider key, params, instructions and memory from D1.
       var payload = {
-          prompt: fullPrompt,
-          model: resolvedModel,
-          custom_prompt: [projectContext(), (window.TAP ? TAP.roleContext() : ''), langInstr, toneInstr, customPrompt].filter(Boolean).join('\n'),
+          chat_id: currentChatId,
+          provider_id: provider.id,
+          model: selectedModel || provider.default_model,
+          messages: chats[currentChatId].messages.slice(-24).map(function(m) {
+            return { role: m.role === 'user' ? 'user' : 'assistant', content: m.sent || m.content };
+          }).filter(function(m) { return m.content; }),
+          role_context: [projectContext(), (window.TAP ? TAP.roleContext() : '')].filter(Boolean).join('\n'),
           documents: snippets,
           search_web: isWebSearch && !pendingImage,
-          // Exclude the message we just pushed: it is sent as `prompt`.
-          chat_history: chats[currentChatId].messages.slice(0, -1).slice(-16).map(function(m) {
-            return { role: m.role, content: m.sent || m.content };
-          }),
           length_mode: currentLength,
           locale: (window.TA && TA.lang) ? TA.lang() : 'zh-TW',
-          timezone: resolvedTz,
-          client_time: new Date().toISOString(),
-          adapt: adaptEnabled(),
-          profile: adaptEnabled() ? loadLocalProfile() : undefined
+          timezone: resolvedTz
         };
-      if (provider) payload.provider = { baseUrl: provider.baseUrl, apiKey: provider.apiKey, model: provider.model || selectedModel };
       if (pendingImage) payload.image = { dataUrl: pendingImage };
       var response = await fetch('/api/chat', {
         method: 'POST',
@@ -1745,7 +1812,7 @@
       var toolSteps = [];
       var notices = [];
       var streamError = null;
-      var TOOL_NAMES_UI = { web_search: '搜尋網頁', fetch_url: '讀取網頁', calculate: '計算', current_time: '查詢時間', document_search: '搜尋文件' };
+      var TOOL_NAMES_UI = { web_search: '搜尋網頁', fetch_url: '讀取網頁', calculate: '計算', current_time: '查詢時間', document_search: '搜尋文件', remember: '記住', forget: '忘記', recall: '回想記憶' };
       function toolHtml() {
         if (!toolSteps.length) return '';
         return '<div class="tool-steps" style="font-size:0.78rem;color:var(--dim);margin-bottom:8px;display:flex;flex-direction:column;gap:2px">' +
@@ -1773,8 +1840,7 @@
           return;
         }
         if (p.sources) sources = p.sources;
-        if (p.profile) saveLocalProfile(p.profile);
-        if (p.remembered && p.remembered.length) rememberedFacts = p.remembered;
+        if (p.memory && p.memory.op === 'remember' && p.memory.text) rememberedFacts.push(p.memory.text);
         if (p.notice) { notices.push(String(p.notice)); paint(false); }
         if (p.tool && p.tool.id) {
           var found = null;
@@ -1821,7 +1887,7 @@
         var srcBox = document.createElement('div');
         srcBox.className = 'sources-box';
         srcBox.innerHTML = '<div class="sources-title">' + t('sources') + '</div><div class="sources-list">' +
-          sources.map(function(s) { return '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener" class="source-tag">' + escapeHtml(s.title) + '</a>'; }).join('') +
+          sources.filter(function(s) { return s && /^https?:\/\//i.test(String(s.url || '')); }).map(function(s) { return '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener noreferrer" class="source-tag">' + escapeHtml(s.title || s.url) + '</a>'; }).join('') +
           '</div>';
         contentCol.appendChild(srcBox);
       }
@@ -1877,8 +1943,8 @@
     if (abortCtl) abortCtl.abort();
   }
   function currentModelMeta() {
-    for (var i = 0; i < MODELS.length; i++) if (MODELS[i].id === selectedModel) return MODELS[i];
-    return { id: selectedModel, name: selectedModel || MODELS[0].name, desc: '' };
+    for (var i = 0; i < MODELS.length; i++) if (MODELS[i].providerId === selectedProviderId && MODELS[i].model === selectedModel) return MODELS[i];
+    return { id: '', name: selectedModel || (server.loaded ? '尚未設定模型' : '…'), desc: '' };
   }
   function renderModelPicker() {
     var label = document.getElementById('model-picker-label');
@@ -1886,15 +1952,36 @@
     var meta = currentModelMeta();
     if (label) label.textContent = meta.name;
     if (!menu) return;
-    menu.innerHTML = MODELS.map(function(m) {
-      return '<button type="button" class="model-option' + (m.id === selectedModel ? ' active' : '') + '" data-model="' + m.id + '" role="option">' +
-        '<div class="model-option-name">' + m.name + '</div>' +
-        '<div class="model-option-desc">' + t(m.desc) + '</div></button>';
-    }).join('');
+    // Model ids come from providers: build with textContent, never innerHTML.
+    menu.innerHTML = '';
+    if (!MODELS.length) {
+      var none = document.createElement('button');
+      none.type = 'button'; none.className = 'model-option'; none.setAttribute('data-open-settings', 'pane-providers');
+      none.textContent = '新增供應商…';
+      menu.appendChild(none);
+      return;
+    }
+    MODELS.forEach(function(m) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'model-option' + (m.providerId === selectedProviderId && m.model === selectedModel ? ' active' : '');
+      b.setAttribute('data-model', m.id);
+      b.setAttribute('role', 'option');
+      var n = document.createElement('div'); n.className = 'model-option-name'; n.textContent = m.name;
+      var d = document.createElement('div'); d.className = 'model-option-desc'; d.textContent = m.desc || '';
+      b.appendChild(n); b.appendChild(d);
+      menu.appendChild(b);
+    });
   }
-  function setModel(id) {
-    selectedModel = id;
-    try { localStorage.setItem('ta_model', id); } catch(e) {}
+  function setModel(key) {
+    var entry = null;
+    for (var i = 0; i < MODELS.length; i++) if (MODELS[i].id === key) entry = MODELS[i];
+    if (entry) {
+      var changed = entry.providerId !== selectedProviderId || entry.model !== selectedModel;
+      selectedProviderId = entry.providerId;
+      selectedModel = entry.model;
+      if (changed) { rebuildModels(); persistActive(); }
+    }
     renderModelPicker();
     var picker = document.getElementById('model-picker');
     if (picker) picker.classList.remove('open');
@@ -1925,26 +2012,11 @@
     TA.mountPicker(document.getElementById('lang-select'));
     TA.mountPicker(document.getElementById('set-lang'));
   }
-  function exportChat() {
-    var chat = chats[currentChatId];
-    if (!chat || !chat.messages || !chat.messages.length) return;
-    var md = '# ' + (chat.title || 'Personal AI') + '\n\n';
-    chat.messages.forEach(function(m) {
-      md += '## ' + (m.role === 'user' ? 'User' : 'Personal AI') + '\n\n' + (m.content || '') + '\n\n';
-    });
-    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = (chat.title || 'personal-ai').replace(/[^\w\-]+/g, '_').slice(0, 40) + '.md';
-    a.click();
-    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
-  }
   function commandItems() {
     return [
       { id: 'new', label: t('newChat'), hint: '⌘K', run: startNewChat },
       { id: 'temp', label: t('tempChat'), hint: '⌘⇧N', run: startTempChat },
       { id: 'settings', label: t('settings'), hint: '⌘,', run: function() { openSettingsModal('pane-general'); } },
-      { id: 'export', label: t('exportChat'), run: exportChat },
       { id: 'search', label: t('searchPh'), run: function() { var s = document.getElementById('history-search'); if (s) { toggleSidebar(true); s.focus(); } } }
     ];
   }
@@ -2097,7 +2169,7 @@
     var inp = document.getElementById('prompt-input');
     if (btn) {
       if (isImageMode) { btn.classList.add('active-purple'); if (inp) inp.placeholder = 'Describe la imagen…'; }
-      else { btn.classList.remove('active-purple'); if (inp) inp.placeholder = 'Pregunta lo que quieras…'; }
+      else { btn.classList.remove('active-purple'); if (inp) inp.placeholder = t('askPh'); }
     }
   }
   function toggleSidebar(open) {
@@ -2125,8 +2197,7 @@
       var el = document.getElementById('tab-' + v);
       if (el) { if (v === view) el.classList.add('active'); else el.classList.remove('active'); }
     });
-    if (view === 'artifacts') loadPublishedArtifacts();
-    else renderSidebar();
+    renderSidebar();
   }
 
   function renderSidebar(filterText) {
@@ -2136,144 +2207,8 @@
     list.innerHTML = '';
     if (sidebarView === 'projects') return renderProjectsList(list, filterText);
     if (sidebarView === 'docs') return renderDocsList(list, filterText);
-    if (sidebarView === 'artifacts') return renderArtifactsList(list, filterText);
     if (sidebarView === 'prompts') { if (window.TAP) TAP.renderSidebar(list, filterText); return; }
     renderHistoryList(list, filterText);
-  }
-
-  async function loadPublishedArtifacts() {
-    if (!authToken) {
-      publishedArtifacts = [];
-      renderSidebar();
-      return;
-    }
-    try {
-      var res = await fetch('/api/artifact', { headers: { 'Authorization': 'Bearer ' + authToken } });
-      var data = await res.json().catch(function() { return {}; });
-      publishedArtifacts = Array.isArray(data.artifacts) ? data.artifacts : [];
-      if (data.handle && currentUser) {
-        currentUser.handle = data.handle;
-        try { localStorage.setItem('personal_ai_user', JSON.stringify(currentUser)); } catch (e2) {}
-        updateUserUI();
-      }
-    } catch (e) {
-      publishedArtifacts = [];
-    }
-    renderSidebar();
-  }
-
-  async function openPublishedArtifact(slug, dest) {
-    if (!authToken || !slug) return;
-    try {
-      var res = await fetch('/api/artifact/' + encodeURIComponent(slug) + '?dest=' + encodeURIComponent(dest || 'artifact'), {
-        headers: { 'Authorization': 'Bearer ' + authToken }
-      });
-      var data = await res.json().catch(function() { return {}; });
-      if (!res.ok || !data.artifact) throw new Error(data.error || 'No se pudo abrir');
-      var rec = data.artifact;
-      openArtifact({
-        title: rec.title,
-        content: rec.content,
-        lang: rec.lang || 'markdown',
-        slug: rec.slug,
-        url: rec.url,
-        dest: rec.dest || 'artifact',
-        handle: rec.handle || '',
-        extras: rec.extras || { sources: [], resources: [], widgets: [] }
-      }, { focus: true });
-    } catch (err) {
-      alert(err.message || 'No se pudo abrir el artifact');
-    }
-  }
-
-  function renderArtifactsList(list, filterText) {
-    var neu = document.createElement('button');
-    neu.type = 'button';
-    neu.className = 'new-chat-btn';
-    neu.style.margin = '4px 4px 6px';
-    neu.innerHTML = '<span>+ Nuevo artifact</span>';
-    neu.addEventListener('click', function() {
-      openArtifact({ title: 'Artifact', content: '', lang: 'markdown' }, { focus: true });
-    });
-    list.appendChild(neu);
-    var head = document.createElement('a');
-    head.href = '/artifact';
-    head.target = '_blank';
-    head.rel = 'noopener';
-    head.className = 'new-chat-btn ghost';
-    head.style.margin = '0 4px 10px';
-    head.style.textDecoration = 'none';
-    head.innerHTML = '<span>Ver página pública</span>';
-    list.appendChild(head);
-    if (!authToken) {
-      var need = document.createElement('div');
-      need.className = 'empty-side';
-      need.textContent = 'Crea una cuenta o inicia sesión. Solo verás lo tuyo, firmado con @usuario.';
-      list.appendChild(need);
-      return;
-    }
-    var filtered = publishedArtifacts.filter(function(a) {
-      if (!filterText) return true;
-      return (a.title || '').toLowerCase().includes(filterText) || (a.slug || '').toLowerCase().includes(filterText);
-    });
-    if (!filtered.length) {
-      var emptyA = document.createElement('div');
-      emptyA.className = 'empty-side';
-      emptyA.textContent = 'Aún no has publicado artifacts.';
-      list.appendChild(emptyA);
-      return;
-    }
-    filtered.forEach(function(a) {
-      var item = document.createElement('div');
-      item.className = 'doc-item art-row';
-      var top = document.createElement('div');
-      var title = document.createElement('span');
-      title.className = 'doc-title';
-      title.textContent = a.title || a.slug;
-      top.appendChild(title);
-      item.appendChild(top);
-      var slugEl = document.createElement('div');
-      slugEl.className = 'art-row-slug';
-      var destLabel = a.dest === 'guide' ? 'Guides' : 'Library';
-      slugEl.innerHTML = '<span class="art-row-dest">' + destLabel + '</span> · ' +
-        escapeHtml((a.handle ? '@' + a.handle + '/' : '') + a.slug);
-      item.appendChild(slugEl);
-      var actions = document.createElement('div');
-      actions.className = 'art-row-actions';
-      var openPub = document.createElement('button');
-      openPub.type = 'button';
-      openPub.className = 'topbar-action-btn';
-      openPub.textContent = 'Abrir';
-      openPub.addEventListener('click', function(e) {
-        e.stopPropagation();
-        window.open(a.url || (a.dest === 'guide'
-          ? ('https://guides.personal-ai.workers.dev/u/@' + (a.handle || '') + '/' + a.slug)
-          : ('/library/' + a.slug)), '_blank', 'noopener');
-      });
-      var preview = document.createElement('button');
-      preview.type = 'button';
-      preview.className = 'topbar-action-btn';
-      preview.textContent = 'Ver';
-      preview.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openPublishedArtifact(a.slug, a.dest);
-      });
-      var del = document.createElement('button');
-      del.type = 'button';
-      del.className = 'topbar-action-btn';
-      del.textContent = 'Despublicar';
-      del.addEventListener('click', function(e) {
-        e.stopPropagation();
-        currentArtifact = { title: a.title, slug: a.slug, url: a.url, content: '', lang: a.lang, dest: a.dest || 'artifact', handle: a.handle };
-        unpublishArtifact().then(function() { loadPublishedArtifacts(); });
-      });
-      actions.appendChild(preview);
-      actions.appendChild(openPub);
-      actions.appendChild(del);
-      item.appendChild(actions);
-      item.addEventListener('click', function() { openPublishedArtifact(a.slug, a.dest); });
-      list.appendChild(item);
-    });
   }
 
   function renderHistoryList(list, filterText) {
@@ -2855,76 +2790,17 @@
       b.classList.toggle('active', b.getAttribute('data-value') === value);
     });
   }
-  function planLabel() {
-    if (localStorage.getItem('ta_custom_key')) return 'BYOK';
-    if (currentUser && currentUser.tier === 'enterprise') return 'ENTERPRISE';
-    return 'FREE';
-  }
-  function refreshUsagePane() {}
-  var ideaCat = 'feat';
-  function submitIdea() {
-    var textEl = document.getElementById('idea-text');
-    var mailEl = document.getElementById('idea-email');
-    var status = document.getElementById('idea-status');
-    var text = textEl ? textEl.value.trim() : '';
-    if (text.length < 8) {
-      if (status) status.textContent = t('ideaTooShort');
-      return;
-    }
-    var btn = document.getElementById('idea-send-btn');
-    if (btn) btn.disabled = true;
-    if (btn && btn.getAttribute('data-ticket')) {
-      fetch('/api/mail/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ticket: btn.getAttribute('data-ticket'), website: (document.getElementById('idea-website') || {}).value || '' })
-      }).then(function(r) { return r.json().then(function(d) { return { ok: r.ok, d: d }; }); })
-        .then(function(res) {
-          if (status) status.textContent = res.ok ? t('ideasOk') : (res.d.error || t('ideasErr'));
-          if (res.ok && textEl) textEl.value = '';
-          if (btn) { btn.removeAttribute('data-ticket'); btn.textContent = t('ideasSend') || 'Enviar a Owner'; }
-        })
-        .catch(function() { if (status) status.textContent = t('ideasErr'); })
-        .then(function() { if (btn) btn.disabled = false; });
-      return;
-    }
-    fetch('/api/ideas', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        idea: text,
-        email: (mailEl && mailEl.value) || (currentUser && currentUser.email) || '',
-        name: (currentUser && currentUser.name) || '',
-        cat: ideaCat,
-        website: (document.getElementById('idea-website') || {}).value || ''
-      })
-    }).then(function(r) { return r.json().then(function(d) { return { ok: r.ok, d: d }; }); })
-      .then(function(res) {
-        if (res.ok && res.d && res.d.needsClick && res.d.ticket) {
-          if (btn) { btn.setAttribute('data-ticket', res.d.ticket); btn.textContent = 'Haz clic para enviar el correo'; btn.disabled = false; }
-          if (status) status.textContent = 'Confirma que eres una persona: pulsa el botón otra vez para enviar.';
-          return;
-        }
-        if (status) status.textContent = res.ok ? t('ideasOk') : (res.d.message || t('ideasErr'));
-        if (res.ok && textEl) textEl.value = '';
-        if (btn) btn.disabled = false;
-      })
-      .catch(function() { if (status) status.textContent = t('ideasErr'); if (btn) btn.disabled = false; });
-  }
   function openSettingsModal(tab) {
     if (typeof tab !== 'string') tab = 'pane-general';
-    var kEl = document.getElementById('user-groq-key');
+    var prefs = (server.settings && server.settings.prefs) || {};
     var pEl = document.getElementById('custom-system-prompt');
-    if (kEl) kEl.value = localStorage.getItem('ta_custom_key') || '';
-    if (pEl) pEl.value = localStorage.getItem('ta_custom_prompt') || '';
+    if (pEl) pEl.value = prefs.custom_prompt || '';
     var enterEl = document.getElementById('set-enter-send');
     var autoEl = document.getElementById('set-auto-search');
     if (enterEl) enterEl.checked = localStorage.getItem('ta_enter_send') !== '0';
     if (autoEl) autoEl.checked = localStorage.getItem('ta_auto_search') === '1';
     var autoReadEl = document.getElementById('set-auto-read');
     if (autoReadEl) autoReadEl.checked = localStorage.getItem('ta_auto_read') === '1';
-    var ideaMail = document.getElementById('idea-email');
-    if (ideaMail && currentUser && currentUser.email && !ideaMail.value) ideaMail.value = currentUser.email;
     var timeEl = document.getElementById('set-show-time');
     var confEl = document.getElementById('set-confirm-del');
     var compactEl = document.getElementById('set-compact-sb');
@@ -2936,66 +2812,45 @@
     if (compactEl) compactEl.checked = localStorage.getItem('ta_compact_sb') === '1';
     if (motionEl) motionEl.checked = localStorage.getItem('ta_reduce_motion') === '1';
     if (docsEl) docsEl.checked = localStorage.getItem('ta_use_docs') !== '0';
-    var adaptEl = document.getElementById('set-adapt');
-    if (adaptEl) adaptEl.checked = adaptEnabled();
-    pullProfile();
     if (ephEl) ephEl.checked = localStorage.getItem('ta_ephemeral') === '1';
     setChoice('ta_theme', localStorage.getItem('ta_theme') || 'dark');
     setChoice('ta_accent', localStorage.getItem('ta_accent') || 'auto');
     setChoice('ta_font', localStorage.getItem('ta_font') || 'md');
     setChoice('ta_len_mode', localStorage.getItem('ta_len_mode') || 'normal');
-    setChoice('ta_tone', localStorage.getItem('ta_tone') || 'auto');
+    setChoice('ta_tone', prefs.tone || 'auto');
     if (window.TA && TA.mountPicker) TA.mountPicker(document.getElementById('set-lang'));
     var modelSel = document.getElementById('set-default-model');
     if (modelSel) {
-      modelSel.innerHTML = MODELS.map(function(m) {
-        return '<option value="' + m.id + '"' + (m.id === selectedModel ? ' selected' : '') + '>' + m.name + '</option>';
-      }).join('');
+      modelSel.innerHTML = '';
+      MODELS.forEach(function(m) {
+        var o = document.createElement('option');
+        o.value = m.id; o.textContent = m.name + (m.desc ? ' · ' + m.desc : '');
+        if (m.providerId === selectedProviderId && m.model === selectedModel) o.selected = true;
+        modelSel.appendChild(o);
+      });
     }
-    var guest = document.getElementById('account-guest');
-    var authed = document.getElementById('account-authed');
-    if (currentUser && authToken) {
-      if (guest) guest.style.display = 'none';
-      if (authed) authed.style.display = 'block';
-      var nameIn = document.getElementById('set-display-name');
-      if (nameIn) nameIn.value = currentUser.name || '';
-      var emailIn = document.getElementById('account-email-display');
-      if (emailIn) emailIn.textContent = currentUser.email || '';
-      var np = document.getElementById('set-notify-product');
-      var ns = document.getElementById('set-notify-security');
-      if (np) np.checked = currentUser.notifyProduct !== false;
-      if (ns) ns.checked = currentUser.notifySecurity !== false;
-      var nd = document.getElementById('set-notify-digest');
-      if (nd) nd.checked = currentUser.notifyDigest === true;
-      var curPass = document.getElementById('set-cur-pass');
-      var neu = document.getElementById('set-new-pass');
-      if (curPass) { curPass.value = ''; curPass.placeholder = t('currentPassword'); }
-      if (neu) { neu.value = ''; neu.placeholder = t('newPassword'); }
-      var passWrap = document.getElementById('password-fields');
-      var oauthHint = document.getElementById('oauth-pass-hint');
-      var oauthOnly = !currentUser.hasPassword && currentUser.provider && currentUser.provider !== 'email';
-      if (passWrap) passWrap.style.display = oauthOnly ? 'none' : 'block';
-      if (oauthHint) {
-        oauthHint.style.display = oauthOnly ? 'block' : 'none';
-        oauthHint.textContent = currentUser.provider === 'x' ? t('linkedX') : t('linkedGoogle');
-      }
-    } else {
-      if (guest) guest.style.display = 'block';
-      if (authed) authed.style.display = 'none';
-    }
+    var curPass = document.getElementById('set-cur-pass');
+    var neu = document.getElementById('set-new-pass');
+    var neu2 = document.getElementById('set-new-pass2');
+    [curPass, neu, neu2].forEach(function(el) { if (el) el.value = ''; });
+    var vh = document.getElementById('app-version-hint');
+    if (vh) vh.textContent = 'Personal AI ' + (server.version || '');
     var st = document.getElementById('settings-status');
     if (st) st.style.display = 'none';
-    refreshUsagePane();
+    renderProviderList();
+    fillParamsPane();
+    fillSearchPane();
+    renderMemoryPane();
+    if (server.loaded) loadMemories();
+    if (window.PAI_onSettingsOpen) try { window.PAI_onSettingsOpen(); } catch (e) {}
     showSettingsPane(tab || 'pane-general');
     openModal('modal-settings');
   }
   async function saveSettings() {
-    var kEl = document.getElementById('user-groq-key');
     var pEl = document.getElementById('custom-system-prompt');
-    var k = kEl ? kEl.value.trim() : '';
     var p = pEl ? pEl.value.trim() : '';
-    if (k) localStorage.setItem('ta_custom_key', k); else localStorage.removeItem('ta_custom_key');
-    if (p) localStorage.setItem('ta_custom_prompt', p); else localStorage.removeItem('ta_custom_prompt');
+    var toneBtn = document.querySelector('[data-pref="ta_tone"].active');
+    var tone = toneBtn ? toneBtn.getAttribute('data-value') : 'auto';
     var enterEl = document.getElementById('set-enter-send');
     var autoEl = document.getElementById('set-auto-search');
     localStorage.setItem('ta_enter_send', enterEl && enterEl.checked ? '1' : '0');
@@ -3021,53 +2876,47 @@
     if (autoEl) isWebSearch = !!autoEl.checked;
     var webBtn = document.getElementById('web-search-pill');
     if (webBtn) { if (isWebSearch) webBtn.classList.add('active'); else webBtn.classList.remove('active'); }
-    updateUserUI();
     scheduleSync();
     var st = document.getElementById('settings-status');
-    if (st) { st.textContent = t('saved'); st.style.display = 'block'; }
-    setTimeout(function() { closeModal('modal-settings'); }, 500);
+    try {
+      if (server.loaded) {
+        var d = await apiJson('/api/settings', { method: 'PUT', body: { prefs: { custom_prompt: p, tone: tone === 'auto' ? '' : tone } } });
+        server.settings = d.settings;
+      }
+      if (st) { st.textContent = t('saved'); st.style.display = 'block'; }
+      setTimeout(function() { closeModal('modal-settings'); }, 500);
+    } catch (e) {
+      if (st) { st.textContent = e.message || '儲存失敗'; st.style.display = 'block'; }
+    }
   }
   async function changePasswordFromSettings() {
-    if (!authToken) return;
     var cur = (document.getElementById('set-cur-pass') || {}).value || '';
     var neu = (document.getElementById('set-new-pass') || {}).value || '';
-    if (neu.length < 6) return alert(t('newPassword'));
+    var neu2 = (document.getElementById('set-new-pass2') || {}).value || '';
+    var st = document.getElementById('pass-status');
+    var say = function(text, bad) { if (st) { st.textContent = text; st.style.color = bad ? 'var(--red)' : 'var(--green)'; } };
+    if (neu.length < 8) return say('新密碼至少 8 個字元', true);
+    if (neu !== neu2) return say('兩次輸入的新密碼不同', true);
     try {
-      var res = await fetch('/api/auth/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-        body: JSON.stringify({ currentPassword: cur, newPassword: neu })
-      });
-      var data = await res.json();
-      if (!res.ok) throw new Error(data.error || t('error'));
-      document.getElementById('set-cur-pass').value = '';
-      document.getElementById('set-new-pass').value = '';
-      var st = document.getElementById('settings-status');
-      if (st) { st.textContent = t('saved'); st.style.display = 'block'; }
-    } catch (err) { alert(err.message); }
+      await apiJson('/api/password', { method: 'POST', body: { current: cur, next: neu } });
+      ['set-cur-pass', 'set-new-pass', 'set-new-pass2'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+      say('密碼已變更。下次登入請使用新密碼。', false);
+    } catch (err) { say(err.message || '變更失敗', true); }
   }
-  async function deleteAccountFromSettings() {
-    if (!authToken) return;
-    if (!confirm(t('deleteConfirm'))) return;
-    var oauthOnly = currentUser && !currentUser.hasPassword && currentUser.provider && currentUser.provider !== 'email';
-    var pw = oauthOnly ? '' : (prompt(t('currentPassword')) || '');
+  async function clearAllData() {
+    var st = document.getElementById('clear-all-status');
+    var phrase = prompt('這會刪除 D1 與這個瀏覽器中的所有資料（登入密碼保留），無法復原。\n請輸入「清除所有資料」確認：');
+    if (phrase === null) return;
+    if (phrase.trim() !== '清除所有資料') { if (st) st.textContent = '確認文字不符，未執行'; return; }
     try {
-      var res = await fetch('/api/auth/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-        body: JSON.stringify({ password: pw })
-      });
-      var data = await res.json();
-      if (!res.ok) throw new Error(data.error || t('error'));
-      logout();
-    } catch (err) { alert(err.message); }
-  }
-  function openProfileModal() {
-    openSettingsModal('pane-account');
+      await apiJson('/api/data/clear', { method: 'POST', body: { confirm: '清除所有資料' } });
+      var keep = { ta_theme: 1, ta_accent: 1, ta_font: 1, ta_lang: 1 };
+      Object.keys(localStorage).forEach(function(k) { if (!keep[k]) { try { localStorage.removeItem(k); } catch (e) {} } });
+      location.reload();
+    } catch (e) { if (st) { st.textContent = e.message || '清除失敗'; st.style.color = 'var(--red)'; } }
   }
   function logout() {
     authToken = ''; currentUser = null;
-    publishedArtifacts = [];
     try { fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).catch(function() {}); } catch (e) {}
     setTimeout(function() { location.href = '/login'; }, 120);
   }
@@ -3076,67 +2925,10 @@
     var tierEl = document.getElementById('user-display-tier');
     var topText = document.getElementById('topbar-auth-text');
     var letter = document.getElementById('user-letter');
-    var topLetter = document.getElementById('topbar-letter');
-    var topBtn = document.getElementById('topbar-auth-btn');
-    if (currentUser && authToken) {
-      var name = currentUser.name || currentUser.email;
-      if (nameEl) nameEl.textContent = name;
-      if (tierEl) {
-        if (currentUser.handle) tierEl.textContent = '@' + currentUser.handle;
-        else tierEl.textContent = currentUser.tier === 'enterprise' ? 'Enterprise' : t('verified');
-      }
-      if (topText) topText.textContent = name.split(' ')[0];
-      if (letter) letter.textContent = (name[0] || 'T').toUpperCase();
-      if (topLetter) { topLetter.hidden = false; topLetter.textContent = (name[0] || 'T').toUpperCase(); }
-      if (topBtn) { topBtn.classList.remove('primary'); topBtn.classList.add('topbar-user-btn'); }
-      var navOut = document.getElementById('nav-logout-btn');
-      if (navOut) navOut.hidden = false;
-    } else {
-      var byok = localStorage.getItem('ta_custom_key');
-      if (byok) {
-        if (nameEl) nameEl.textContent = 'BYOK';
-        if (tierEl) tierEl.textContent = t('unlimited');
-        if (topText) topText.textContent = 'BYOK';
-      } else {
-        if (nameEl) nameEl.textContent = t('guest');
-        if (tierEl) tierEl.textContent = t('tokensDay');
-        if (topText) topText.textContent = t('access');
-      }
-      if (letter) letter.textContent = 'T';
-      if (topLetter) topLetter.hidden = true;
-      if (topBtn) { topBtn.classList.add('primary'); topBtn.classList.remove('topbar-user-btn'); }
-      var navOut2 = document.getElementById('nav-logout-btn');
-      if (navOut2) navOut2.hidden = true;
-    }
-  }
-
-  function openProvidersModal() { renderCustomProviders(); openModal('modal-providers'); }
-  function renderCustomProviders() {
-    var box = document.getElementById('custom-conn-list');
-    if (!box) return;
-    if (!customProviders.length) { box.innerHTML = '<div class="empty-side">Sin webhooks propios.</div>'; return; }
-    box.innerHTML = customProviders.map(function(c, i) {
-      return '<div class="connector-card" style="padding:8px 10px"><div class="connector-info"><div class="connector-name">' + escapeHtml(c.name) + '</div>' +
-        '<div class="connector-desc" style="font-family:var(--mono)">' + escapeHtml(c.url) + '</div></div>' +
-        '<button data-del-conn-idx="' + i + '" class="del-conn-btn mini-x" style="opacity:1" type="button">✕</button></div>';
-    }).join('');
-  }
-  function addCustomConnector() {
-    var nameEl = document.getElementById('custom-conn-name');
-    var urlEl = document.getElementById('custom-conn-url');
-    var name = nameEl ? nameEl.value.trim() : '';
-    var url = urlEl ? urlEl.value.trim() : '';
-    if (!name || !url) return alert('Nombre y URL.');
-    customProviders.push({ name: name, url: url, active: true });
-    try { localStorage.setItem('ta_providers', JSON.stringify(customProviders)); } catch(e) {}
-    if (nameEl) nameEl.value = '';
-    if (urlEl) urlEl.value = '';
-    renderCustomProviders();
-  }
-  function deleteConnector(idx) {
-    customProviders.splice(idx, 1);
-    try { localStorage.setItem('ta_providers', JSON.stringify(customProviders)); } catch(e) {}
-    renderCustomProviders();
+    if (nameEl) nameEl.textContent = 'Owner';
+    if (tierEl) tierEl.textContent = server.d1 && !server.d1.ok ? 'D1 未就緒' : (activeProvider() ? (activeProvider().name) : '尚未設定供應商');
+    if (topText) topText.textContent = '設定';
+    if (letter) letter.textContent = 'O';
   }
 
   function openKnowledgeModal() { renderKnowledgeList(); openModal('modal-knowledge'); }
@@ -3145,7 +2937,7 @@
     var box = document.getElementById('knowledge-list-box');
     if (count) count.textContent = documents.length;
     if (!box) return;
-    if (!documents.length) { box.innerHTML = '<div class="empty-side">Sin documentos.</div>'; return; }
+    if (!documents.length) { box.innerHTML = '<div class="empty-side">沒有文件。</div>'; return; }
     box.innerHTML = documents.map(function(item) {
       return '<div style="background:var(--elev);border:1px solid var(--line);padding:6px 8px;border-radius:8px;display:flex;justify-content:space-between;gap:8px">' +
         '<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:0.75rem">' + escapeHtml(item.title) + '</div>' +
@@ -3157,8 +2949,8 @@
     var contentEl = document.getElementById('train-content');
     var title = titleEl ? titleEl.value.trim() : '';
     var content = contentEl ? contentEl.value.trim() : '';
-    if (!content) return alert('Introduce contenido.');
-    addDocument({ title: title || 'Nota', content: content, type: 'note' });
+    if (!content) return alert('請輸入內容。');
+    addDocument({ title: title || '筆記', content: content, type: 'note' });
     if (titleEl) titleEl.value = '';
     if (contentEl) contentEl.value = '';
     renderKnowledgeList();
@@ -3191,58 +2983,6 @@
     renderSidebar();
   }
 
-  async function openShareModal() {
-    var chat = chats[currentChatId];
-    if (!chat || !Array.isArray(chat.messages) || !chat.messages.length) return alert('No hay mensajes para compartir.');
-    var input = document.getElementById('share-link-input');
-    var toast = document.getElementById('share-toast');
-    if (input) input.value = 'Generando enlace…';
-    if (toast) toast.style.display = 'none';
-    openModal('modal-share');
-    try {
-      var modelEl = document.getElementById('model-select');
-      var res = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: chat.title || 'Conversación en Personal AI', messages: chat.messages, model: modelEl ? modelEl.value : 'openai/gpt-oss-120b' })
-      });
-      var d = await res.json();
-      if (!res.ok || !d.ok) throw new Error(d.error || 'Error');
-      if (input) { input.value = d.shareUrl; input.select(); }
-      await navigator.clipboard.writeText(d.shareUrl).catch(function() {});
-      if (toast) toast.style.display = 'block';
-    } catch(e) {
-      if (input) input.value = '產生連結失敗';
-    }
-  }
-  function copyShareLink() {
-    var input = document.getElementById('share-link-input');
-    if (input && input.value && !input.value.startsWith('Error')) {
-      navigator.clipboard.writeText(input.value);
-      var toast = document.getElementById('share-toast');
-      if (toast) toast.style.display = 'block';
-      var btn = document.getElementById('share-copy-btn');
-      if (btn) { btn.textContent = 'Copiado'; setTimeout(function() { btn.textContent = 'Copiar'; }, 1800); }
-    }
-  }
-
-  async function loadSharedIfNeeded() {
-    var m = location.pathname.match(/^\/share\/([^/]+)/);
-    if (!m) return;
-    try {
-      var res = await fetch('/api/share/' + encodeURIComponent(m[1]));
-      var d = await res.json();
-      if (d.ok && d.chat) {
-        shareReadOnly = true;
-        currentChatId = 'shared_' + m[1];
-        chats[currentChatId] = { title: d.chat.title || 'Compartida', messages: d.chat.messages || [], readOnly: true };
-        loadChatView();
-        var inp = document.getElementById('prompt-input');
-        if (inp) { inp.disabled = true; inp.placeholder = 'Conversación compartida (solo lectura)'; }
-      }
-    } catch(e) {}
-  }
-
   function initApp() {
     try {
       setLengthMode(currentLength);
@@ -3252,30 +2992,29 @@
       applyI18n();
       var syncBtn = document.getElementById('sync-now-btn');
       if (syncBtn) syncBtn.addEventListener('click', syncNow);
+      initMemoryPane();
+      initSearchPane();
       fetch('/api/me', { credentials: 'same-origin' })
         .then(function(r) {
           if (r.status === 401) { location.href = '/login'; return null; }
           return r.json();
         })
         .then(function(d) {
-          if (d && d.user) {
-            currentUser = d.user;
-            syncMeta.enabled = !!(d.config && d.config.sync);
-            serverDefaultProvider = !!(d.config && d.config.defaultProvider);
-            serverDefaultModel = (d.config && d.config.defaultModel) || '';
-            if (!activeProvider() && serverDefaultModel) setModel(serverDefaultModel);
-            var defaultHint = document.getElementById('server-default-hint');
-            if (defaultHint) defaultHint.textContent = serverDefaultProvider ? ('已啟用伺服器預設 Groq（' + (serverDefaultModel || 'openai/gpt-oss-120b') + '）；仍可在下方新增自訂供應商。') : '目前未設定伺服器預設 Groq；請在下方新增 OpenAI 相容供應商。';
-            updateUserUI();
-            setArtifactDest(artifactDest, false);
-            syncBootstrap();
-          }
-        }).catch(function() {});
+          if (!d || !d.user) return;
+          currentUser = d.user;
+          server.d1 = (d.config && d.config.d1) || { ok: false, error: 'D1 未綁定' };
+          server.version = (d.config && d.config.version) || '';
+          syncMeta.enabled = !!server.d1.ok;
+          updateNoProviderBanner();
+          if (!server.d1.ok) { updateUserUI(); setSyncStatus('D1 未就緒，同步停用', true); return; }
+          setArtifactDest(artifactDest, false);
+          loadServerState().then(function() { updateUserUI(); });
+          syncBootstrap();
+        }).catch(function(e) { console.error('bootstrap failed', e); });
       if (isWebSearch) {
         var wsb = document.getElementById('web-search-pill');
         if (wsb) wsb.classList.add('active');
       }
-      loadSharedIfNeeded();
     } catch(initErr) { console.error('Init error:', initErr); }
 
     var newChatBtn = document.getElementById('new-chat-btn');
@@ -3321,21 +3060,11 @@
       }
       openSettingsModal(tab);
     });
-    var openProvidersBtn = document.getElementById('open-providers-btn');
-    if (openProvidersBtn) openProvidersBtn.addEventListener('click', openProvidersModal);
-    var openRewriteBtn = document.getElementById('open-rewrite-btn');
-    if (openRewriteBtn) openRewriteBtn.addEventListener('click', function() { openModal('modal-rewrite'); });
-    var quickProvidersPill = document.getElementById('quick-providers-pill');
-    if (quickProvidersPill) quickProvidersPill.addEventListener('click', openProvidersModal);
-    var openShareBtn = document.getElementById('open-share-btn');
-    if (openShareBtn) openShareBtn.addEventListener('click', openShareModal);
     var sendBtn = document.getElementById('send-btn');
     if (sendBtn) sendBtn.addEventListener('click', function() {
       if (isGenerating) abortGeneration();
       else handleSend();
     });
-    var exportBtn = document.getElementById('export-chat-btn');
-    if (exportBtn) exportBtn.addEventListener('click', exportChat);
     var pickerBtn = document.getElementById('model-picker-btn');
     var picker = document.getElementById('model-picker');
     if (pickerBtn && picker) {
@@ -3373,41 +3102,6 @@
     if (micBtn) micBtn.addEventListener('click', toggleSpeech);
     var speakLastBtn = document.getElementById('speak-last-btn');
     if (speakLastBtn) speakLastBtn.addEventListener('click', speakLastReply);
-    var ideaSend = document.getElementById('idea-send-btn');
-    if (ideaSend) ideaSend.addEventListener('click', submitIdea);
-    document.querySelectorAll('[data-idea-cat]').forEach(function(b) {
-      b.addEventListener('click', function() {
-        ideaCat = b.getAttribute('data-idea-cat') || 'feat';
-        document.querySelectorAll('[data-idea-cat]').forEach(function(x) { x.classList.toggle('active', x === b); });
-      });
-    });
-    var openIdeas = document.getElementById('open-ideas-btn');
-    if (openIdeas) openIdeas.addEventListener('click', function() { openSettingsModal('pane-ideas'); });
-    var adaptToggle = document.getElementById('set-adapt');
-    if (adaptToggle) adaptToggle.addEventListener('change', function() {
-      localStorage.setItem('ta_adapt', this.checked ? '1' : '0');
-      postProfile({ enabled: this.checked });
-    });
-    var adaptAddBtn = document.getElementById('adapt-note-btn');
-    if (adaptAddBtn) adaptAddBtn.addEventListener('click', function() {
-      var inp = document.getElementById('adapt-note-input');
-      var text = inp ? inp.value.trim() : '';
-      if (text.length < 8) return;
-      postProfile({ note: text }).then(function() { if (inp) inp.value = ''; });
-    });
-    var adaptForget = document.getElementById('adapt-forget-btn');
-    if (adaptForget) adaptForget.addEventListener('click', function() {
-      if (!confirm(t('adaptForget'))) return;
-      postProfile({ forgetAll: true });
-      saveLocalProfile(emptyLocalProfile());
-      renderAdaptPane();
-    });
-    var adaptNotes = document.getElementById('adapt-notes');
-    if (adaptNotes) adaptNotes.addEventListener('click', function(e) {
-      var id = e.target && e.target.getAttribute('data-del-note');
-      if (!id) return;
-      postProfile({ deleteNoteId: id });
-    });
     var autoReadLive = document.getElementById('set-auto-read');
     if (autoReadLive) autoReadLive.addEventListener('change', function() {
       localStorage.setItem('ta_auto_read', this.checked ? '1' : '0');
@@ -3469,17 +3163,6 @@
     if (settingsLogout) settingsLogout.addEventListener('click', doLogout);
     var navLogout = document.getElementById('nav-logout-btn');
     if (navLogout) navLogout.addEventListener('click', doLogout);
-    var exportBtnAll = document.getElementById('btn-export-all');
-    if (exportBtnAll) exportBtnAll.addEventListener('click', function() {
-      var payload = { exportedAt: new Date().toISOString(), chats: chats, documents: documents, projects: projects };
-      var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'personal-ai-export.json';
-      a.click();
-      var st = document.getElementById('settings-status');
-      if (st) { st.textContent = t('exportOk'); st.style.display = 'block'; }
-    });
     var clearChatsBtn = document.getElementById('btn-clear-chats');
     if (clearChatsBtn) clearChatsBtn.addEventListener('click', function() {
       if (!confirm(t('clearChatsConfirm'))) return;
@@ -3493,38 +3176,8 @@
     if (clearDocsBtn) clearDocsBtn.addEventListener('click', clearAllKnowledge);
     var changePassBtn = document.getElementById('change-pass-btn');
     if (changePassBtn) changePassBtn.addEventListener('click', changePasswordFromSettings);
-    var delAccBtn = document.getElementById('delete-account-btn');
-    if (delAccBtn) delAccBtn.addEventListener('click', deleteAccountFromSettings);
-    var testEmailBtn = document.getElementById('test-email-btn');
-    if (testEmailBtn) testEmailBtn.addEventListener('click', async function() {
-      if (!authToken) return;
-      var st = document.getElementById('settings-status');
-      try {
-        if (testEmailBtn.getAttribute('data-ticket')) {
-          var sent = await fetch('/api/mail/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-            body: JSON.stringify({ ticket: testEmailBtn.getAttribute('data-ticket') })
-          });
-          var sentData = await sent.json();
-          if (!sent.ok) throw new Error(sentData.error || t('error'));
-          testEmailBtn.removeAttribute('data-ticket');
-          testEmailBtn.textContent = t('testEmail') || 'Enviar correo de prueba';
-          if (st) { st.textContent = t('testEmailOk'); st.style.display = 'block'; }
-          return;
-        }
-        var res = await fetch('/api/auth/test-email', { method: 'POST', headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' }, body: '{}' });
-        var data = await res.json();
-        if (!res.ok) throw new Error(data.error || t('error'));
-        if (data.needsClick && data.ticket) {
-          testEmailBtn.setAttribute('data-ticket', data.ticket);
-          testEmailBtn.textContent = 'Haz clic para enviar el correo';
-          if (st) { st.textContent = 'Confirma que eres una persona y pulsa otra vez.'; st.style.display = 'block'; }
-          return;
-        }
-        if (st) { st.textContent = t('testEmailOk'); st.style.display = 'block'; }
-      } catch (err) { alert(err.message); }
-    });
+    var clearAllBtn = document.getElementById('btn-clear-all');
+    if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllData);
     var saveKnowledgeBtn = document.getElementById('save-knowledge-btn');
     if (saveKnowledgeBtn) saveKnowledgeBtn.addEventListener('click', saveKnowledge);
     var clearRagBtn = document.getElementById('clear-rag-btn');
@@ -3533,10 +3186,6 @@
     if (importRagFile) importRagFile.addEventListener('change', handleImportKnowledge);
     var importDocsBtn = document.getElementById('import-docs-btn');
     if (importDocsBtn && importRagFile) importDocsBtn.addEventListener('click', function() { importRagFile.click(); });
-    var addCustomConnBtn = document.getElementById('add-custom-conn-btn');
-    if (addCustomConnBtn) addCustomConnBtn.addEventListener('click', addCustomConnector);
-    var shareCopyBtn = document.getElementById('share-copy-btn');
-    if (shareCopyBtn) shareCopyBtn.addEventListener('click', copyShareLink);
     document.getElementById('art-close-btn').addEventListener('click', closeArtifact);
     document.getElementById('art-copy-btn').addEventListener('click', function() {
       readArtifactDraft();
@@ -3604,14 +3253,6 @@
     if (artEditor) {
       artEditor.addEventListener('input', scheduleArtifactPreview);
     }
-    var artPublishBtn = document.getElementById('art-publish-btn');
-    if (artPublishBtn) artPublishBtn.addEventListener('click', publishArtifact);
-    var artUnpublishBtn = document.getElementById('art-unpublish-btn');
-    if (artUnpublishBtn) artUnpublishBtn.addEventListener('click', unpublishArtifact);
-    var artOpenBtn = document.getElementById('art-open-btn');
-    if (artOpenBtn) artOpenBtn.addEventListener('click', function() {
-      if (currentArtifact && currentArtifact.url) window.open(currentArtifact.url, '_blank', 'noopener');
-    });
     syncArtifactActions();
     document.querySelectorAll('.length-opt-btn').forEach(function(btn) {
       btn.addEventListener('click', function() { var mode = this.getAttribute('data-len'); if (mode) setLengthMode(mode); });
@@ -3633,15 +3274,13 @@
       var codeCopy = e.target.closest('.code-copy-btn');
       if (codeCopy) {
         navigator.clipboard.writeText(decodeURIComponent(codeCopy.getAttribute('data-code') || '')).then(function() {
-          codeCopy.textContent = 'Copiado';
-          setTimeout(function() { codeCopy.textContent = 'Copiar'; }, 1800);
+          codeCopy.textContent = '已複製';
+          setTimeout(function() { codeCopy.textContent = '複製'; }, 1800);
         }).catch(function() {});
         return;
       }
       var delRag = e.target.closest('.del-rag-item-btn');
       if (delRag) { var id = delRag.getAttribute('data-del-doc'); if (id) deleteKnowledgeById(id); return; }
-      var delConn = e.target.closest('.del-conn-btn');
-      if (delConn) { var cIdx = parseInt(delConn.getAttribute('data-del-conn-idx'), 10); if (!isNaN(cIdx)) deleteConnector(cIdx); return; }
     });
     document.addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === ',') { e.preventDefault(); openSettingsModal('pane-general'); return; }

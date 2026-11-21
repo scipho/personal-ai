@@ -8,7 +8,7 @@ function esc(value) {
     .replace(/</g, '&lt;')
 }
 
-const ASSET_V = '1'
+const ASSET_V = APP_VERSION
 
 export function htmlShell({ lang = 'zh-TW', nonce = '', origin = '' } = {}) {
   const safeLang = /^[a-z]{2}(?:-[A-Z]{2})?$/.test(lang) ? lang : 'zh-TW'

@@ -2,6 +2,10 @@ name = "personal-ai"
 main = "src/index.js"
 compatibility_date = "2026-08-16"
 workers_dev = true
+# fetch() always goes over the public internet (also for hosts on this
+# account), which keeps fetch_url/provider calls away from internal routes
+# and lets a provider or MCP server hosted on another Worker be reached.
+compatibility_flags = ["global_fetch_strictly_public"]
 
 [assets]
 directory = "./public"
@@ -18,26 +22,19 @@ enabled = true
 # APP_ORIGIN = "https://ai.example.com"
 SESSION_DAYS = "30"
 
-# D1 is optional for the first Dashboard deployment. While this block is
-# commented out, the Worker still deploys and chat/image/login work, but
-# /api/me reports sync:false and cross-device sync is disabled.
-#
-# When you are ready to enable sync:
-#   1. Create the database in Dashboard: Storage & Databases -> D1 -> Create
-#   2. Run migrations/0001_init.sql in the D1 Console (or use Wrangler below)
-#   3. Uncomment this block and paste the real Database ID
-#   4. Commit/push so Workers Builds redeploys
-#
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "personal-ai"
-# database_id = "PASTE_DATABASE_ID_HERE"
-# migrations_dir = "migrations"
+# D1 is REQUIRED: settings, encrypted provider keys, memory, projects and
+# files all live there. Create the database, paste its ID below, then deploy.
+# The Worker creates/upgrades its tables on the first request; you can also
+# apply migrations/ explicitly (see README).
+#   npx wrangler d1 create personal-ai
+[[d1_databases]]
+binding = "DB"
+database_name = "personal-ai"
+database_id = "PASTE_DATABASE_ID_HERE"
+migrations_dir = "migrations"
 
-# Secrets (never put these in this file):
+# Secrets (never put these in this file). These are the ONLY two:
 #   npx wrangler secret put APP_PASSWORD
-#   npx wrangler secret put AUTH_SECRET
-#   npx wrangler secret put GROQ_API_KEY     # optional server-side default
-#   npx wrangler secret put TAVILY_API_KEY   # optional
-# Optional default model for the server-side Groq fallback:
-# [vars] GROQ_MODEL = "openai/gpt-oss-120b"
+#   npx wrangler secret put AUTH_SECRET   # >= 32 random chars; also derives the key that encrypts API keys in D1
+# Provider keys, Tavily/Jina keys and MCP tokens are entered in the UI and
+# stored AES-GCM encrypted in D1.

@@ -101,12 +101,42 @@ export function clearSessionCookie(request) {
   return `${name}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure ? '; Secure' : ''}`
 }
 
-export async function passwordMatches(password, env) {
+// Password check. A password changed in the UI is stored in D1 as a salted
+// PBKDF2 hash (peppered with AUTH_SECRET) and overrides APP_PASSWORD.
+// Recovery if locked out: DELETE FROM settings WHERE k = 'auth.password'.
+export const PASSWORD_SETTING = 'auth.password'
+export const PBKDF2_ITERATIONS = 10_000 // Workers Free: keep login under the CPU budget
+
+export async function passwordMatches(password, env, stored = null) {
   if (!env.APP_PASSWORD || !env.AUTH_SECRET) return false
+  if (stored && stored.hash) return verifyPasswordHash(password, stored, env)
   const supplied = await sha256(`${String(password)}\n${env.AUTH_SECRET}`)
   const expected = await sha256(`${env.APP_PASSWORD}\n${env.AUTH_SECRET}`)
   return timingSafeEqual(supplied, expected)
 }
+
+async function pbkdf2(password, salt, iterations, pepper) {
+  const key = await crypto.subtle.importKey('raw', encoder.encode(`${String(password)}\n${pepper}`), 'PBKDF2', false, ['deriveBits'])
+  return new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations }, key, 256))
+}
+
+export async function hashPassword(password, env) {
+  const salt = crypto.getRandomValues(new Uint8Array(16))
+  const hash = await pbkdf2(password, salt, PBKDF2_ITERATIONS, env.AUTH_SECRET)
+  return { alg: 'pbkdf2-sha256', iter: PBKDF2_ITERATIONS, salt: b64url(salt), hash: b64url(hash), at: Date.now() }
+}
+
+export async function verifyPasswordHash(password, stored, env) {
+  try {
+    const iter = Math.min(100_000, Math.max(1000, Number(stored.iter) || PBKDF2_ITERATIONS))
+    const hash = await pbkdf2(password, b64urlDecode(stored.salt), iter, env.AUTH_SECRET)
+    return timingSafeEqual(hash, b64urlDecode(stored.hash))
+  } catch {
+    return false
+  }
+}
+
+export const MIN_PASSWORD_LENGTH = 8
 
 const attempts = new Map()
 
