@@ -27,5 +27,14 @@ export const MIGRATIONS = [
       "CREATE TABLE IF NOT EXISTS files (\n  project_id TEXT NOT NULL,\n  path       TEXT NOT NULL,\n  content    TEXT NOT NULL DEFAULT '',\n  is_dir     INTEGER NOT NULL DEFAULT 0,\n  size       INTEGER NOT NULL DEFAULT 0,\n  updated_at INTEGER NOT NULL,\n  seq        INTEGER NOT NULL DEFAULT 0,\n  PRIMARY KEY (project_id, path)\n)",
       "INSERT OR REPLACE INTO schema_meta (k, v) VALUES ('version', '3')"
     ]
+  },
+  {
+    "version": 4,
+    "file": "0004_skills_mcp.sql",
+    "statements": [
+      "CREATE TABLE IF NOT EXISTS skills (\n  id            TEXT PRIMARY KEY,\n  name          TEXT NOT NULL UNIQUE,\n  description   TEXT NOT NULL DEFAULT '',\n  instructions  TEXT NOT NULL DEFAULT '',\n  allowed_tools TEXT NOT NULL DEFAULT '[]',\n  files         TEXT NOT NULL DEFAULT '[]',\n  enabled       INTEGER NOT NULL DEFAULT 1,\n  created_at    INTEGER NOT NULL,\n  updated_at    INTEGER NOT NULL\n)",
+      "CREATE TABLE IF NOT EXISTS mcp_servers (\n  id               TEXT PRIMARY KEY,\n  name             TEXT NOT NULL UNIQUE,\n  url              TEXT NOT NULL,\n  auth_type        TEXT NOT NULL DEFAULT 'none',\n  header_name      TEXT NOT NULL DEFAULT '',\n  tools            TEXT NOT NULL DEFAULT '[]',\n  disabled_tools   TEXT NOT NULL DEFAULT '[]',\n  session_id       TEXT NOT NULL DEFAULT '',\n  protocol_version TEXT NOT NULL DEFAULT '',\n  enabled          INTEGER NOT NULL DEFAULT 1,\n  last_tested_at   INTEGER NOT NULL DEFAULT 0,\n  last_error       TEXT NOT NULL DEFAULT '',\n  created_at       INTEGER NOT NULL,\n  updated_at       INTEGER NOT NULL\n)",
+      "INSERT OR REPLACE INTO schema_meta (k, v) VALUES ('version', '4')"
+    ]
   }
 ]

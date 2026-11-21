@@ -145,9 +145,9 @@ function withTimeout(promise, ms) {
   ]).finally(() => clearTimeout(timer))
 }
 
-export function serializeToolResult(result) {
+export function serializeToolResult(result, max = TOOL_RESULT_MAX_CHARS) {
   let text = JSON.stringify(result)
-  if (text.length > TOOL_RESULT_MAX_CHARS) text = text.slice(0, TOOL_RESULT_MAX_CHARS) + '…（內容過長已截斷）'
+  if (text.length > max) text = text.slice(0, max) + '…（內容過長已截斷）'
   return text
 }
 
@@ -176,12 +176,15 @@ async function executeToolCall(call, ctx) {
     let result = await withTimeout(ctx.execute(name, args), TOOL_TIMEOUT_MS)
     if (!result || typeof result !== 'object') result = { ok: true, result }
     let events
-    if (result.__events) {
+    let maxChars
+    if (result.__events || result.__maxChars) {
       events = result.__events
+      maxChars = result.__maxChars
       result = { ...result }
       delete result.__events
+      delete result.__maxChars
     }
-    return { name, args, result, events }
+    return { name, args, result, events, maxChars }
   } catch (err) {
     if (err instanceof BudgetError) return { name, args, result: { ok: false, error: WRAP_UP, code: 'budget' } }
     return { name, args, result: { ok: false, error: err && err.message ? err.message : '工具執行失敗' } }
@@ -256,7 +259,7 @@ export async function runAgentLoop(opts) {
     }
     for (const { call, out } of outcomes) {
       if (collectSources) collectSources(out.name, out.args, out.result, record.sources)
-      messages.push({ role: 'tool', tool_call_id: call.id, content: serializeToolResult(out.result) })
+      messages.push({ role: 'tool', tool_call_id: call.id, content: serializeToolResult(out.result, out.maxChars) })
     }
     if (record.sources.size) await send({ sources: [...record.sources.values()].slice(0, 12) })
     if (ctx.afterTools) await ctx.afterTools(send)

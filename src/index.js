@@ -25,6 +25,8 @@ import { publicTools, runTool } from './tools/registry.js'
 import { handleSync } from './sync.js'
 import { dataApiRoute } from './api.js'
 import { projectsApiRoute } from './projects.js'
+import { skillsApiRoute } from './skills.js'
+import { mcpApiRoute } from './mcp.js'
 import { openDb } from './db.js'
 import { PASSWORD_SETTING } from './auth.js'
 
@@ -115,6 +117,10 @@ async function apiRoute(request, env, path, method, ctx) {
   if (data) return data
   const projects = await projectsApiRoute(request, env, path, method)
   if (projects) return projects
+  const skills = await skillsApiRoute(request, env, path, method)
+  if (skills) return skills
+  const mcp = await mcpApiRoute(request, env, path, method)
+  if (mcp) return mcp
   if (path === '/api/sync' || path === '/api/sync/status') {
     if (!(await requireAuth(request, env))) return errorJson('請先登入', 401, 'unauthorized')
     if (path === '/api/sync/status' && method === 'GET') {

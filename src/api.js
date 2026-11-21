@@ -31,7 +31,7 @@ import { SecretUnavailableError } from './secret_box.js'
 const USER_SECRETS = new Set(['search:tavily', 'search:jina'])
 
 // Tables wiped by "清除所有資料". Later PRs append their tables.
-export const DATA_TABLES = ['sync_items_v2', 'sync_items', 'secrets', 'providers', 'memories', 'project_messages', 'files', 'projects']
+export const DATA_TABLES = ['sync_items_v2', 'sync_items', 'secrets', 'providers', 'memories', 'project_messages', 'files', 'projects', 'skills', 'mcp_servers']
 
 async function body(request) {
   try {
@@ -55,13 +55,13 @@ export async function dataApiRoute(request, env, path, method) {
   const db = await openDb(env)
   if (!db) return dbMissingResponse()
   try {
-    if (path === '/api/settings') return settingsRoute(request, env, db, method)
-    if (path.startsWith('/api/secrets/')) return secretRoute(request, env, db, method, seg(path, 3))
-    if (path === '/api/providers/models') return modelsRoute(request, env, db, method)
-    if (path === '/api/providers' || path.startsWith('/api/providers/')) return providersRoute(request, env, db, method, seg(path, 3))
-    if (path === '/api/memory' || path.startsWith('/api/memory/')) return memoryRoute(request, env, db, method, seg(path, 3))
-    if (path === '/api/password') return passwordRoute(request, env, db, method)
-    if (path === '/api/data/clear') return clearRoute(request, env, db, method)
+    if (path === '/api/settings') return await settingsRoute(request, env, db, method)
+    if (path.startsWith('/api/secrets/')) return await secretRoute(request, env, db, method, seg(path, 3))
+    if (path === '/api/providers/models') return await modelsRoute(request, env, db, method)
+    if (path === '/api/providers' || path.startsWith('/api/providers/')) return await providersRoute(request, env, db, method, seg(path, 3))
+    if (path === '/api/memory' || path.startsWith('/api/memory/')) return await memoryRoute(request, env, db, method, seg(path, 3))
+    if (path === '/api/password') return await passwordRoute(request, env, db, method)
+    if (path === '/api/data/clear') return await clearRoute(request, env, db, method)
   } catch (err) {
     if (err instanceof SecretUnavailableError) return errorJson(err.message, 409, 'secret_undecryptable')
     console.error('data api failed', err && err.stack ? err.stack : err)

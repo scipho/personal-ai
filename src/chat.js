@@ -28,6 +28,7 @@ import {
 } from './store.js'
 import { SecretUnavailableError } from './secret_box.js'
 import { handleProjectChat } from './projects.js'
+import { buildExtensions, extensionQueries, filterTools, normalizeOff } from './extensions.js'
 
 export { parseCompletion }
 
@@ -160,8 +161,9 @@ export function baseSystemParts(body, { prefs = {}, agent = false, memoryOn = fa
   return parts
 }
 
-function systemPrompt(body, { docs = [], agent = false, capabilities = {}, prefs = {}, memories = [] } = {}) {
+function systemPrompt(body, { docs = [], agent = false, capabilities = {}, prefs = {}, memories = [], extraParts = [] } = {}) {
   const parts = baseSystemParts(body, { prefs, agent, memoryOn: capabilities.memory, searchFirst: !!body.search_web && capabilities.search })
+  if (agent) parts.push(...extraParts)
   if (docs.length) {
     const total = docs.reduce((n, d) => n + d.content.length, 0)
     if (agent && capabilities.docs && total > INLINE_DOCS_MAX_CHARS) parts.push(docsIndex(docs))
@@ -396,9 +398,10 @@ export async function handleChat(request, env, execCtx) {
   const db = await openDb(env, budget)
   if (!db) return dbMissingResponse()
 
+  const ext = extensionQueries(body)
   let base
   try {
-    base = await loadBaseContext(db)
+    base = await loadBaseContext(db, { extra: ext.queries })
   } catch {
     return errorJson('讀取設定失敗', 500, 'd1_read_failed')
   }
@@ -423,11 +426,13 @@ export async function handleChat(request, env, execCtx) {
 
   if (body.tools === false || body.agent === false) return legacyChat(request, body, provider, params, sysOpts)
 
-  const tools = openAiTools(capabilities)
+  const off = normalizeOff(body.tools_off)
+  const extn = buildExtensions({ rows: base.extra, env, db, budget, signal: request.signal, off })
+  const tools = extn.restrict(filterTools([...openAiTools(capabilities), ...extn.tools], off))
   const allowed = new Set(tools.map((t) => t.function.name))
   let messages
   try {
-    messages = messagesForProvider(body, { ...sysOpts, agent: true })
+    messages = messagesForProvider(body, { ...sysOpts, agent: true, extraParts: extn.systemParts })
   } catch (err) {
     return errorJson(err.message || '訊息格式不正確', 400, 'invalid_messages')
   }
@@ -442,7 +447,7 @@ export async function handleChat(request, env, execCtx) {
   }
   const agentCtx = {
     budget, allowed, stripped: new Set(), sequential: false,
-    execute: (name, args) => runTool(name, args, toolContext),
+    execute: async (name, args) => (name === 'load_skill' || name.startsWith('mcp__') ? extn.execute(name, args) : runTool(name, args, toolContext)),
     afterTools: async (send) => {
       while (memoryEvents.length) await send({ memory: memoryEvents.shift() })
     },

@@ -24,6 +24,7 @@ import {
 import { UpstreamError, clampText, completionStep, looksLikeToolsUnsupported } from './agent.js'
 import { FILE_TOOL_DEFS, FILE_TOOL_NAMES, FsError, MAX_FILE_BYTES, ProjectFs, PathError, normalizePath, runFileTool } from './tools/files.js'
 import { TOOLS, openAiTools, runTool } from './tools/registry.js'
+import { TOOL_GROUPS, buildExtensions, extensionQueries, filterTools, normalizeOff } from './extensions.js'
 
 export const PROJECT_ID_RE = /^[A-Za-z0-9_-]{1,60}$/
 export const MAX_PROJECTS = 100
@@ -36,14 +37,7 @@ const SUMMARY_INPUT_CHARS = 40_000
 const TREE_IN_PROMPT = 300
 const META_RESULT_CHARS = 1_500
 
-// Tool groups the project settings can switch off.
-export const TOOL_GROUPS = {
-  web: ['web_search', 'fetch_url'],
-  files: [...FILE_TOOL_NAMES],
-  memory: ['remember', 'forget', 'recall'],
-  history: ['search_history'],
-  utility: ['calculate', 'current_time'],
-}
+export { TOOL_GROUPS }
 
 export const SEARCH_HISTORY_DEF = {
   name: 'search_history',
@@ -63,6 +57,9 @@ export function normalizeProjectSettings(input) {
   out.model = typeof s.model === 'string' ? s.model.trim().slice(0, 200) : ''
   const groups = Object.keys(TOOL_GROUPS)
   out.tools_disabled = Array.isArray(s.tools_disabled) ? s.tools_disabled.filter((g) => groups.includes(g)) : []
+  const names = (v, re) => (Array.isArray(v) ? [...new Set(v.map(String).filter((x) => re.test(x)))].slice(0, 60) : [])
+  out.skills_disabled = names(s.skills_disabled, /^[a-z0-9][a-z0-9-]{0,39}$/)
+  out.mcp_disabled = names(s.mcp_disabled, /^[a-z0-9][a-z0-9_-]{0,19}$/)
   return out
 }
 
@@ -111,8 +108,8 @@ export async function projectsApiRoute(request, env, path, method) {
   const sub = parts[1] || ''
   try {
     if (!id) {
-      if (method === 'GET') return listProjects(db)
-      if (method === 'POST') return createProject(request, db)
+      if (method === 'GET') return await listProjects(db)
+      if (method === 'POST') return await createProject(request, db)
       return errorJson('Method not allowed', 405)
     }
     if (!PROJECT_ID_RE.test(id)) return errorJson('專案 ID 不正確', 400, 'invalid_project')
@@ -120,21 +117,21 @@ export async function projectsApiRoute(request, env, path, method) {
     if (!project) return errorJson('找不到專案', 404, 'not_found')
     if (!sub) {
       if (method === 'GET') return json({ ok: true, project: projectView(project) })
-      if (method === 'PUT' || method === 'PATCH') return updateProject(request, db, project)
-      if (method === 'DELETE') return deleteProject(db, id)
+      if (method === 'PUT' || method === 'PATCH') return await updateProject(request, db, project)
+      if (method === 'DELETE') return await deleteProject(db, id)
     }
     if (sub === 'messages') {
-      if (method === 'GET') return listMessages(request, db, project)
-      if (method === 'DELETE') return clearMessages(db, project)
+      if (method === 'GET') return await listMessages(request, db, project)
+      if (method === 'DELETE') return await clearMessages(db, project)
     }
-    if (sub === 'poll' && method === 'GET') return poll(request, db, project)
-    if (sub === 'compact' && method === 'POST') return compactNow(request, env, db, project)
-    if (sub === 'files' && method === 'GET') return listTree(db, id)
+    if (sub === 'poll' && method === 'GET') return await poll(request, db, project)
+    if (sub === 'compact' && method === 'POST') return await compactNow(request, env, db, project)
+    if (sub === 'files' && method === 'GET') return await listTree(db, id)
     if (sub === 'file') {
-      if (method === 'GET') return readFileRoute(request, db, id)
-      if (method === 'PUT') return writeFileRoute(request, db, id)
+      if (method === 'GET') return await readFileRoute(request, db, id)
+      if (method === 'PUT') return await writeFileRoute(request, db, id)
     }
-    if (sub === 'fs' && method === 'POST') return fsOpRoute(request, db, id)
+    if (sub === 'fs' && method === 'POST') return await fsOpRoute(request, db, id)
     return errorJson('Not found', 404, 'not_found')
   } catch (err) {
     console.error('projects api failed', err && err.stack ? err.stack : err)
@@ -306,8 +303,9 @@ const PROJECT_RULES =
   '- 這個專案只有一段永久對話；較早的內容已濃縮成下方摘要，需要細節時用 search_history。\n' +
   '- 專案記憶（remember 預設存為專案範圍）只在這個專案使用；scope="global" 才存成全域記憶。'
 
-function projectSystemPrompt(body, { project, prefs, memoryOn, searchFirst, globalMemories, projectMemories, treeRows, toolsOn }) {
+function projectSystemPrompt(body, { project, prefs, memoryOn, searchFirst, globalMemories, projectMemories, treeRows, toolsOn, extraParts = [] }) {
   const parts = baseSystemParts(body, { prefs, agent: true, memoryOn, searchFirst })
+  parts.push(...extraParts)
   parts.push(`目前專案：「${project.name}」。`)
   if (toolsOn.files) parts.push(PROJECT_RULES)
   if (toolsOn.files) parts.push(treeBlock(treeRows))
@@ -395,11 +393,13 @@ export async function handleProjectChat(request, env, execCtx, body) {
 
   // One batch: settings, providers, keys, global+project memory, project row,
   // recent unsummarized messages and the file tree.
+  const ext = extensionQueries({ ...body, message: body.message })
   let base
   try {
     base = await loadBaseContext(db, {
       memoryScopes: ['global', projectId],
       extra: [
+        ...ext.queries,
         ['SELECT * FROM projects WHERE id = ?', projectId],
         [`SELECT id, role, substr(content, 1, ${MAX_MESSAGE_CHARS}) AS content FROM project_messages
            WHERE project_id = ? AND id > COALESCE((SELECT summary_upto FROM projects WHERE id = ?), 0)
@@ -411,7 +411,8 @@ export async function handleProjectChat(request, env, execCtx, body) {
     console.error('project context failed', err && err.message)
     return errorJson('讀取專案失敗', 500, 'd1_read_failed')
   }
-  const [projectRows, recentRows, treeRows] = base.extra
+  const extRows = base.extra.slice(0, ext.queries.length)
+  const [projectRows, recentRows, treeRows] = base.extra.slice(ext.queries.length)
   const project = projectView(projectRows[0])
   if (!project) return errorJson('找不到專案', 404, 'not_found')
   const { settings } = base
@@ -432,9 +433,13 @@ export async function handleProjectChat(request, env, execCtx, body) {
   const globalMemories = memoryOn ? base.memories.filter((m) => m.scope === 'global') : []
   const projectMemories = memoryOn ? base.memories.filter((m) => m.scope === projectId) : []
   const capabilities = { search: true, memory: memoryOn }
-  let tools = toolDefsFor(project, capabilities)
-  const toggles = Array.isArray(body.tools_off) ? new Set(body.tools_off.map(String)) : null
-  if (toggles) tools = tools.filter((t) => !toggles.has(t.function.name))
+  const off = normalizeOff(body.tools_off)
+  const extn = buildExtensions({
+    rows: extRows, env, db, budget, signal: request.signal, off,
+    disabledSkills: new Set(project.settings.skills_disabled),
+    disabledServers: new Set(project.settings.mcp_disabled),
+  })
+  const tools = extn.restrict(filterTools([...toolDefsFor(project, capabilities), ...extn.tools], off))
   const allowed = new Set(tools.map((t) => t.function.name))
   const toolsOn = { files: allowed.has('read_file') }
 
@@ -448,7 +453,7 @@ export async function handleProjectChat(request, env, execCtx, body) {
   const history = recentWindow([{ id: userId, role: 'user', content: text }, ...recentRows])
   const sys = projectSystemPrompt(body, {
     project, prefs: settings.prefs, memoryOn, searchFirst: !!body.search_web,
-    globalMemories, projectMemories, treeRows, toolsOn,
+    globalMemories, projectMemories, treeRows, toolsOn, extraParts: extn.systemParts,
   })
   const messages = [{ role: 'system', content: sys }, ...history.map((m) => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content }))]
 
@@ -470,6 +475,7 @@ export async function handleProjectChat(request, env, execCtx, body) {
         return { ...out.result, __events: out.events }
       }
       if (name === 'search_history') return searchHistory(db, projectId, args)
+      if (name === 'load_skill' || name.startsWith('mcp__')) return extn.execute(name, args)
       if (name === 'remember' && args && args.scope === 'global') return runTool(name, args, { ...toolContext, writeScope: 'global' })
       return runTool(name, args, toolContext)
     },
